@@ -23,7 +23,7 @@ public class Pet : Entity
     public TransferDetailsList TransferDetails { get; private set; }
     public DateTime CreationDate { get; private set; } = DateTime.Now;
 
-    private Pet(
+    public Pet(
         PetId id,
         Name name,
         Description description,
@@ -57,41 +57,4 @@ public class Pet : Entity
         HelpStatus = helpStatus;
         TransferDetails = transferDetails;
     }
-
-    public static Result<Pet> Create(
-        PetId id,
-        Name name,
-        Description description,
-        PetClassification petClassification,
-        Color color,
-        HealthInfo healthInfo,
-        Address address,
-        Weight weight,
-        Height height,
-        Phone ownerPhoneNumber,
-        IsCastrated isCastrated,
-        DateOfBirth dateOfBirth,
-        IsVaccinated isVaccinated,
-        HelpStatus helpStatus,
-        TransferDetailsList transferDetails)
-    {
-        var pet = new Pet(
-            id,
-            name,
-            description,
-            petClassification,
-            color,
-            healthInfo,
-            address,
-            weight,
-            height,
-            ownerPhoneNumber,
-            isCastrated,
-            dateOfBirth,
-            isVaccinated,
-            helpStatus,
-            transferDetails);
-        return Result.Success(pet);
-    }
-
 }
