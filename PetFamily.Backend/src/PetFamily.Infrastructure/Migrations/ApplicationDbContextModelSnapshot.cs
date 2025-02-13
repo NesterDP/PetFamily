@@ -35,9 +35,9 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified))
                         .HasColumnName("creation_date");
 
-                    b.Property<Guid?>("pet_id")
+                    b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")
-                        .HasColumnName("pet_id");
+                        .HasColumnName("volunteer_id");
 
                     b.ComplexProperty<Dictionary<string, object>>("Address", "PetFamily.Domain.PetContext.Entities.Pet.Address#Address", b1 =>
                         {
@@ -175,8 +175,8 @@ namespace PetFamily.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
-                    b.HasIndex("pet_id")
-                        .HasDatabaseName("ix_pets_pet_id");
+                    b.HasIndex("volunteer_id")
+                        .HasDatabaseName("ix_pets_volunteer_id");
 
                     b.ToTable("pets", (string)null);
                 });
@@ -264,9 +264,9 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("breed_id")
+                    b.Property<Guid?>("species_id")
                         .HasColumnType("uuid")
-                        .HasColumnName("breed_id");
+                        .HasColumnName("species_id");
 
                     b.ComplexProperty<Dictionary<string, object>>("Name", "PetFamily.Domain.SpeciesContext.Entities.Breed.Name#Name", b1 =>
                         {
@@ -282,8 +282,8 @@ namespace PetFamily.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_breeds");
 
-                    b.HasIndex("breed_id")
-                        .HasDatabaseName("ix_breeds_breed_id");
+                    b.HasIndex("species_id")
+                        .HasDatabaseName("ix_breeds_species_id");
 
                     b.ToTable("breeds", (string)null);
                 });
@@ -315,8 +315,8 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     b.HasOne("PetFamily.Domain.PetContext.Entities.Volunteer", null)
                         .WithMany("AllOwnedPets")
-                        .HasForeignKey("pet_id")
-                        .HasConstraintName("fk_pets_volunteers_pet_id");
+                        .HasForeignKey("volunteer_id")
+                        .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
                     b.OwnsOne("PetFamily.Domain.Shared.SharedVO.TransferDetailsList", "TransferDetailsList", b1 =>
                         {
@@ -477,8 +477,8 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     b.HasOne("PetFamily.Domain.SpeciesContext.Entities.Species", null)
                         .WithMany("Breeds")
-                        .HasForeignKey("breed_id")
-                        .HasConstraintName("fk_breeds_species_breed_id");
+                        .HasForeignKey("species_id")
+                        .HasConstraintName("fk_breeds_species_species_id");
                 });
 
             modelBuilder.Entity("PetFamily.Domain.PetContext.Entities.Volunteer", b =>
