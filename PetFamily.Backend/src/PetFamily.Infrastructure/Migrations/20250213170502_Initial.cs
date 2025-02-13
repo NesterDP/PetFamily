@@ -48,15 +48,15 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    breed_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    species_id = table.Column<Guid>(type: "uuid", nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_breeds", x => x.id);
                     table.ForeignKey(
-                        name: "fk_breeds_species_breed_id",
-                        column: x => x.breed_id,
+                        name: "fk_breeds_species_species_id",
+                        column: x => x.species_id,
                         principalTable: "species",
                         principalColumn: "id");
                 });
@@ -67,7 +67,7 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     creation_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
-                    pet_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     address_info = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -88,21 +88,21 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_pets", x => x.id);
                     table.ForeignKey(
-                        name: "fk_pets_volunteers_pet_id",
-                        column: x => x.pet_id,
+                        name: "fk_pets_volunteers_volunteer_id",
+                        column: x => x.volunteer_id,
                         principalTable: "volunteers",
                         principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_breeds_breed_id",
+                name: "ix_breeds_species_id",
                 table: "breeds",
-                column: "breed_id");
+                column: "species_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_pets_pet_id",
+                name: "ix_pets_volunteer_id",
                 table: "pets",
-                column: "pet_id");
+                column: "volunteer_id");
         }
 
         /// <inheritdoc />

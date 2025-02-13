@@ -98,7 +98,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne()
-            .HasForeignKey("pet_id")
+            .HasForeignKey("volunteer_id")
             .IsRequired(false);
     }
 }
