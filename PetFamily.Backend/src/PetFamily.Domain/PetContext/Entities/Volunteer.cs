@@ -1,13 +1,12 @@
-using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
-public class Volunteer : Entity
+public class Volunteer : Shared.Entity<VolunteerId>
 {
-    public VolunteerId Id { get; private set; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Description Description { get; private set; }
@@ -18,11 +17,14 @@ public class Volunteer : Entity
     public TransferDetailsList TransferDetailsList { get; private set; }
 
     private readonly List<Pet> _pets = [];
-    public IReadOnlyCollection<Pet> GetAllOwnedPets => _pets;
+    public IReadOnlyCollection<Pet> AllOwnedPets => _pets;
 
-    public int PetsFoundHome() => GetAllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
-    public int PetsSeekingHome() => GetAllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.SeekingHome);
-    public int PetsUnderTreatment() => GetAllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
+    public int PetsFoundHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
+    public int PetsSeekingHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.SeekingHome);
+    public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
+
+    // ef
+    public Volunteer(VolunteerId id) : base(id) { }
 
     public Volunteer(
         VolunteerId id,
@@ -32,9 +34,8 @@ public class Volunteer : Entity
         Experience experience,
         Phone phoneNumber,
         SocialNetworksList socialNetworkList,
-        TransferDetailsList transferDetailsList)
+        TransferDetailsList transferDetailsList) : base(id)
     {
-        Id = id;
         FullName = fullName;
         Email = email;
         Description = description;

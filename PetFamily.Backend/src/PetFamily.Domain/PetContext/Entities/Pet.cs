@@ -1,12 +1,11 @@
-﻿using CSharpFunctionalExtensions;
-using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+﻿using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
-public class Pet : Entity
+public sealed class Pet : Shared.Entity<PetId>
 {
-    public PetId Id { get; private set; }
     public Name Name { get; private set; }
     public Description Description { get; private set; }
     public PetClassification PetClassification { get; private set; }
@@ -20,8 +19,11 @@ public class Pet : Entity
     public DateOfBirth DateOfBirth { get; private set; }
     public IsVaccinated IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public TransferDetailsList TransferDetails { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
     public DateTime CreationDate { get; private set; } = DateTime.Now;
+    
+    //ef
+    private Pet(PetId id) : base(id) { }
 
     public Pet(
         PetId id,
@@ -38,10 +40,9 @@ public class Pet : Entity
         DateOfBirth dateOfBirth,
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
-        TransferDetailsList transferDetails
-    )
+        TransferDetailsList transferDetailsList
+    ) : base(id)
     {
-        Id = id;
         Name = name;
         PetClassification = petClassification;
         Description = description;
@@ -55,6 +56,6 @@ public class Pet : Entity
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        TransferDetails = transferDetails;
+        TransferDetailsList = transferDetailsList;
     }
 }
