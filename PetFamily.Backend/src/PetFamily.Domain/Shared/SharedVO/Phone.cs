@@ -10,8 +10,12 @@ public record Phone
 
     public static Result<Phone> Create(string phone)
     {
-        if (string.IsNullOrWhiteSpace(phone))
-            return Result.Failure<Phone>("Phone cannot be null or empty.");
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length > Constants.MAX_PHONE_LENGTH)
+            return Result.Failure<Phone>("Phone is either empty or too long");
+        
+        const string pattern = @"^\d-\d{3}-\d{2}-\d{2}-\d{2}$";
+        if (!Regex.IsMatch(phone, pattern))
+            return Result.Failure<Phone>("Phone is in incorrect format");
 
         var validPhone = new Phone(phone);
         

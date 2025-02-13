@@ -5,18 +5,19 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Domain.SpeciesContext.Entities;
 
-public class Species
+public class Species : Shared.Entity<SpeciesId>
 {
-    public SpeciesId Id { get; private set; }
     public Name Name { get; private set; }
 
     private readonly List<Breed> _breeds = [];
 
     public IReadOnlyCollection<Breed> Breeds => _breeds;
 
-    public Species(SpeciesId id, Name name, List<Breed> breeds)
+    // ef core
+    public Species(SpeciesId id) : base(id) { }
+
+    public Species(SpeciesId id, Name name, List<Breed> breeds) : base(id)
     {
-        Id = id;
         Name = name;
     }
 }

@@ -9,8 +9,8 @@ public record Name
 
     public static Result<Name> Create(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Name>("Name cannot be null or empty.");
+        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_NAME_LENGTH)
+            return Result.Failure<Name>("Invalid name");
 
         var validName = new Name(name);
         

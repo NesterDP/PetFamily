@@ -9,8 +9,8 @@ public record Description
 
     public static Result<Description> Create(string description)
     {
-        if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Description>("Description cannot be null or empty.");
+        if (string.IsNullOrWhiteSpace(description) || description.Length > Constants.MAX_HIGH_TEXT_LENGTH)
+            return Result.Failure<Description>("Invalid description");
 
         var validDescription = new Description(description);
         

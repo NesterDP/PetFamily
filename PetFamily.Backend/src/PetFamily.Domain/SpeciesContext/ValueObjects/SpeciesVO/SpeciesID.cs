@@ -8,4 +8,5 @@ public record SpeciesId
     
     public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
     public static SpeciesId EmptySpeciesId => new(Guid.Empty);
+    public static SpeciesId Create(Guid id) => new(id);
 }
