@@ -36,7 +36,7 @@ namespace PetFamily.Infrastructure.Migrations
                     surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     SocialNetworkList = table.Column<string>(type: "jsonb", nullable: false),
-                    TransferDetailsList = table.Column<string>(type: "jsonb", nullable: false)
+                    TransferDetailList = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,7 +68,9 @@ namespace PetFamily.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     creation_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    address_info = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    apartment = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    house = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
@@ -82,7 +84,7 @@ namespace PetFamily.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     weight_info = table.Column<float>(type: "real", nullable: false),
-                    TransferDetailsList = table.Column<string>(type: "jsonb", nullable: false)
+                    TransferDetailList = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

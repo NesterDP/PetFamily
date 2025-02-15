@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record IsCastrated
@@ -7,10 +9,10 @@ public record IsCastrated
 
     private IsCastrated(bool value) => Value = value;
 
-    public static Result<IsCastrated> Create(bool isCastrated)
+    public static Result<IsCastrated, Error> Create(bool isCastrated)
     {
         var validIsCastrated = new IsCastrated(isCastrated);
         
-        return Result.Success(validIsCastrated);
+        return validIsCastrated;
     }
 }

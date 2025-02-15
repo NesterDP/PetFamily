@@ -9,13 +9,13 @@ public record HealthInfo
 
     private HealthInfo(string value) => Value = value;
 
-    public static Result<HealthInfo> Create(string healthInfo)
+    public static Result<HealthInfo, Error> Create(string healthInfo)
     {
         if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > Constants.MAX_MEDIUM_TEXT_LENGTH)
-            return Result.Failure<HealthInfo>("HealthInfo is invalid");
+            return Errors.General.ValueIsInvalid("healthInfo");
 
         var validHealthInfo = new HealthInfo(healthInfo);
         
-        return Result.Success(validHealthInfo);
+        return validHealthInfo;
     }
 }

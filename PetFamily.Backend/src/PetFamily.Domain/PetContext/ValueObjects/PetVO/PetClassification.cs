@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record PetClassification
@@ -12,14 +14,14 @@ public record PetClassification
         SpeciesId = speciesId;
     }
 
-    public static Result<PetClassification> Create(Guid breedId, Guid speciesId)
+    public static Result<PetClassification, Error> Create(Guid breedId, Guid speciesId)
     {
         if (breedId == Guid.Empty)
-            return Result.Failure<PetClassification>("breedId cannot be empty.");
+            return Errors.General.ValueIsInvalid("breedId");
         if (speciesId == Guid.Empty)
-            return Result.Failure<PetClassification>("speciesId cannot be empty.");
+            return Errors.General.ValueIsInvalid("speciesId");
 
         var validPetClassification = new PetClassification(breedId, speciesId);
-        return Result.Success(validPetClassification);
+        return validPetClassification;
     }
 }

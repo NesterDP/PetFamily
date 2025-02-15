@@ -7,13 +7,13 @@ public record Name
 
     private Name(string value) => Value = value;
 
-    public static Result<Name> Create(string name)
+    public static Result<Name, Error> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_NAME_LENGTH)
-            return Result.Failure<Name>("Invalid name");
+            return Errors.General.ValueIsInvalid("name");
 
         var validName = new Name(name);
         
-        return Result.Success(validName);
+        return validName;
     }
 }

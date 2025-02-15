@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
@@ -8,13 +9,13 @@ public record Weight
 
     private Weight(float value) => Value = value;
 
-    public static Result<Weight> Create(float weight)
+    public static Result<Weight, Error> Create(float weight)
     {
         if (weight <= 0)
-            return Result.Failure<Weight>("Weight must be greater than 0");
+            return Errors.General.ValueIsInvalid("weight");
 
         var validWeight = new Weight(weight);
         
-        return Result.Success(validWeight);
+        return validWeight;
     }
 }

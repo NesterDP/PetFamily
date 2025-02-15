@@ -1,23 +1,24 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
-public class SocialNetworksList
+public class SocialNetworkList
 {
     private readonly List<SocialNetwork> _socialNetworks;
     public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
 
     // ef core
-    private SocialNetworksList() { }
+    private SocialNetworkList() { }
 
-    private SocialNetworksList(IEnumerable<SocialNetwork> socialNetworks)
+    private SocialNetworkList(IEnumerable<SocialNetwork> socialNetworks)
     {
         _socialNetworks = socialNetworks.ToList();
     }
 
-    public static Result<SocialNetworksList> Create(IEnumerable<SocialNetwork> socialNetworks)
+    public static Result<SocialNetworkList, Error> Create(IEnumerable<SocialNetwork> socialNetworks)
     {
-        var validList = new SocialNetworksList(socialNetworks);
-        return Result.Success(validList);
+        var validList = new SocialNetworkList(socialNetworks);
+        return validList;
     }
 }

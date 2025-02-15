@@ -16,20 +16,20 @@ public class FullName
         Surname = surname;
     }
 
-    public static Result<FullName> Create(string firstName, string lastName, string surname)
+    public static Result<FullName, Error> Create(string firstName, string lastName, string surname)
     {
         
         if (string.IsNullOrWhiteSpace(firstName) || firstName.Length > Constants.MAX_NAME_LENGTH)
-            return Result.Failure<FullName>("Invalid first name");
+            return Errors.General.ValueIsInvalid("firstName");
         
         if (string.IsNullOrWhiteSpace(lastName) || lastName.Length > Constants.MAX_NAME_LENGTH)
-            return Result.Failure<FullName>("Invalid last name");
+            return Errors.General.ValueIsInvalid("lastName");
         
         if (string.IsNullOrWhiteSpace(surname) || surname.Length > Constants.MAX_NAME_LENGTH)
-            return Result.Failure<FullName>("Invalid surname");
+            return Errors.General.ValueIsInvalid("surname");
         
-        var validFio = new FullName(firstName, lastName, surname);
-        return Result.Success(validFio);
+        var validFullname = new FullName(firstName, lastName, surname);
+        return validFullname;
         
     }
 }

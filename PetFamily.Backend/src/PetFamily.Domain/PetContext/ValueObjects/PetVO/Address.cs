@@ -5,17 +5,30 @@ namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record Address
 {
-    public string Value { get; }
+    public string City { get; }
+    public string House { get; }
+    public string? Apartment { get; }
 
-    private Address(string value) => Value = value;
-
-    public static Result<Address> Create(string address)
+    private Address(string city, string house, string? apartment)
     {
-        if (string.IsNullOrWhiteSpace(address) || address.Length > Constants.MAX_LOW_TEXT_LENGTH)
-            return Result.Failure<Address>("Address is invalid");
+        City = city;
+        House = house;
+        Apartment = apartment;
+    }
 
-        var validAddress = new Address(address);
+    public static Result<Address, Error> Create(string city, string house, string? apartment)
+    {
+        if (string.IsNullOrWhiteSpace(city) || city.Length > Constants.MAX_LOGISTIC_UNIT_LENGTH)
+            return Errors.General.ValueIsInvalid("city");
         
-        return Result.Success(validAddress);
+        if (string.IsNullOrWhiteSpace(house) || house.Length > Constants.MAX_LOGISTIC_UNIT_LENGTH)
+            return Errors.General.ValueIsInvalid("house");
+        
+        if (string.IsNullOrWhiteSpace(apartment) || apartment.Length > Constants.MAX_LOGISTIC_UNIT_LENGTH)
+            return Errors.General.ValueIsInvalid("apartment");
+
+        var validAddress = new Address(city, house, apartment);
+        
+        return validAddress;
     }
 }

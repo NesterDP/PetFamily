@@ -66,10 +66,20 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.ComplexProperty(p => p.Address, ab =>
         {
-            ab.Property(a => a.Value)
+            ab.Property(a => a.City)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-                .HasColumnName("address_info");
+                .HasMaxLength(Constants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasColumnName("city");
+            
+            ab.Property(a => a.House)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasColumnName("house");
+            
+            ab.Property(a => a.Apartment)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasColumnName("apartment");
         });
         
         builder.ComplexProperty(p => p.Weight, wb =>
@@ -125,7 +135,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("help_status");
         });
         
-        builder.OwnsOne(p => p.TransferDetailsList, tdlb =>
+        builder.OwnsOne(p => p.TransferDetailList, tdlb =>
         {
             tdlb.ToJson();
 
@@ -138,6 +148,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                     .IsRequired()
                     .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH);
             });
+
         });
         
         builder.Property(p => p.CreationDate)
