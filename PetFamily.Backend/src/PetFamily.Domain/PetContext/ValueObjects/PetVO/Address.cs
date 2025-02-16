@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;

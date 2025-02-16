@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.API.Extensions;
 
