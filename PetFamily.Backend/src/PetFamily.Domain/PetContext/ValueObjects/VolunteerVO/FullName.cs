@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
-
+using PetFamily.Domain.Shared.CustomErrors;
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public class FullName

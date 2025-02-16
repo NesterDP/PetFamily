@@ -3,11 +3,9 @@ using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.API.Requests;
+namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public record CreateVolunteerRequest(
     VolunteerDto VolunteerDto,
-    List<SocialNetworkDto> SocialNetworkDto,
-    List<TransferDetailDto> TransferDetailListDto
-    );
-        
+    IEnumerable<SocialNetworkDto> SocialNetworksDto,
+    IEnumerable<TransferDetailDto> TransferDetailsDto);

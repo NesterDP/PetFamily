@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.CustomErrors;
+
 namespace PetFamily.Domain.Shared.SharedVO;
 
 public record Description

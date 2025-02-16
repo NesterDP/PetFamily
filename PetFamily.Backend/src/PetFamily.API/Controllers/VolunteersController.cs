@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
-using PetFamily.API.Requests;
 using PetFamily.Application.Volunteers.CreateVolunteer;
 
 namespace PetFamily.API.Controllers;
@@ -15,11 +14,7 @@ public class VolunteerController : ControllerBase
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await handler.HandleAsync(
-            request.VolunteerDto,
-            request.SocialNetworkDto,
-            request.TransferDetailListDto,
-            cancellationToken);
+        var result = await handler.HandleAsync(request, cancellationToken);
         
         if(result.IsFailure)
             return result.Error.ToResponse();

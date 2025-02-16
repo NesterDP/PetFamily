@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.Volunteers;
 
