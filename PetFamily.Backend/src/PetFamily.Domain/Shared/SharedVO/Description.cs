@@ -7,13 +7,13 @@ public record Description
 
     private Description(string value) => Value = value;
 
-    public static Result<Description> Create(string description)
+    public static Result<Description, Error> Create(string description)
     {
         if (string.IsNullOrWhiteSpace(description) || description.Length > Constants.MAX_HIGH_TEXT_LENGTH)
-            return Result.Failure<Description>("Invalid description");
+            return Errors.General.ValueIsInvalid("description");
 
         var validDescription = new Description(description);
         
-        return Result.Success(validDescription);
+        return validDescription;
     }
 }

@@ -9,13 +9,13 @@ public record Color
 
     private Color(string value) => Value = value;
 
-    public static Result<Color> Create(string color)
+    public static Result<Color, Error> Create(string color)
     {
         if (string.IsNullOrWhiteSpace(color) || color.Length > Constants.MAX_LOW_TEXT_LENGTH)
-            return Result.Failure<Color>("Color is invalid");
+            return Errors.General.ValueIsInvalid("color");
 
         var validColor = new Color(color);
         
-        return Result.Success(validColor);
+        return validColor;
     }
 }

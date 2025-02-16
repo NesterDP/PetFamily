@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.Shared;
@@ -13,8 +14,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public Experience Experience { get; private set; }
 
     public Phone PhoneNumber { get; private set; }
-    public SocialNetworksList SocialNetworkList { get; private set; }
-    public TransferDetailsList TransferDetailsList { get; private set; }
+    public SocialNetworkList SocialNetworkList { get; private set; }
+    public TransferDetailList TransferDetailList { get; private set; }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyCollection<Pet> AllOwnedPets => _pets;
@@ -33,8 +34,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworksList socialNetworkList,
-        TransferDetailsList transferDetailsList) : base(id)
+        SocialNetworkList socialNetworkList,
+        TransferDetailList transferDetailList) : base(id)
     {
         FullName = fullName;
         Email = email;
@@ -42,7 +43,21 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Experience = experience;
         PhoneNumber = phoneNumber;
         SocialNetworkList = socialNetworkList;
-        TransferDetailsList = transferDetailsList;
+        TransferDetailList = transferDetailList;
     }
-    
+
+    public static Result<Volunteer, Error> Create(
+        VolunteerId id,
+        FullName fullName,
+        Email email,
+        Description description,
+        Experience experience,
+        Phone phoneNumber,
+        SocialNetworkList socialNetworkList,
+        TransferDetailList transferDetailList)
+    {
+        return new Volunteer(id, fullName, email, description, experience, phoneNumber, socialNetworkList,
+            transferDetailList);
+    }
+
 }

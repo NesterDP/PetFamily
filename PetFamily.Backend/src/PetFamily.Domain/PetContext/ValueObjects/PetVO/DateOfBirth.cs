@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record DateOfBirth
@@ -8,14 +10,14 @@ public record DateOfBirth
 
     private DateOfBirth(DateTime value) => Value = value;
 
-    public static Result<DateOfBirth> Create(DateTime dateOfBirth)
+    public static Result<DateOfBirth, Error> Create(DateTime dateOfBirth)
     {
         // родился в будущем или родился слишком давно
         if (dateOfBirth > DateTime.Now || dateOfBirth < DateTime.Now.AddYears(-30))
-            return Result.Failure<DateOfBirth>("Incorrect date of birth");
+            return Errors.General.ValueIsInvalid("dateOfBirth");
 
         var validDateOfBirth = new DateOfBirth(dateOfBirth);
         
-        return Result.Success(validDateOfBirth);
+        return validDateOfBirth;
     }
 }

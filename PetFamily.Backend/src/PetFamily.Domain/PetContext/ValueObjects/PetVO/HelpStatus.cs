@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record HelpStatus
@@ -7,11 +9,11 @@ public record HelpStatus
 
     private HelpStatus(PetStatus value) => Value = value;
 
-    public static Result<HelpStatus> Create(PetStatus helpStatus)
+    public static Result<HelpStatus, Error> Create(PetStatus helpStatus)
     {
         var validHelpStatus = new HelpStatus(helpStatus);
         
-        return Result.Success(validHelpStatus);
+        return validHelpStatus;
     }
 }
 
