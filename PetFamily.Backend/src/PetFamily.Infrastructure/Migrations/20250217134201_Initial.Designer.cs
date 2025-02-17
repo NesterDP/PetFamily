@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250215120823_Initial")]
+    [Migration("20250217134201_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -342,7 +342,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("pets");
 
-                            b1.ToJson("TransferDetailList");
+                            b1.ToJson("transfer_detail_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("PetId")
@@ -396,7 +396,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("volunteers");
 
-                            b1.ToJson("TransferDetailList");
+                            b1.ToJson("transfer_detail_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")
@@ -442,7 +442,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("volunteers");
 
-                            b1.ToJson("SocialNetworkList");
+                            b1.ToJson("social_network_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")

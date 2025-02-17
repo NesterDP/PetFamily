@@ -70,7 +70,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.OwnsOne(v => v.SocialNetworkList, slb =>
         {
-            slb.ToJson();
+            slb.ToJson("social_network_list");
 
             slb.OwnsMany(snl => snl.SocialNetworks, snb =>
             {
@@ -85,7 +85,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         
         builder.OwnsOne(v => v.TransferDetailList, tdlb =>
         {
-            tdlb.ToJson();
+            tdlb.ToJson("transfer_detail_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {

@@ -35,8 +35,8 @@ namespace PetFamily.Infrastructure.Migrations
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    SocialNetworkList = table.Column<string>(type: "jsonb", nullable: false),
-                    TransferDetailList = table.Column<string>(type: "jsonb", nullable: false)
+                    social_network_list = table.Column<string>(type: "jsonb", nullable: false),
+                    transfer_detail_list = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,7 +84,7 @@ namespace PetFamily.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     weight_info = table.Column<float>(type: "real", nullable: false),
-                    TransferDetailList = table.Column<string>(type: "jsonb", nullable: false)
+                    transfer_detail_list = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
