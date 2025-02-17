@@ -339,7 +339,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("pets");
 
-                            b1.ToJson("TransferDetailList");
+                            b1.ToJson("transfer_detail_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("PetId")
@@ -393,7 +393,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("volunteers");
 
-                            b1.ToJson("TransferDetailList");
+                            b1.ToJson("transfer_detail_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")
@@ -439,7 +439,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.ToTable("volunteers");
 
-                            b1.ToJson("SocialNetworkList");
+                            b1.ToJson("social_network_list");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")

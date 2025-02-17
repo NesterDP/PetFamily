@@ -137,7 +137,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.OwnsOne(p => p.TransferDetailList, tdlb =>
         {
-            tdlb.ToJson();
+            tdlb.ToJson("transfer_detail_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {
