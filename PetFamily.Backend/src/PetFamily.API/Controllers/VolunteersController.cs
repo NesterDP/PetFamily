@@ -11,7 +11,7 @@ namespace PetFamily.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class VolunteerController : ControllerBase
+public class VolunteersController : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
@@ -26,7 +26,6 @@ public class VolunteerController : ControllerBase
 
         var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
         return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
-
     }
 
     [HttpGet("{id:guid}")]
@@ -36,10 +35,10 @@ public class VolunteerController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(VolunteerId.Create(id), cancellationToken);
-        
-        if(result.IsFailure)
+
+        if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         return "такой есть, его email = " + result.Value.Email.Value;
     }
 }
