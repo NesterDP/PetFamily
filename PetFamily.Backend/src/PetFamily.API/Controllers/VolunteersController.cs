@@ -24,12 +24,12 @@ public class VolunteersController : ControllerBase
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [HttpPut("{id:guid}/main-info")]
@@ -41,12 +41,12 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new UpdateMainInfoRequest(id, dto);
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [HttpPut("{id:guid}/social-networks")]
@@ -58,12 +58,12 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new UpdateSocialNetworksRequest(id, dto);
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [HttpPut("{id:guid}/transfer-details")]
@@ -75,12 +75,12 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new UpdateTransferDetailsRequest(id, dto);
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [HttpDelete("{id:guid}/hard")]
@@ -91,12 +91,12 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new DeleteVolunteerRequest(id);
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [HttpDelete("{id:guid}/soft")]
@@ -107,12 +107,12 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new DeleteVolunteerRequest(id);
-        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
-        if (firstValidLayer.IsValid == false)
-            return firstValidLayer.ToValidationErrorResponse();
+        var validResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validResult.IsValid == false)
+            return validResult.ToValidationErrorResponse();
 
-        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
-        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+        var result = await handler.HandleAsync(request, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
 
