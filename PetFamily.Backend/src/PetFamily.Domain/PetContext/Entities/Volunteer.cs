@@ -25,7 +25,9 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
 
     // ef
-    public Volunteer(VolunteerId id) : base(id) { }
+    public Volunteer(VolunteerId id) : base(id)
+    {
+    }
 
     public Volunteer(
         VolunteerId id,
@@ -56,8 +58,37 @@ public class Volunteer : Shared.Entity<VolunteerId>
         SocialNetworkList socialNetworkList,
         TransferDetailList transferDetailList)
     {
-        return new Volunteer(id, fullName, email, description, experience, phoneNumber, socialNetworkList,
+        return new Volunteer(
+            id,
+            fullName,
+            email,
+            description,
+            experience, phoneNumber,
+            socialNetworkList,
             transferDetailList);
     }
 
+    public void UpdateMainInfo(
+        FullName fullName,
+        Email email,
+        Description description,
+        Experience experience,
+        Phone phoneNumber)
+    {
+        FullName = fullName;
+        Email = email;
+        Description = description;
+        Experience = experience;
+        PhoneNumber = phoneNumber;
+    }
+    
+    public void UpdateSocialNetworks(SocialNetworkList socialNetworkList)
+    {
+        SocialNetworkList = socialNetworkList;
+    }
+    
+    public void UpdateTransferDetails(TransferDetailList transferDetailList)
+    {
+        TransferDetailList = transferDetailList;
+    }
 }

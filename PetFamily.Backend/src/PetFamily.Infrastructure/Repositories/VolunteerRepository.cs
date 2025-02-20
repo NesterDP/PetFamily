@@ -12,8 +12,17 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
     public async Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         await context.Volunteers.AddAsync(volunteer, cancellationToken);
+        
         await context.SaveChangesAsync(cancellationToken);
 
+        return volunteer.Id.Value;
+    }
+    
+    
+    public async Task<Guid> SaveAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    {
+        context.Attach(volunteer);
+        await context.SaveChangesAsync(cancellationToken);
         return volunteer.Id.Value;
     }
 
@@ -29,4 +38,6 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
 
         return volunteer;
     }
+    
+
 }
