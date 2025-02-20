@@ -6,6 +6,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public sealed class Pet : Shared.Entity<PetId>
 {
+    private bool _isDeleted = false;
     public Name Name { get; private set; }
     public Description Description { get; private set; }
     public PetClassification PetClassification { get; private set; }
@@ -21,9 +22,11 @@ public sealed class Pet : Shared.Entity<PetId>
     public HelpStatus HelpStatus { get; private set; }
     public TransferDetailList TransferDetailList { get; private set; }
     public DateTime CreationDate { get; private set; } = DateTime.Now;
-    
+
     //ef
-    private Pet(PetId id) : base(id) { }
+    private Pet(PetId id) : base(id)
+    {
+    }
 
     public Pet(
         PetId id,
@@ -57,5 +60,17 @@ public sealed class Pet : Shared.Entity<PetId>
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
         TransferDetailList = transferDetailList;
+    }
+
+    public void Delete()
+    {
+        if (_isDeleted == false)
+            _isDeleted = true;
+    }
+
+    public void Restore()
+    {
+        if (_isDeleted)
+            _isDeleted = false;
     }
 }

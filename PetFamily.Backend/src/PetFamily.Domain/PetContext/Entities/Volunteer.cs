@@ -8,6 +8,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public class Volunteer : Shared.Entity<VolunteerId>
 {
+    private bool _isDeleted = false;
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Description Description { get; private set; }
@@ -25,9 +26,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
 
     // ef
-    public Volunteer(VolunteerId id) : base(id)
-    {
-    }
+    public Volunteer(VolunteerId id) : base(id) { }
 
     public Volunteer(
         VolunteerId id,
@@ -91,4 +90,27 @@ public class Volunteer : Shared.Entity<VolunteerId>
     {
         TransferDetailList = transferDetailList;
     }
+
+    public void Delete()
+    {
+        if (_isDeleted == false)
+            _isDeleted = true;
+
+        foreach (var pet in _pets)
+        {
+            pet.Delete();
+        }
+    }
+    
+    public void Restore()
+    {
+        if (_isDeleted) 
+            _isDeleted = false;
+        
+        foreach (var pet in _pets)
+        {
+            pet.Restore();
+        }
+    }
+    
 }

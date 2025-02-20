@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250217134201_Initial")]
+    [Migration("20250220160253_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -37,6 +37,10 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified))
                         .HasColumnName("creation_date");
+
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")
@@ -201,6 +205,10 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Domain.PetContext.Entities.Volunteer.Description#Description", b1 =>
                         {
                             b1.IsRequired();
@@ -330,6 +338,7 @@ namespace PetFamily.Infrastructure.Migrations
                     b.HasOne("PetFamily.Domain.PetContext.Entities.Volunteer", null)
                         .WithMany("AllOwnedPets")
                         .HasForeignKey("volunteer_id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
                     b.OwnsOne("PetFamily.Domain.Shared.SharedVO.TransferDetailList", "TransferDetailList", b1 =>
