@@ -27,7 +27,8 @@ public class CreateVolunteerHandler
     }
 
     public async Task<Result<Guid, Error>> HandleAsync(
-        CreateVolunteerRequest request, CancellationToken cancellationToken)
+        CreateVolunteerRequest request,
+        CancellationToken cancellationToken)
     {
         var volunteerId = VolunteerId.NewVolunteerId();
 
@@ -75,11 +76,7 @@ public class CreateVolunteerHandler
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
 
         _logger.LogInformation(
-            "Created volunteer with fullName = {firstName} {lastName} {surname} and ID = {id}",
-            volunteer.Value.FullName.FirstName,
-            volunteer.Value.FullName.LastName,
-            volunteer.Value.FullName.Surname,
-            volunteer.Value.Id.Value);
+            "Created volunteer with ID = {id}", volunteer.Value.Id.Value);
         
         return volunteer.Value.Id.Value;
     }

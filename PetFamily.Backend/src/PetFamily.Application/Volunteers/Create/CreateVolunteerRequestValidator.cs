@@ -21,7 +21,7 @@ public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteer
             .MustBeValueObject(t => TransferDetail.Create(t.Name, t.Description));
         
         RuleForEach(c => c.SocialNetworksDto)
-            .MustBeValueObject(s => TransferDetail.Create(s.Name, s.Link));
+            .MustBeValueObject(s => SocialNetwork.Create(s.Name, s.Link));
 
         RuleFor(c => c.VolunteerDto.Experience).Must(x => x >= 0 && x < 10)
             .WithError(Errors.General.ValueIsInvalid());

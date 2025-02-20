@@ -1,10 +1,13 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
-using PetFamily.API.Response;
+using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Volunteers.CreateVolunteer;
 using PetFamily.Application.Volunteers.GetVolunteer;
+using PetFamily.Application.Volunteers.UpdateMainInfo;
+using PetFamily.Application.Volunteers.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.UpdateTransferDetails;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.API.Controllers;
@@ -27,6 +30,58 @@ public class VolunteersController : ControllerBase
         var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
         return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
     }
+
+    [HttpPut("{id:guid}/main-info")]
+    public async Task<ActionResult<Guid>> UpdateMainInfo(
+        [FromServices] IValidator<UpdateMainInfoRequest> validator,
+        [FromServices] UpdateMainInfoHandler handler,
+        [FromRoute] Guid id,
+        [FromBody] UpdateMainInfoDto dto,
+        CancellationToken cancellationToken)
+    {
+        var request = new UpdateMainInfoRequest(id, dto);
+        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
+        if (firstValidLayer.IsValid == false)
+            return firstValidLayer.ToValidationErrorResponse();
+
+        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
+        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/social-networks")]
+    public async Task<ActionResult<Guid>> UpdateSocialNetworks(
+        [FromServices] IValidator<UpdateSocialNetworksRequest> validator,
+        [FromServices] UpdateSocialNetworksHandler handler,
+        [FromRoute] Guid id,
+        [FromBody] SocialNetworksDto dto,
+        CancellationToken cancellationToken)
+    {
+        var request = new UpdateSocialNetworksRequest(id, dto);
+        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
+        if (firstValidLayer.IsValid == false)
+            return firstValidLayer.ToValidationErrorResponse();
+
+        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
+        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/transfer-details")]
+    public async Task<ActionResult<Guid>> UpdateTransferDetails(
+        [FromServices] IValidator<UpdateTransferDetailsRequest> validator,
+        [FromServices] UpdateTransferDetailsHandler handler,
+        [FromRoute] Guid id,
+        [FromBody] TransferDetailsDto dto,
+        CancellationToken cancellationToken)
+    {
+        var request = new UpdateTransferDetailsRequest(id, dto);
+        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
+        if (firstValidLayer.IsValid == false)
+            return firstValidLayer.ToValidationErrorResponse();
+
+        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
+        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+    }
+
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<string>> Get(
