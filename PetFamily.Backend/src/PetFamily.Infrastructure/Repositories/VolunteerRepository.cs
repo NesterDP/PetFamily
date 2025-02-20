@@ -18,7 +18,6 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer.Id.Value;
     }
     
-    
     public async Task<Guid> SaveAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         context.Attach(volunteer);
@@ -38,6 +37,11 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
 
         return volunteer;
     }
-    
 
+    public async Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    {
+        context.Remove(volunteer);
+        await context.SaveChangesAsync();
+        return volunteer.Id.Value;
+    }
 }

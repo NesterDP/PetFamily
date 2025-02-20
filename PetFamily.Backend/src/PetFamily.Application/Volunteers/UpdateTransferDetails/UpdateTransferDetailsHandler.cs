@@ -41,7 +41,7 @@ public class UpdateTransferDetailsHandler
         var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
 
         _logger.LogInformation(
-            "Volunteer was updated (transfer details), his ID = {ID}", volunteerResult.Value.Id.Value);
+            "Volunteer was updated (transfer details), his ID = {ID}", volunteerId.Value);
 
         return volunteerId.Value;
     }

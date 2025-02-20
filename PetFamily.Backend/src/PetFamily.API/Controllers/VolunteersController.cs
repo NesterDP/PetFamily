@@ -4,6 +4,7 @@ using PetFamily.API.Extensions;
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Volunteers.CreateVolunteer;
+using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.GetVolunteer;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialNetworks;
@@ -47,7 +48,7 @@ public class VolunteersController : ControllerBase
         var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
         return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
     }
-    
+
     [HttpPut("{id:guid}/social-networks")]
     public async Task<ActionResult<Guid>> UpdateSocialNetworks(
         [FromServices] IValidator<UpdateSocialNetworksRequest> validator,
@@ -64,7 +65,7 @@ public class VolunteersController : ControllerBase
         var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
         return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
     }
-    
+
     [HttpPut("{id:guid}/transfer-details")]
     public async Task<ActionResult<Guid>> UpdateTransferDetails(
         [FromServices] IValidator<UpdateTransferDetailsRequest> validator,
@@ -74,6 +75,38 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new UpdateTransferDetailsRequest(id, dto);
+        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
+        if (firstValidLayer.IsValid == false)
+            return firstValidLayer.ToValidationErrorResponse();
+
+        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
+        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+    }
+
+    [HttpDelete("{id:guid}/hard")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromServices] IValidator<DeleteVolunteerRequest> validator,
+        [FromServices] HardDeleteVolunteerHandler handler,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var request = new DeleteVolunteerRequest(id);
+        var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
+        if (firstValidLayer.IsValid == false)
+            return firstValidLayer.ToValidationErrorResponse();
+
+        var secondValidLayer = await handler.HandleAsync(request, cancellationToken);
+        return secondValidLayer.IsFailure ? secondValidLayer.Error.ToResponse() : secondValidLayer.ToResponse();
+    }
+
+    [HttpDelete("{id:guid}/soft")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromServices] IValidator<DeleteVolunteerRequest> validator,
+        [FromServices] SoftDeleteVolunteerHandler handler,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var request = new DeleteVolunteerRequest(id);
         var firstValidLayer = await validator.ValidateAsync(request, cancellationToken);
         if (firstValidLayer.IsValid == false)
             return firstValidLayer.ToValidationErrorResponse();
