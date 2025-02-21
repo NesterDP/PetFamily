@@ -57,7 +57,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(2).Value;
+        var secondPosition = Position.Create(2).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -67,7 +67,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(secondPet, positionTo);
+        var result = volunteer.MovePet(secondPet, secondPosition);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -87,7 +87,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(2).Value;
+        var secondPosition = Position.Create(2).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -97,7 +97,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(fourthPet, positionTo);
+        var result = volunteer.MovePet(fourthPet, secondPosition);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -115,7 +115,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(4).Value;
+        var fourthPosition = Position.Create(4).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -125,7 +125,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(secondPet, positionTo);
+        var result = volunteer.MovePet(secondPet, fourthPosition);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -143,7 +143,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(1).Value;
+        var firstPosition = Position.Create(1).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -153,7 +153,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(fifthPet, positionTo);
+        var result = volunteer.MovePet(fifthPet, firstPosition);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -171,7 +171,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(5).Value;
+        var fifthPosition = Position.Create(5).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -181,7 +181,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(firstPet, positionTo);
+        var result = volunteer.MovePet(firstPet, fifthPosition);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -199,7 +199,7 @@ public class PetTests
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
         
-        var positionTo = Position.Create(100).Value;
+        var positionTooHigh = Position.Create(100).Value;
         
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
@@ -209,7 +209,7 @@ public class PetTests
         
 
         // Act
-        var result = volunteer.MovePet(firstPet, positionTo);
+        var result = volunteer.MovePet(firstPet, positionTooHigh);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
