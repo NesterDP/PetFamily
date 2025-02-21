@@ -178,6 +178,15 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("species_id");
                         });
 
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "PetFamily.Domain.PetContext.Entities.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("position");
+                        });
+
                     b.ComplexProperty<Dictionary<string, object>>("Weight", "PetFamily.Domain.PetContext.Entities.Pet.Weight#Weight", b1 =>
                         {
                             b1.IsRequired();
