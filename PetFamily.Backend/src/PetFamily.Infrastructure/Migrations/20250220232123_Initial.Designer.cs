@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250220160253_Initial")]
+    [Migration("20250220232123_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -179,6 +179,15 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.Property<Guid>("SpeciesId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("species_id");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "PetFamily.Domain.PetContext.Entities.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("position");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("Weight", "PetFamily.Domain.PetContext.Entities.Pet.Weight#Weight", b1 =>

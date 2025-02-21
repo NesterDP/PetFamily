@@ -1,6 +1,8 @@
-﻿using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
@@ -22,11 +24,10 @@ public sealed class Pet : Shared.Entity<PetId>
     public HelpStatus HelpStatus { get; private set; }
     public TransferDetailList TransferDetailList { get; private set; }
     public DateTime CreationDate { get; private set; } = DateTime.Now;
+    public Position Position { get; private set; }
 
     //ef
-    private Pet(PetId id) : base(id)
-    {
-    }
+    private Pet(PetId id) : base(id) { }
 
     public Pet(
         PetId id,
@@ -43,8 +44,7 @@ public sealed class Pet : Shared.Entity<PetId>
         DateOfBirth dateOfBirth,
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
-        TransferDetailList transferDetailList
-    ) : base(id)
+        TransferDetailList transferDetailList) : base(id)
     {
         Name = name;
         PetClassification = petClassification;
@@ -72,5 +72,33 @@ public sealed class Pet : Shared.Entity<PetId>
     {
         if (_isDeleted)
             _isDeleted = false;
+    }
+
+    public void SetPosition(Position position) => Position = position;
+
+    public UnitResult<Error> MoveForward()
+    {
+        var newPosition = Position.Forward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+
+        Position = newPosition.Value;
+        
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MoveBackward()
+    {
+        var newPosition = Position.Backward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+
+        Position = newPosition.Value;
+        return Result.Success<Error>();
+    }
+    
+    public void Move(Position newPosition)
+    {
+        Position = newPosition;
     }
 }
