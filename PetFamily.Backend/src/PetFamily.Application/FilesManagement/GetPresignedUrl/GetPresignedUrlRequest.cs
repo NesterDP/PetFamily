@@ -1,0 +1,5 @@
+using PetFamily.Application.FilesManagement.FilesData;
+
+namespace PetFamily.Application.FilesManagement.GetPresignedUrl;
+
+public record GetPresignedUrlRequest(GetPresignedUrlData GetPresignedUrlData);
