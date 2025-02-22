@@ -135,9 +135,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("help_status");
         });
         
-        builder.OwnsOne(p => p.TransferDetailList, tdlb =>
+        builder.OwnsOne(p => p.TransferDetailsList, tdlb =>
         {
-            tdlb.ToJson("transfer_detail_list");
+            tdlb.ToJson("transfer_details_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {

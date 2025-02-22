@@ -229,7 +229,7 @@ public class PetTests
         var experience = Experience.Create(1).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
         var socialNetworkList = SocialNetworkList.Create(new List<SocialNetwork>()).Value;
-        var transferDetailList = TransferDetailList.Create(new List<TransferDetail>()).Value;
+        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -239,7 +239,7 @@ public class PetTests
             experience,
             phoneNumber,
             socialNetworkList,
-            transferDetailList);
+            transferDetailsList);
 
         return volunteer;
     }
@@ -262,7 +262,7 @@ public class PetTests
         var dateOfBirth = DateOfBirth.Create(DateTime.Now.AddYears(-2)).Value;
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
-        var transferDetailList = TransferDetailList
+        var transferDetailsList = TransferDetailsList
             .Create(new List<TransferDetail>()).Value;
 
         var pet = new Pet(
@@ -280,7 +280,7 @@ public class PetTests
             dateOfBirth,
             isVaccinated,
             helpStatus,
-            transferDetailList);
+            transferDetailsList);
 
         return pet;
     }

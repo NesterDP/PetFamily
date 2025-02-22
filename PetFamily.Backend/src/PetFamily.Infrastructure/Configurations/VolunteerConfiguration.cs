@@ -84,9 +84,9 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             });
         });
         
-        builder.OwnsOne(v => v.TransferDetailList, tdlb =>
+        builder.OwnsOne(v => v.TransferDetailsList, tdlb =>
         {
-            tdlb.ToJson("transfer_detail_list");
+            tdlb.ToJson("transfer_details_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {

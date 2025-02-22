@@ -22,7 +22,7 @@ public sealed class Pet : Shared.Entity<PetId>
     public DateOfBirth DateOfBirth { get; private set; }
     public IsVaccinated IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public TransferDetailList TransferDetailList { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
     public DateTime CreationDate { get; private set; } = DateTime.Now;
     public Position Position { get; private set; }
 
@@ -44,7 +44,7 @@ public sealed class Pet : Shared.Entity<PetId>
         DateOfBirth dateOfBirth,
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
-        TransferDetailList transferDetailList) : base(id)
+        TransferDetailsList transferDetailsList) : base(id)
     {
         Name = name;
         PetClassification = petClassification;
@@ -59,7 +59,7 @@ public sealed class Pet : Shared.Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        TransferDetailList = transferDetailList;
+        TransferDetailsList = transferDetailsList;
     }
 
     public void Delete()

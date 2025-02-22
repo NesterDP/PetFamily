@@ -16,7 +16,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
 
     public Phone PhoneNumber { get; private set; }
     public SocialNetworkList SocialNetworkList { get; private set; }
-    public TransferDetailList TransferDetailList { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
@@ -38,7 +38,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Experience experience,
         Phone phoneNumber,
         SocialNetworkList socialNetworkList,
-        TransferDetailList transferDetailList) : base(id)
+        TransferDetailsList transferDetailsList) : base(id)
     {
         FullName = fullName;
         Email = email;
@@ -46,7 +46,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Experience = experience;
         PhoneNumber = phoneNumber;
         SocialNetworkList = socialNetworkList;
-        TransferDetailList = transferDetailList;
+        TransferDetailsList = transferDetailsList;
     }
 
     public static Result<Volunteer, Error> Create(
@@ -57,7 +57,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Experience experience,
         Phone phoneNumber,
         SocialNetworkList socialNetworkList,
-        TransferDetailList transferDetailList)
+        TransferDetailsList transferDetailsList)
     {
         return new Volunteer(
             id,
@@ -67,7 +67,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
             experience,
             phoneNumber,
             socialNetworkList,
-            transferDetailList);
+            transferDetailsList);
     }
 
     public void UpdateMainInfo(
@@ -89,9 +89,9 @@ public class Volunteer : Shared.Entity<VolunteerId>
         SocialNetworkList = socialNetworkList;
     }
 
-    public void UpdateTransferDetails(TransferDetailList transferDetailList)
+    public void UpdateTransferDetails(TransferDetailsList transferDetailsList)
     {
-        TransferDetailList = transferDetailList;
+        TransferDetailsList = transferDetailsList;
     }
 
     public void Delete()

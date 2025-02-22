@@ -2,21 +2,21 @@ using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.CustomErrors;
 namespace PetFamily.Domain.Shared.SharedVO;
 
-public record TransferDetailList
+public record TransferDetailsList
 {
     private readonly List<TransferDetail> _transferDetails;
     public IReadOnlyList<TransferDetail> TransferDetails => _transferDetails;
     
     // ef core
-    private TransferDetailList() { }
+    private TransferDetailsList() { }
     
-    private TransferDetailList(IEnumerable<TransferDetail> transferDetails)
+    private TransferDetailsList(IEnumerable<TransferDetail> transferDetails)
     {
         _transferDetails = transferDetails.ToList();
     }
 
-    public static Result<TransferDetailList, Error> Create(IEnumerable<TransferDetail> transferDetails)
+    public static Result<TransferDetailsList, Error> Create(IEnumerable<TransferDetail> transferDetails)
     {
-        return new TransferDetailList(transferDetails);
+        return new TransferDetailsList(transferDetails);
     }
 }

@@ -54,14 +54,14 @@ public class CreateVolunteerHandler
 
         var socialNetworkListCreateResult = SocialNetworkList.Create(socialNetworkList);
 
-        List<TransferDetail> transferDetailList = [];
+        List<TransferDetail> transferDetailsList = [];
         foreach (var transferDetail in request.TransferDetailsDto)
         {
             var result = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
-            transferDetailList.Add(result.Value);
+            transferDetailsList.Add(result.Value);
         }
 
-        var transferDetailListCreateResult = TransferDetailList.Create(transferDetailList);
+        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetailsList);
 
         var volunteer = Volunteer.Create(
             volunteerId,
@@ -71,7 +71,7 @@ public class CreateVolunteerHandler
             experienceCreateResult.Value,
             phoneNumberCreateResult.Value,
             socialNetworkListCreateResult.Value,
-            transferDetailListCreateResult.Value);
+            transferDetailsListCreateResult.Value);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
 

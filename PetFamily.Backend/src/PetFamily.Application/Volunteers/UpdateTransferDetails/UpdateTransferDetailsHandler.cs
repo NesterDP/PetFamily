@@ -29,14 +29,14 @@ public class UpdateTransferDetailsHandler
         if (volunteerResult.IsFailure)
             return volunteerResult.Error;
 
-        List<TransferDetail> transferDetailList = [];
+        List<TransferDetail> transferDetailsList = [];
         foreach (var transferDetail in request.Dto.TransferDetails)
         {
             var tempResult = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
-            transferDetailList.Add(tempResult.Value);
+            transferDetailsList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateTransferDetails(TransferDetailList.Create(transferDetailList).Value);
+        volunteerResult.Value.UpdateTransferDetails(TransferDetailsList.Create(transferDetailsList).Value);
 
         var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
 
