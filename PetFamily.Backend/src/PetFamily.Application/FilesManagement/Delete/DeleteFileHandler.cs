@@ -1,10 +1,8 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.FilesManagement.Delete;
-using PetFamily.Application.FilesManagement.Upload;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared.CustomErrors;
 
-namespace PetFamily.Application.TestControllers.DeleteFIle;
+namespace PetFamily.Application.FilesManagement.Delete;
 
 public class DeleteFileHandler
 {

@@ -5,9 +5,6 @@ using PetFamily.Application.FilesManagement.Delete;
 using PetFamily.Application.FilesManagement.FilesData;
 using PetFamily.Application.FilesManagement.GetPresignedUrl;
 using PetFamily.Application.FilesManagement.Upload;
-using PetFamily.Application.TestControllers.DeleteFIle;
-using PetFamily.Application.TestControllers.GetPresignedUrl;
-using PetFamily.Application.TestControllers.UploadFile;
 
 namespace PetFamily.API.Controllers;
 

@@ -1,10 +1,8 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.FilesManagement.GetPresignedUrl;
-using PetFamily.Application.FilesManagement.Upload;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared.CustomErrors;
 
-namespace PetFamily.Application.TestControllers.GetPresignedUrl;
+namespace PetFamily.Application.FilesManagement.GetPresignedUrl;
 
 public class GetPresignedUrlHandler
 {
