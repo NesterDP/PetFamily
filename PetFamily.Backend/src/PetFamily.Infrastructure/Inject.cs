@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Minio;
 using PetFamily.Application.Providers;
 using PetFamily.Application.Volunteers;

@@ -137,7 +137,7 @@ public class MinioProvider : IFilesProvider
 
             var result = await _minioClient.PutObjectAsync(args, cancellationToken);
             
-            _logger.LogInformation("File with bucket = {Bucket} with name = {Name} was added",
+            _logger.LogInformation("File in bucket = {Bucket} with name = {Name} was added",
                 uploadData.BucketName, uploadData.ObjectName);
 
             return result.ObjectName;
