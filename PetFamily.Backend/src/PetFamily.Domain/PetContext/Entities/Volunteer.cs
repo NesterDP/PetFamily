@@ -15,7 +15,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public Experience Experience { get; private set; }
 
     public Phone PhoneNumber { get; private set; }
-    public SocialNetworkList SocialNetworkList { get; private set; }
+    public SocialNetworksList SocialNetworksList { get; private set; }
     public TransferDetailsList TransferDetailsList { get; private set; }
 
     private readonly List<Pet> _pets = [];
@@ -37,7 +37,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworkList socialNetworkList,
+        SocialNetworksList socialNetworksList,
         TransferDetailsList transferDetailsList) : base(id)
     {
         FullName = fullName;
@@ -45,7 +45,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        SocialNetworkList = socialNetworkList;
+        SocialNetworksList = socialNetworksList;
         TransferDetailsList = transferDetailsList;
     }
 
@@ -56,7 +56,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworkList socialNetworkList,
+        SocialNetworksList socialNetworksList,
         TransferDetailsList transferDetailsList)
     {
         return new Volunteer(
@@ -66,7 +66,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
             description,
             experience,
             phoneNumber,
-            socialNetworkList,
+            socialNetworksList,
             transferDetailsList);
     }
 
@@ -84,9 +84,9 @@ public class Volunteer : Shared.Entity<VolunteerId>
         PhoneNumber = phoneNumber;
     }
 
-    public void UpdateSocialNetworks(SocialNetworkList socialNetworkList)
+    public void UpdateSocialNetworks(SocialNetworksList socialNetworksList)
     {
-        SocialNetworkList = socialNetworkList;
+        SocialNetworksList = socialNetworksList;
     }
 
     public void UpdateTransferDetails(TransferDetailsList transferDetailsList)

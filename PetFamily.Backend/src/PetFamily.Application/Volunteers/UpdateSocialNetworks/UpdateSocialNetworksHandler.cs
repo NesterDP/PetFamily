@@ -28,14 +28,14 @@ public class UpdateSocialNetworksHandler
         if (volunteerResult.IsFailure)
             return volunteerResult.Error;
 
-        List<SocialNetwork> socialNetworkList = [];
+        List<SocialNetwork> socialNetworksList = [];
         foreach (var socialNetwork in request.Dto.SocialNetworks)
         {
             var tempResult = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
-            socialNetworkList.Add(tempResult.Value);
+            socialNetworksList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateSocialNetworks(SocialNetworkList.Create(socialNetworkList).Value);
+        volunteerResult.Value.UpdateSocialNetworks(SocialNetworksList.Create(socialNetworksList).Value);
 
         var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
 

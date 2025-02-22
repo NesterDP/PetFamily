@@ -45,14 +45,14 @@ public class CreateVolunteerHandler
 
         var phoneNumberCreateResult = Phone.Create(request.VolunteerDto.PhoneNumber);
 
-        List<SocialNetwork> socialNetworkList = [];
+        List<SocialNetwork> socialNetworksList = [];
         foreach (var socialNetwork in request.SocialNetworksDto)
         {
             var result = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
-            socialNetworkList.Add(result.Value);
+            socialNetworksList.Add(result.Value);
         }
 
-        var socialNetworkListCreateResult = SocialNetworkList.Create(socialNetworkList);
+        var socialNetworksListCreateResult = SocialNetworksList.Create(socialNetworksList);
 
         List<TransferDetail> transferDetailsList = [];
         foreach (var transferDetail in request.TransferDetailsDto)
@@ -70,7 +70,7 @@ public class CreateVolunteerHandler
             descriptionCreateResult.Value,
             experienceCreateResult.Value,
             phoneNumberCreateResult.Value,
-            socialNetworkListCreateResult.Value,
+            socialNetworksListCreateResult.Value,
             transferDetailsListCreateResult.Value);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
