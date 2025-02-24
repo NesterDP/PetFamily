@@ -1,52 +1,57 @@
-using System.ComponentModel.Design;
-using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Dto.Volunteer;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using InvalidCastException = System.InvalidCastException;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
 public class CreateVolunteerHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<CreateVolunteerHandler> _logger;
+    private readonly IValidator<CreateVolunteerCommand> _validator;
 
     public CreateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<CreateVolunteerHandler> logger)
+        ILogger<CreateVolunteerHandler> logger,
+        IValidator<CreateVolunteerCommand> validator)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
+        _validator = validator;
     }
 
-    public async Task<Result<Guid, Error>> HandleAsync(
-        CreateVolunteerRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        CreateVolunteerCommand command,
         CancellationToken cancellationToken)
     {
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fullNameCreateResult = FullName.Create(
-            request.VolunteerDto.FullName.FirstName,
-            request.VolunteerDto.FullName.LastName,
-            request.VolunteerDto.FullName.Surname);
+            command.VolunteerDto.FullName.FirstName,
+            command.VolunteerDto.FullName.LastName,
+            command.VolunteerDto.FullName.Surname);
 
-        var emailCreateResult = Email.Create(request.VolunteerDto.Email);
+        var emailCreateResult = Email.Create(command.VolunteerDto.Email);
 
-        var descriptionCreateResult = Description.Create(request.VolunteerDto.Description);
+        var descriptionCreateResult = Description.Create(command.VolunteerDto.Description);
 
-        var experienceCreateResult = Experience.Create(request.VolunteerDto.Experience);
+        var experienceCreateResult = Experience.Create(command.VolunteerDto.Experience);
 
-        var phoneNumberCreateResult = Phone.Create(request.VolunteerDto.PhoneNumber);
+        var phoneNumberCreateResult = Phone.Create(command.VolunteerDto.PhoneNumber);
 
         List<SocialNetwork> socialNetworksList = [];
-        foreach (var socialNetwork in request.SocialNetworksDto)
+        foreach (var socialNetwork in command.SocialNetworksDto)
         {
             var result = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
             socialNetworksList.Add(result.Value);
@@ -55,7 +60,7 @@ public class CreateVolunteerHandler
         var socialNetworksListCreateResult = SocialNetworksList.Create(socialNetworksList);
 
         List<TransferDetail> transferDetailsList = [];
-        foreach (var transferDetail in request.TransferDetailsDto)
+        foreach (var transferDetail in command.TransferDetailsDto)
         {
             var result = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
             transferDetailsList.Add(result.Value);

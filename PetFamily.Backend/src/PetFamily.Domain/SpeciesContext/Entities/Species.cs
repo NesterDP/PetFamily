@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
@@ -11,10 +11,16 @@ public class Species : Shared.Entity<SpeciesId>
 
     private readonly List<Breed> _breeds = [];
 
-    public IReadOnlyCollection<Breed> Breeds => _breeds;
+    public IReadOnlyList<Breed> Breeds => _breeds;
 
     // ef core
     public Species(SpeciesId id) : base(id) { }
+    
+    public UnitResult<Error> AddPet(Breed breed)
+    {
+        _breeds.Add(breed);
+        return Result.Success<Error>();
+    }
 
     public Species(SpeciesId id, Name name, List<Breed> breeds) : base(id)
     {

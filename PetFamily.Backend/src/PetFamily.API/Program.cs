@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Middlewares;
 using PetFamily.API.Response;
-using PetFamily.API.Valiadtion;
 using PetFamily.Application;
 using PetFamily.Application.Volunteers;
 using PetFamily.Infrastructure;
-using PetFamily.Application.Volunteers.CreateVolunteer;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Infrastructure.Repositories;
 using Serilog;
@@ -38,13 +36,7 @@ builder.Services
     .AddApplication();
 
 
-// builder.Services.AddFluentValidationAutoValidation(configuration =>
-// {
-//     configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
-// });
-
-
-builder.Services.Configure<ApiBehaviorOptions>(options =>
+/*builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>
     {
@@ -52,7 +44,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
             "model.binding.error", "failed to bind the received model", "null");
         return new BadRequestObjectResult(Envelope.Error([responseError]));
     };
-});
+});*/
 
 var app = builder.Build();
 

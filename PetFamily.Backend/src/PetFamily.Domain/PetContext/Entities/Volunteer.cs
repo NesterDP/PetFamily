@@ -105,6 +105,13 @@ public class Volunteer : Shared.Entity<VolunteerId>
         }
     }
 
+    public void UpdatePetPhotos(PetId petId, PhotosList photosList)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet != null)
+            chosenPet.UpdatePhotos(photosList);
+    }
+
     public void Restore()
     {
         if (_isDeleted)

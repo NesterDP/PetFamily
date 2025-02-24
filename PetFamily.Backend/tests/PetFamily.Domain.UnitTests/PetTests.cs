@@ -218,8 +218,28 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(3);
         fifthPet.Position.Value.Should().Be(4);
     }
-    
-      private static Volunteer CreateVolunteer()
+
+    [Fact]
+    public void LittleTest()
+    {
+        List<Photo> photos = new List<Photo>();
+        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "1").Value));
+        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "2").Value));
+
+        List<Photo> otherPhotos = new List<Photo>();
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "3").Value));
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "4").Value));
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "5").Value));
+
+        photos.AddRange(otherPhotos);
+        photos.Count.Should().Be(5);
+        foreach (var photo in photos)
+        {
+            Console.WriteLine(photo.PathToStorage.Path);
+        }
+    }
+
+    private static Volunteer CreateVolunteer()
     {
         var volunteerId = VolunteerId.NewVolunteerId();
         var email = Email.Create("test@test.com").Value;
@@ -262,8 +282,8 @@ public class PetTests
         var dateOfBirth = DateOfBirth.Create(DateTime.Now.AddYears(-2)).Value;
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
-        var transferDetailsList = TransferDetailsList
-            .Create(new List<TransferDetail>()).Value;
+        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
+        var photosList = PhotosList.Create(new List<Photo>()).Value;
 
         var pet = new Pet(
             petId,
@@ -280,7 +300,8 @@ public class PetTests
             dateOfBirth,
             isVaccinated,
             helpStatus,
-            transferDetailsList);
+            transferDetailsList,
+            photosList);
 
         return pet;
     }
