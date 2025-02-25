@@ -5,23 +5,23 @@ namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record PetClassification
 {
-    public Guid BreedId { get; }
     public Guid SpeciesId { get; }
+    public Guid BreedId { get; }
 
-    private PetClassification(Guid breedId, Guid speciesId)
+    private PetClassification(Guid speciesId, Guid breedId)
     {
-        BreedId = breedId;
         SpeciesId = speciesId;
+        BreedId = breedId;
     }
 
-    public static Result<PetClassification, Error> Create(Guid breedId, Guid speciesId)
+    public static Result<PetClassification, Error> Create(Guid speciesId, Guid breedId)
     {
-        if (breedId == Guid.Empty)
-            return Errors.General.ValueIsInvalid("breedId");
         if (speciesId == Guid.Empty)
             return Errors.General.ValueIsInvalid("speciesId");
-
-        var validPetClassification = new PetClassification(breedId, speciesId);
+        if (breedId == Guid.Empty)
+            return Errors.General.ValueIsInvalid("breedId");
+        
+        var validPetClassification = new PetClassification(speciesId, breedId);
         return validPetClassification;
     }
 }

@@ -22,9 +22,11 @@ public sealed class Pet : Shared.Entity<PetId>
     public DateOfBirth DateOfBirth { get; private set; }
     public IsVaccinated IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public TransferDetailList TransferDetailList { get; private set; }
-    public DateTime CreationDate { get; private set; } = DateTime.Now;
+    public TransferDetailsList TransferDetailsList { get; private set; }
+    public PhotosList PhotosList { get; private set; }
+    public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
     public Position Position { get; private set; }
+    
 
     //ef
     private Pet(PetId id) : base(id) { }
@@ -44,7 +46,8 @@ public sealed class Pet : Shared.Entity<PetId>
         DateOfBirth dateOfBirth,
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
-        TransferDetailList transferDetailList) : base(id)
+        TransferDetailsList transferDetailsList,
+        PhotosList photosList) : base(id)
     {
         Name = name;
         PetClassification = petClassification;
@@ -59,7 +62,13 @@ public sealed class Pet : Shared.Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        TransferDetailList = transferDetailList;
+        TransferDetailsList = transferDetailsList;
+        PhotosList = photosList;
+    }
+
+    public void UpdatePhotos(PhotosList photosList)
+    {
+        PhotosList = photosList;
     }
 
     public void Delete()

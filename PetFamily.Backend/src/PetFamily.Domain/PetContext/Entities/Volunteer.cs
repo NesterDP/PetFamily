@@ -15,8 +15,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public Experience Experience { get; private set; }
 
     public Phone PhoneNumber { get; private set; }
-    public SocialNetworkList SocialNetworkList { get; private set; }
-    public TransferDetailList TransferDetailList { get; private set; }
+    public SocialNetworksList SocialNetworksList { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
@@ -37,16 +37,16 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworkList socialNetworkList,
-        TransferDetailList transferDetailList) : base(id)
+        SocialNetworksList socialNetworksList,
+        TransferDetailsList transferDetailsList) : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        SocialNetworkList = socialNetworkList;
-        TransferDetailList = transferDetailList;
+        SocialNetworksList = socialNetworksList;
+        TransferDetailsList = transferDetailsList;
     }
 
     public static Result<Volunteer, Error> Create(
@@ -56,8 +56,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworkList socialNetworkList,
-        TransferDetailList transferDetailList)
+        SocialNetworksList socialNetworksList,
+        TransferDetailsList transferDetailsList)
     {
         return new Volunteer(
             id,
@@ -66,8 +66,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
             description,
             experience,
             phoneNumber,
-            socialNetworkList,
-            transferDetailList);
+            socialNetworksList,
+            transferDetailsList);
     }
 
     public void UpdateMainInfo(
@@ -84,14 +84,14 @@ public class Volunteer : Shared.Entity<VolunteerId>
         PhoneNumber = phoneNumber;
     }
 
-    public void UpdateSocialNetworks(SocialNetworkList socialNetworkList)
+    public void UpdateSocialNetworks(SocialNetworksList socialNetworksList)
     {
-        SocialNetworkList = socialNetworkList;
+        SocialNetworksList = socialNetworksList;
     }
 
-    public void UpdateTransferDetails(TransferDetailList transferDetailList)
+    public void UpdateTransferDetails(TransferDetailsList transferDetailsList)
     {
-        TransferDetailList = transferDetailList;
+        TransferDetailsList = transferDetailsList;
     }
 
     public void Delete()
@@ -103,6 +103,13 @@ public class Volunteer : Shared.Entity<VolunteerId>
         {
             pet.Delete();
         }
+    }
+
+    public void UpdatePetPhotos(PetId petId, PhotosList photosList)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet != null)
+            chosenPet.UpdatePhotos(photosList);
     }
 
     public void Restore()
@@ -118,13 +125,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
 
     public Result<Pet, Error> GetPetById(PetId id)
     {
-        foreach (var pet in _pets)
-        {
-            if (pet.Id == id)
-                return pet;
-        }
-
-        return Errors.General.ValueNotFound();
+        var pet = _pets.FirstOrDefault(p => p.Id.Value == id.Value);
+        if (pet == null)
+            return Errors.General.ValueNotFound(id.Value);
+        return pet;
     }
 
     public UnitResult<Error> AddPet(Pet pet)

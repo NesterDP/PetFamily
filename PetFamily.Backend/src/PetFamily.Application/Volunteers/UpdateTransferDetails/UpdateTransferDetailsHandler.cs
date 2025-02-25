@@ -1,5 +1,8 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
@@ -10,35 +13,45 @@ public class UpdateTransferDetailsHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdateTransferDetailsHandler> _logger;
+    private readonly IValidator<UpdateTransferDetailsCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateTransferDetailsHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<UpdateTransferDetailsHandler> logger)
+        ILogger<UpdateTransferDetailsHandler> logger,
+        IValidator<UpdateTransferDetailsCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
+        _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid, Error>> HandleAsync(
-        UpdateTransferDetailsRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        UpdateTransferDetailsCommand command,
         CancellationToken cancellationToken)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
 
-        List<TransferDetail> transferDetailList = [];
-        foreach (var transferDetail in request.Dto.TransferDetails)
+        List<TransferDetail> transferDetailsList = [];
+        foreach (var transferDetail in command.Dto.TransferDetails)
         {
             var tempResult = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
-            transferDetailList.Add(tempResult.Value);
+            transferDetailsList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateTransferDetails(TransferDetailList.Create(transferDetailList).Value);
-
-        var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
+        volunteerResult.Value.UpdateTransferDetails(TransferDetailsList.Create(transferDetailsList).Value);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Volunteer was updated (transfer details), his ID = {ID}", volunteerId.Value);

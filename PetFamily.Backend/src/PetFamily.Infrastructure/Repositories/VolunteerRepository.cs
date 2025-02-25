@@ -7,28 +7,38 @@ using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepository
+public class VolunteerRepository: IVolunteersRepository
 {
+    private readonly ApplicationDbContext _context;
+
+    public VolunteerRepository(ApplicationDbContext dbContext)
+    {
+        _context = dbContext;
+    }
+
     public async Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        await context.Volunteers.AddAsync(volunteer, cancellationToken);
-        
-        await context.SaveChangesAsync(cancellationToken);
-
+        await _context.Volunteers.AddAsync(volunteer, cancellationToken);
         return volunteer.Id.Value;
     }
     
-    public async Task<Guid> SaveAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    public Guid Save(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        context.Attach(volunteer);
-        await context.SaveChangesAsync(cancellationToken);
+        _context.Volunteers.Attach(volunteer);
         return volunteer.Id.Value;
     }
+    
 
+    public Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
+    {
+        _context.Volunteers.Remove(volunteer);
+        return volunteer.Id.Value;
+    }
+    
     public async Task<Result<Volunteer, Error>> GetByIdAsync(VolunteerId id,
         CancellationToken cancellationToken = default)
     {
-        var volunteer = await context.Volunteers
+        var volunteer = await _context.Volunteers
             .Include(v => v.AllOwnedPets)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
@@ -36,12 +46,5 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
             return Errors.General.ValueNotFound();
 
         return volunteer;
-    }
-
-    public async Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
-    {
-        context.Remove(volunteer);
-        await context.SaveChangesAsync();
-        return volunteer.Id.Value;
     }
 }

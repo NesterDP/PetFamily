@@ -1,5 +1,8 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
+using PetFamily.Application.Extensions;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -10,26 +13,37 @@ public class HardDeleteVolunteerHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<HardDeleteVolunteerHandler> _logger;
+    private readonly IValidator<DeleteVolunteerCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public HardDeleteVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<HardDeleteVolunteerHandler> logger)
+        ILogger<HardDeleteVolunteerHandler> logger,
+        IValidator<DeleteVolunteerCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
+        _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid, Error>> HandleAsync(
-        DeleteVolunteerRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        DeleteVolunteerCommand command,
         CancellationToken cancellationToken)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
         
-        await _volunteersRepository.DeleteAsync(volunteerResult.Value, cancellationToken);
+        _volunteersRepository.Delete(volunteerResult.Value, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("Volunteer was hard deleted, his ID = {ID}", volunteerId.Value);
 

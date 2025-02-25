@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -135,9 +136,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("help_status");
         });
         
-        builder.OwnsOne(p => p.TransferDetailList, tdlb =>
+        builder.OwnsOne(p => p.TransferDetailsList, tdlb =>
         {
-            tdlb.ToJson("transfer_detail_list");
+            tdlb.ToJson("transfer_details_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {
@@ -147,6 +148,22 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 tdb.Property(td => td.Description)
                     .IsRequired()
                     .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH);
+            });
+
+        });
+        
+        builder.OwnsOne(p => p.PhotosList, plb =>
+        {
+            plb.ToJson("photos_list");
+
+            plb.OwnsMany(pl => pl.Photos, pb =>
+            {
+                pb.Property(p => p.PathToStorage)
+                    .HasConversion(
+                        p => p.Path,
+                        value => FilePath.Create(value).Value)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_NAME_LENGTH);
             });
 
         });

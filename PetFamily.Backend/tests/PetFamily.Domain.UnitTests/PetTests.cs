@@ -218,8 +218,34 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(3);
         fifthPet.Position.Value.Should().Be(4);
     }
-    
-      private static Volunteer CreateVolunteer()
+
+    [Fact]
+    public void LittleTest()
+    {
+        List<Photo> photos = new List<Photo>();
+        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "1").Value));
+        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "2").Value));
+
+        List<Photo> otherPhotos = new List<Photo>();
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "3").Value));
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "4").Value));
+        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "5").Value));
+
+        photos.AddRange(otherPhotos);
+        photos.Count.Should().Be(5);
+        foreach (var photo in photos)
+        {
+            Console.WriteLine(photo.PathToStorage.Path);
+        }
+
+        var first_guid = PetId.NewPetId();
+        var second_guid = PetId.Create(first_guid.Value);
+        //second_guid = PetId.NewPetId();
+        Console.WriteLine(first_guid == second_guid);
+        first_guid.Should().BeEquivalentTo(second_guid);
+    }
+
+    private static Volunteer CreateVolunteer()
     {
         var volunteerId = VolunteerId.NewVolunteerId();
         var email = Email.Create("test@test.com").Value;
@@ -228,8 +254,8 @@ public class PetTests
         var description = Description.Create("testDescription").Value;
         var experience = Experience.Create(1).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
-        var socialNetworkList = SocialNetworkList.Create(new List<SocialNetwork>()).Value;
-        var transferDetailList = TransferDetailList.Create(new List<TransferDetail>()).Value;
+        var socialNetworksList = SocialNetworksList.Create(new List<SocialNetwork>()).Value;
+        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -238,8 +264,8 @@ public class PetTests
             description,
             experience,
             phoneNumber,
-            socialNetworkList,
-            transferDetailList);
+            socialNetworksList,
+            transferDetailsList);
 
         return volunteer;
     }
@@ -262,8 +288,8 @@ public class PetTests
         var dateOfBirth = DateOfBirth.Create(DateTime.Now.AddYears(-2)).Value;
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
-        var transferDetailList = TransferDetailList
-            .Create(new List<TransferDetail>()).Value;
+        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
+        var photosList = PhotosList.Create(new List<Photo>()).Value;
 
         var pet = new Pet(
             petId,
@@ -280,7 +306,8 @@ public class PetTests
             dateOfBirth,
             isVaccinated,
             helpStatus,
-            transferDetailList);
+            transferDetailsList,
+            photosList);
 
         return pet;
     }

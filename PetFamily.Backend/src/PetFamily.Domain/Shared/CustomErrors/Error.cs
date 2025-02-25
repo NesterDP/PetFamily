@@ -28,6 +28,8 @@ public record Error
     public static Error Conflict(string code, string message) => 
         new Error(code, message, ErrorType.Conflict);
 
+    public ErrorList ToErrorList() => new ErrorList([this]);
+
     public string Serialize()
     {
         return string.Join(SEPARATOR, Code, Message, Type );

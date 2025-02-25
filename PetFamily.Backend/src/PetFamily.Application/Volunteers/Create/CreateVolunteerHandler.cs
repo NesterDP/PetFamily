@@ -1,67 +1,76 @@
-using System.ComponentModel.Design;
-using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Dto.Volunteer;
+using PetFamily.Application.Database;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using InvalidCastException = System.InvalidCastException;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
 public class CreateVolunteerHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<CreateVolunteerHandler> _logger;
+    private readonly IValidator<CreateVolunteerCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<CreateVolunteerHandler> logger)
+        ILogger<CreateVolunteerHandler> logger,
+        IValidator<CreateVolunteerCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
+        _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid, Error>> HandleAsync(
-        CreateVolunteerRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        CreateVolunteerCommand command,
         CancellationToken cancellationToken)
     {
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fullNameCreateResult = FullName.Create(
-            request.VolunteerDto.FullName.FirstName,
-            request.VolunteerDto.FullName.LastName,
-            request.VolunteerDto.FullName.Surname);
+            command.VolunteerDto.FullName.FirstName,
+            command.VolunteerDto.FullName.LastName,
+            command.VolunteerDto.FullName.Surname);
 
-        var emailCreateResult = Email.Create(request.VolunteerDto.Email);
+        var emailCreateResult = Email.Create(command.VolunteerDto.Email);
 
-        var descriptionCreateResult = Description.Create(request.VolunteerDto.Description);
+        var descriptionCreateResult = Description.Create(command.VolunteerDto.Description);
 
-        var experienceCreateResult = Experience.Create(request.VolunteerDto.Experience);
+        var experienceCreateResult = Experience.Create(command.VolunteerDto.Experience);
 
-        var phoneNumberCreateResult = Phone.Create(request.VolunteerDto.PhoneNumber);
+        var phoneNumberCreateResult = Phone.Create(command.VolunteerDto.PhoneNumber);
 
-        List<SocialNetwork> socialNetworkList = [];
-        foreach (var socialNetwork in request.SocialNetworksDto)
+        List<SocialNetwork> socialNetworksList = [];
+        foreach (var socialNetwork in command.SocialNetworksDto)
         {
             var result = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
-            socialNetworkList.Add(result.Value);
+            socialNetworksList.Add(result.Value);
         }
 
-        var socialNetworkListCreateResult = SocialNetworkList.Create(socialNetworkList);
+        var socialNetworksListCreateResult = SocialNetworksList.Create(socialNetworksList);
 
-        List<TransferDetail> transferDetailList = [];
-        foreach (var transferDetail in request.TransferDetailsDto)
+        List<TransferDetail> transferDetailsList = [];
+        foreach (var transferDetail in command.TransferDetailsDto)
         {
             var result = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
-            transferDetailList.Add(result.Value);
+            transferDetailsList.Add(result.Value);
         }
 
-        var transferDetailListCreateResult = TransferDetailList.Create(transferDetailList);
+        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetailsList);
 
         var volunteer = Volunteer.Create(
             volunteerId,
@@ -70,10 +79,11 @@ public class CreateVolunteerHandler
             descriptionCreateResult.Value,
             experienceCreateResult.Value,
             phoneNumberCreateResult.Value,
-            socialNetworkListCreateResult.Value,
-            transferDetailListCreateResult.Value);
+            socialNetworksListCreateResult.Value,
+            transferDetailsListCreateResult.Value);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Created volunteer with ID = {id}", volunteerId.Value);

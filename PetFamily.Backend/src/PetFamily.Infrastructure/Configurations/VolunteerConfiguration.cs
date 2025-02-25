@@ -69,9 +69,9 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("phone_number");
         });
 
-        builder.OwnsOne(v => v.SocialNetworkList, slb =>
+        builder.OwnsOne(v => v.SocialNetworksList, slb =>
         {
-            slb.ToJson("social_network_list");
+            slb.ToJson("social_networks_list");
 
             slb.OwnsMany(snl => snl.SocialNetworks, snb =>
             {
@@ -84,9 +84,9 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             });
         });
         
-        builder.OwnsOne(v => v.TransferDetailList, tdlb =>
+        builder.OwnsOne(v => v.TransferDetailsList, tdlb =>
         {
-            tdlb.ToJson("transfer_detail_list");
+            tdlb.ToJson("transfer_details_list");
 
             tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
             {
