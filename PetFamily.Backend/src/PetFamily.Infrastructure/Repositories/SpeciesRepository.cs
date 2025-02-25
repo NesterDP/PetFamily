@@ -54,7 +54,7 @@ public class SpeciesRepository : ISpeciesRepository
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
         if (species == null)
-            return Errors.General.ValueNotFound();
+            return Errors.General.ValueNotFound(id.Value);
 
         return species;
     }

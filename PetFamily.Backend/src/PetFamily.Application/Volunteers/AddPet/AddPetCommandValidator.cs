@@ -16,8 +16,10 @@ public class AddPetCommandValidator : AbstractValidator<AddPetCommand>
         
         RuleFor(c => c.Name).MustBeValueObject(Name.Create);
         RuleFor(c => c.Description).MustBeValueObject(Description.Create);
-        RuleFor(c => c.PetClassificationDto.SpeciesName).MustBeValueObject(Name.Create);
-        RuleFor(c => c.PetClassificationDto.BreedName).MustBeValueObject(Name.Create);
+        RuleFor(c => c.PetClassificationDto.SpeciesId)
+            .NotEmpty().WithError(Errors.General.ValueIsRequired("speciesId"));
+        RuleFor(c => c.PetClassificationDto.BreedId)
+            .NotEmpty().WithError(Errors.General.ValueIsRequired("breedId"));
         
         RuleFor(c => c.Color)
             .MustBeValueObject(PetFamily.Domain.PetContext.ValueObjects.PetVO.Color.Create);

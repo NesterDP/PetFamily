@@ -55,11 +55,14 @@ public class AddPetHandler
             return volunteerResult.Error.ToErrorList();
 
         var petClassification = await GetPetClassification(
-            command.PetClassificationDto.SpeciesName,
-            command.PetClassificationDto.BreedName,
+            command.PetClassificationDto.SpeciesId,
+            command.PetClassificationDto.BreedId,
             cancellationToken);
 
-        var pet = CreatePet(command, petClassification);
+        if (petClassification.IsFailure)
+            return petClassification.Error.ToErrorList();
+
+        var pet = CreatePet(command, petClassification.Value);
 
         volunteerResult.Value.AddPet(pet);
 
@@ -74,30 +77,30 @@ public class AddPetHandler
     private Pet CreatePet(AddPetCommand command, PetClassification petClassification)
     {
         var petId = PetId.NewPetId();
-        
+
         var name = Name.Create(command.Name).Value;
-        
+
         var description = Description.Create(command.Description).Value;
-        
+
         var color = Color.Create(command.Color).Value;
-        
+
         var healthInfo = HealthInfo.Create(command.HealthInfo).Value;
-        
+
         var address = Address.Create(
             command.AddressDto.City,
             command.AddressDto.House,
             command.AddressDto.Apartment).Value;
-        
+
         var weight = Weight.Create(command.Weight).Value;
-        
+
         var height = Height.Create(command.Height).Value;
-        
+
         var ownerPhoneNUmber = Phone.Create(command.OwnerPhoneNumber).Value;
-        
+
         var isCastrated = IsCastrated.Create(command.IsCastrated).Value;
-        
+
         var dateOfBirth = DateOfBirth.Create(command.DateOfBirth.ToUniversalTime()).Value;
-        
+
         var isVaccinated = IsVaccinated.Create(command.IsVaccinated).Value;
 
         Enum.TryParse(command.HelpStatus, out PetStatus status);
@@ -135,52 +138,24 @@ public class AddPetHandler
         return pet;
     }
 
-    private async Task<PetClassification> GetPetClassification(
-        string clientSpeciesName,
-        string clientBreedName,
+    private async Task<Result<PetClassification, Error>> GetPetClassification(
+        Guid clientSpeciesId,
+        Guid clientBreedId,
         CancellationToken cancellationToken)
     {
-        // приводим полученные строки к единому в БД виду
-        clientSpeciesName = clientSpeciesName.ToLower().Trim();
-        clientBreedName = clientBreedName.ToLower().Trim();
+        var speciesId = SpeciesId.Create(clientSpeciesId);
+        var breedId = BreedId.Create(clientBreedId);
+
+        var speciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);
         
-        // ищем species по поле "имя" в БД
-        var speciesResult = await _speciesRepository.GetByNameAsync(clientSpeciesName, cancellationToken);
-
-        // не нашли такой species
         if (speciesResult.IsFailure)
-        {
-            // создаем species и breed
-            var speciesName = Name.Create(clientSpeciesName).Value;
-            var species = new Species(SpeciesId.NewSpeciesId(), speciesName, new List<Breed>());
+            return speciesResult.Error;
+        
+        var breedResult = speciesResult.Value.GetBreedById(breedId);
 
-            var breedName = Name.Create(clientBreedName).Value;
-            var breed = new Breed(BreedId.NewBreedId(), breedName);
-            
-            // добавляем breed к species через метод species
-            species.AddBreed(breed);
-            await _speciesRepository.AddAsync(species, cancellationToken);
-
-            return PetClassification.Create(species.Id.Value, breed.Id.Value).Value;
-        }
-        else
-        {
-            // ищем у найденого species breed с таким же именем, как передал клиент
-            var breedResult = speciesResult.Value.GetBreedByName(clientBreedName);
-            
-            // если нашли - не трогаем БД, просто возвращаем Value object для Pet
-            if (breedResult.IsSuccess)
-                return PetClassification.Create(speciesResult.Value.Id.Value, breedResult.Value.Id.Value).Value;
-            
-            // если не нашли - создаем breed 
-            var breedName = Name.Create(clientBreedName).Value;
-            var breed = new Breed(BreedId.NewBreedId(), breedName);
-            
-            // добавляем его в существующему species через метод species
-            speciesResult.Value.AddBreed(breed);
-            _speciesRepository.Save(speciesResult.Value, cancellationToken);
-
-            return PetClassification.Create(speciesResult.Value.Id.Value, breed.Id.Value).Value;
-        }
+        if (breedResult.IsFailure)
+            return breedResult.Error;
+        
+        return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }
 }
