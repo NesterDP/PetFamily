@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Application.FilesProvider.FilesData;
-using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.FilesProvider.Delete;

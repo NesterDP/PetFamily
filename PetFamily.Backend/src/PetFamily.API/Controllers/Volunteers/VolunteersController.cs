@@ -10,6 +10,7 @@ using PetFamily.Application.Volunteers.DeletePetPhotos;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.UploadPhotosToPet;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 namespace PetFamily.API.Controllers.Volunteers;
@@ -117,13 +118,10 @@ public class VolunteersController : ControllerBase
     [HttpPost("{id:guid}/pet")]
     public async Task<ActionResult<Guid>> AddPet(
         [FromRoute] Guid id,
-        [FromForm] AddPetRequest request,
+        [FromBody] AddPetRequest request,
         [FromServices] AddPetHandler handler,
         CancellationToken cancellationToken)
     {
-        await using var fileProcessor = new FormFileProcessor();
-        var fileDtos = fileProcessor.Process(request.Files);
-
         var command = new AddPetCommand(
             id,
             request.Name,
@@ -139,8 +137,28 @@ public class VolunteersController : ControllerBase
             request.DateOfBirth,
             request.IsVaccinated,
             request.HelpStatus,
-            request.TransferDetailsDto,
-            fileDtos);
+            request.TransferDetailsDto);
+
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return result.ToResponse();
+    }
+    
+    [HttpPost("{id:guid}/pet/{petId:guid}/photos")]
+    public async Task<ActionResult<Guid>> UploadPhotosToPet(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromForm] UploadPhotosToPetRequest request,
+        [FromServices] UploadPhotosToPetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        await using var fileProcessor = new FormFileProcessor();
+        var fileDtos = fileProcessor.Process(request.Files);
+
+        var command = new UploadPhotosToPetCommand(id, petId, fileDtos);
 
         var result = await handler.HandleAsync(command, cancellationToken);
 
@@ -150,15 +168,16 @@ public class VolunteersController : ControllerBase
         return result.ToResponse();
     }
 
-    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}")]
-    public async Task<ActionResult<Guid>> DeletePetPhotos(
-        [FromRoute] Guid volunteerId, Guid petId,
-        [FromForm] DeletePetPhotosRequest request,
+    [HttpDelete("{id:guid}/pet/{petId:guid}/photos")]
+    public async Task<ActionResult<Guid>> DeletePetPhotos( 
+        [FromRoute] Guid id,
+        [FromRoute]Guid petId,
+        [FromBody] DeletePetPhotosRequest request,
         [FromServices] DeletePetPhotosHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new DeletePetPhotosCommand(
-            volunteerId,
+            id,
             petId,
             request.PhotosNames.ToList());
 

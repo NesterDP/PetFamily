@@ -237,6 +237,12 @@ public class PetTests
         {
             Console.WriteLine(photo.PathToStorage.Path);
         }
+
+        var first_guid = PetId.NewPetId();
+        var second_guid = PetId.Create(first_guid.Value);
+        //second_guid = PetId.NewPetId();
+        Console.WriteLine(first_guid == second_guid);
+        first_guid.Should().BeEquivalentTo(second_guid);
     }
 
     private static Volunteer CreateVolunteer()

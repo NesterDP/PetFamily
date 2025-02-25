@@ -4,7 +4,7 @@ namespace PetFamily.Application.Database;
 
 public interface IUnitOfWork
 {
-    Task<IDbTransaction> BeginTransaction(CancellationToken cancellationToken = default);
+    Task<IDbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
-    Task SaveChanges(CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -9,10 +9,10 @@ public interface ISpeciesRepository
 {
     Task<Guid> AddAsync(Species species, CancellationToken cancellationToken = default);
 
-    Task<Guid> SaveAsync(Species species, CancellationToken cancellationToken = default);
+    Guid Save(Species species, CancellationToken cancellationToken = default);
 
+    Guid Delete(Species species, CancellationToken cancellationToken = default);
     Task<Result<Species, Error>> GetByIdAsync(SpeciesId id, CancellationToken cancellationToken = default);
     
-    Task<Guid> DeleteAsync(Species species, CancellationToken cancellationToken = default);
     Task<Result<Species, Error>> GetByNameAsync(string speciesName, CancellationToken cancellationToken = default);
 }

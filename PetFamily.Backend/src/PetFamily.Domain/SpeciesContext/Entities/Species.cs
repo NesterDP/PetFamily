@@ -16,14 +16,23 @@ public class Species : Shared.Entity<SpeciesId>
     // ef core
     public Species(SpeciesId id) : base(id) { }
     
-    public UnitResult<Error> AddPet(Breed breed)
-    {
-        _breeds.Add(breed);
-        return Result.Success<Error>();
-    }
+
 
     public Species(SpeciesId id, Name name, List<Breed> breeds) : base(id)
     {
         Name = name;
+    }
+    
+    public UnitResult<Error> AddBreed(Breed breed)
+    {
+        _breeds.Add(breed);
+        return Result.Success<Error>();
+    }
+    public Result<Breed, Error> GetBreedByName(string breedName)
+    {
+        var breed = _breeds.FirstOrDefault(p => p.Name.Value == breedName);
+        if (breed == null)
+            return Errors.General.ValueNotFound();
+        return breed;
     }
 }

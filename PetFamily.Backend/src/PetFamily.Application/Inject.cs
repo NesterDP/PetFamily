@@ -9,6 +9,7 @@ using PetFamily.Application.Volunteers.DeletePetPhotos;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.UploadPhotosToPet;
 
 namespace PetFamily.Application;
 
@@ -25,6 +26,7 @@ public static class Inject
 
         services.AddScoped<UploadFilesHandler>();
         services.AddScoped<DeleteFilesHandler>();
+        services.AddScoped<UploadPhotosToPetHandler>();
         
         services.AddScoped<AddPetHandler>();
         services.AddScoped<DeletePetPhotosHandler>();

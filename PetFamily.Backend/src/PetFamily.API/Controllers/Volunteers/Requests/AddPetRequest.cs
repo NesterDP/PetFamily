@@ -17,5 +17,4 @@ public record AddPetRequest(
     DateTime DateOfBirth,
     bool IsVaccinated,
     string HelpStatus,
-    IEnumerable<TransferDetailDto> TransferDetailsDto,
-    IFormFileCollection Files);
+    IEnumerable<TransferDetailDto> TransferDetailsDto);

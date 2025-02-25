@@ -3,9 +3,8 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
+using PetFamily.Application.FilesProvider;
 using PetFamily.Application.FilesProvider.FilesData;
-using PetFamily.Application.Providers;
-using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -20,7 +19,7 @@ public class DeletePetPhotosHandler
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
     private readonly IFilesProvider _filesProvider;
-    private const string BUCKET_NAME = "files";
+    private const string BUCKET_NAME = "photos";
 
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
@@ -44,53 +43,46 @@ public class DeletePetPhotosHandler
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-        var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
-        try
+
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
+        var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error.ToErrorList();
+
+        var petId = PetId.Create(command.PetId);
+        var pet = volunteerResult.Value.GetPetById(petId);
+        if (pet.IsFailure)
+            return pet.Error.ToErrorList();
+        
+        // новый список фото питомцев = разность между текущим списком фото питомца и списком удаленных фото
+        var paths = pet.Value.PhotosList.Photos.Select(photo => photo.PathToStorage.Path).ToList();
+        var intermediateCollection = paths.Except(command.PhotosNames);
+        var updateList = intermediateCollection.Select(s => new Photo(FilePath.Create(s).Value)).ToList();
+        
+        // обновили фото питомца
+        volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, PhotosList.Create(updateList).Value);
+        
+        // обновили соответсвующую запись в БД независимо от того, удалятся ли данные в minio
+        await _unitOfWork.SaveChangesAsync(cancellationToken); 
+        
+        // формируем данные для удаления
+        List<DeleteData> deleteData = new List<DeleteData>(); 
+        foreach (var path in command.PhotosNames)
         {
-            var volunteerId = VolunteerId.Create(command.VolunteerId);
-            var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
-            if (volunteerResult.IsFailure)
-                return volunteerResult.Error.ToErrorList();
-
-            var pet = volunteerResult.Value.AllOwnedPets.FirstOrDefault(p => p.Id.Value == command.PetId);
-            if (pet == null)
-                return Errors.General.ValueNotFound("pet").ToErrorList();
-            
-            
-            var paths = pet.PhotosList.Photos.Select(photo => photo.PathToStorage.Path).ToList();
-            var intermediateCollection = paths.Except(command.PhotosNames);
-            var updateList = intermediateCollection.Select(s => new Photo(FilePath.Create(s).Value)).ToList();
-            volunteerResult.Value.UpdatePetPhotos(pet.Id, PhotosList.Create(updateList).Value);
-            
-            
-            List<DeleteData> deleteData = new List<DeleteData>();
-            foreach (var path in command.PhotosNames)
-            {
-                deleteData.Add(new DeleteData(path, BUCKET_NAME));
-            }
-            
-            await _unitOfWork.SaveChanges(cancellationToken);
-            
-            var deleteResult = await _filesProvider.DeleteFiles(deleteData, cancellationToken);
-            
-            if (deleteResult.IsFailure)
-                return deleteResult.Error.ToErrorList();
-
-            transaction.Commit();
-            
-            _logger.LogInformation("Successfully deleted some photos for pet with ID = {ID}", pet.Id.Value);
-
-            return pet.Id.Value;
+            deleteData.Add(new DeleteData(path, BUCKET_NAME));
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex,
-                "Can not delete pet photos - {id} in transaction", command.PetId);
+        
+        // удаляем из minio
+        var deleteResult = await _filesProvider.DeleteFiles(deleteData, cancellationToken); 
+        if (deleteResult.IsFailure)
+            return deleteResult.Error.ToErrorList();
+        
+        
+       
+        
+        
+        _logger.LogInformation("Successfully deleted photos for pet with ID = {ID}", pet.Value.Id.Value);
 
-            transaction.Rollback();
-
-            return Error.Failure(
-                "volunteer.pet.failure", "could not delete pet photos)").ToErrorList();
-        }
+        return pet.Value.Id.Value;
     }
 }

@@ -125,13 +125,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
 
     public Result<Pet, Error> GetPetById(PetId id)
     {
-        foreach (var pet in _pets)
-        {
-            if (pet.Id == id)
-                return pet;
-        }
-
-        return Errors.General.ValueNotFound();
+        var pet = _pets.FirstOrDefault(p => p.Id.Value == id.Value);
+        if (pet == null)
+            return Errors.General.ValueNotFound(id.Value);
+        return pet;
     }
 
     public UnitResult<Error> AddPet(Pet pet)

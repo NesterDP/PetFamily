@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -13,15 +14,18 @@ public class UpdateTransferDetailsHandler
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdateTransferDetailsHandler> _logger;
     private readonly IValidator<UpdateTransferDetailsCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateTransferDetailsHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<UpdateTransferDetailsHandler> logger,
-        IValidator<UpdateTransferDetailsCommand> validator)
+        IValidator<UpdateTransferDetailsCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -46,8 +50,8 @@ public class UpdateTransferDetailsHandler
         }
 
         volunteerResult.Value.UpdateTransferDetails(TransferDetailsList.Create(transferDetailsList).Value);
-
-        var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Volunteer was updated (transfer details), his ID = {ID}", volunteerId.Value);

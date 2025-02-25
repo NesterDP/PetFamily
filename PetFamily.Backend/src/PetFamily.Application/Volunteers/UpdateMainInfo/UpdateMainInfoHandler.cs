@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -14,15 +15,18 @@ public class UpdateMainInfoHandler
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdateMainInfoHandler> _logger;
     private readonly IValidator<UpdateMainInfoCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public UpdateMainInfoHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<UpdateMainInfoHandler> logger,
-        IValidator<UpdateMainInfoCommand> validator)
+        IValidator<UpdateMainInfoCommand> validator ,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -49,7 +53,8 @@ public class UpdateMainInfoHandler
         var phone = Phone.Create(command.PhoneNumber).Value;
         volunteerResult.Value.UpdateMainInfo(fullName, email, description, experience, phone);
 
-        var result = await _volunteersRepository.SaveAsync(volunteerResult.Value, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Volunteer was updated (main info), his ID = {ID}", volunteerId.Value);
 

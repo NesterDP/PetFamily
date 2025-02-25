@@ -19,5 +19,4 @@ public record AddPetCommand(
     DateTime DateOfBirth,
     bool IsVaccinated,
     string HelpStatus,
-    IEnumerable<TransferDetailDto> TransferDetailsDto,
-    IEnumerable<CreateFileDto> Files);
+    IEnumerable<TransferDetailDto> TransferDetailsDto);

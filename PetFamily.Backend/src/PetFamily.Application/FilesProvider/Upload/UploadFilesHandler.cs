@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Application.FilesManagement.Upload;
 using PetFamily.Application.FilesProvider.FilesData;
-using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
 
@@ -30,15 +29,10 @@ public class UploadFilesHandler
             if (filePath.IsFailure)
                 return filePath.Error.ToErrorList();
 
-            var fileContent = new FileData(file.Content, filePath.Value, BUCKET_NAME);
+            var fileData = new FileData(file.Content, filePath.Value, BUCKET_NAME);
 
-            filesData.Add(fileContent);
+            filesData.Add(fileData);
         }
-
-        var issueFiles = filesData
-            .Select(f => f.FilePath)
-            .Select(f => new Photo(f))
-            .ToList();
         
         var uploadResult = await _filesProvider.UploadFiles(filesData, cancellationToken);
         if (uploadResult.IsFailure)

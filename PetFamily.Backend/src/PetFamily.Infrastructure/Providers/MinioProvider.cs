@@ -2,8 +2,8 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
+using PetFamily.Application.FilesProvider;
 using PetFamily.Application.FilesProvider.FilesData;
-using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Infrastructure.Options;
@@ -24,46 +24,6 @@ public class MinioProvider : IFilesProvider
         _minioClient = minioClient;
         _logger = logger;
     }
-
-    public async Task<Result<IReadOnlyList<FilePath>, Error>> DeleteFile(
-        DeleteData deleteData,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var bucketExistArgs = new BucketExistsArgs()
-                .WithBucket(deleteData.BucketName);
-
-            var bucketExist = await _minioClient.BucketExistsAsync(bucketExistArgs, cancellationToken);
-
-            if (bucketExist == false)
-                return Error.Failure("error.bucket.exists", "No such bucket exists");
-
-            var objExist = new StatObjectArgs()
-                .WithBucket(deleteData.BucketName)
-                .WithObject(deleteData.FilePath);
-            var objectStat = await _minioClient.StatObjectAsync(objExist, cancellationToken);
-
-            if (objectStat.Size == 0)
-                return Error.Failure("error.object.exist", "No such object exists");
-
-            var args = new RemoveObjectArgs()
-                .WithBucket(deleteData.BucketName)
-                .WithObject(deleteData.FilePath);
-            await _minioClient.RemoveObjectAsync(args, cancellationToken);
-
-            _logger.LogInformation("File in bucket = {Bucket} with name = {Name} was deleted",
-                deleteData.BucketName, deleteData.FilePath);
-
-            return new List<FilePath>();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to remove file");
-            return Error.Failure("error.file.remove", "Failed to remove file");
-        }
-    }
-
     
     public async Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
         IEnumerable<FileData> filesData,
@@ -87,15 +47,17 @@ public class MinioProvider : IFilesProvider
                 return pathsResult.First().Error;
 
             var results = pathsResult.Select(p => p.Value).ToList();
+            
+            _logger.LogInformation("Uploaded files to Minio: {files}", results.Select(f => f.Path));
 
             return results;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Fail to upload files in minio, files amount: {amount}", filesList.Count);
+                "Failed to upload files in minio, files amount: {amount}", filesList.Count);
 
-            return Error.Failure("file.upload", "Fail to upload files in minio");
+            return Error.Failure("file.upload", "Failed to upload files in minio");
         }
     }
     
@@ -117,6 +79,8 @@ public class MinioProvider : IFilesProvider
                 return pathsResult.First().Error;
 
             var results = pathsResult.Select(p => p.Value).ToList();
+            
+            _logger.LogInformation("Deleted files in Minio: {files}", results);
 
             return results;
         }

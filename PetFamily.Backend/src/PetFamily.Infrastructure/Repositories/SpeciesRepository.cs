@@ -7,41 +7,36 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class SpeciesRepository(ApplicationDbContext context) : ISpeciesRepository
+public class SpeciesRepository : ISpeciesRepository
 {
+    private readonly ApplicationDbContext _context;
+
+    public SpeciesRepository(ApplicationDbContext dbContext)
+    {
+        _context = dbContext;
+    }
     public async Task<Guid> AddAsync(Species species, CancellationToken cancellationToken = default)
     {
-        await context.Species.AddAsync(species, cancellationToken);
-        
-        //await context.SaveChangesAsync(cancellationToken);
-
+        await _context.Species.AddAsync(species, cancellationToken);
         return species.Id.Value;
     }
     
-    public async Task<Guid> SaveAsync(Species species, CancellationToken cancellationToken = default)
+    public Guid Save(Species species, CancellationToken cancellationToken = default)
     {
-        context.Attach(species);
-        await context.SaveChangesAsync(cancellationToken);
+        _context.Species.Attach(species);
         return species.Id.Value;
     }
-
-    public async Task<Result<Species, Error>> GetByIdAsync(SpeciesId id,
-        CancellationToken cancellationToken = default)
+    
+    public Guid Delete(Species species, CancellationToken cancellationToken = default)
     {
-        var species = await context.Species
-            .Include(v => v.Breeds)
-            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
-
-        if (species == null)
-            return Errors.General.ValueNotFound();
-
-        return species;
+        _context.Species.Remove(species);
+        return species.Id.Value;
     }
     
     public async Task<Result<Species, Error>> GetByNameAsync(string speciesName,
         CancellationToken cancellationToken = default)
     {
-        var species = await context.Species
+        var species = await _context.Species
             .Include(v => v.Breeds)
             .FirstOrDefaultAsync(v => v.Name.Value == speciesName, cancellationToken);
 
@@ -50,11 +45,17 @@ public class SpeciesRepository(ApplicationDbContext context) : ISpeciesRepositor
 
         return species;
     }
-
-    public async Task<Guid> DeleteAsync(Species species, CancellationToken cancellationToken = default)
+    
+    public async Task<Result<Species, Error>> GetByIdAsync(SpeciesId id,
+        CancellationToken cancellationToken = default)
     {
-        context.Remove(species);
-        await context.SaveChangesAsync();
-        return species.Id.Value;
+        var species = await _context.Species
+            .Include(v => v.Breeds)
+            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+
+        if (species == null)
+            return Errors.General.ValueNotFound();
+
+        return species;
     }
 }

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
@@ -15,15 +16,18 @@ public class CreateVolunteerHandler
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<CreateVolunteerHandler> _logger;
     private readonly IValidator<CreateVolunteerCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<CreateVolunteerHandler> logger,
-        IValidator<CreateVolunteerCommand> validator)
+        IValidator<CreateVolunteerCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -79,6 +83,7 @@ public class CreateVolunteerHandler
             transferDetailsListCreateResult.Value);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Created volunteer with ID = {id}", volunteerId.Value);
