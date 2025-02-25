@@ -1,11 +1,8 @@
-using System.Runtime.InteropServices.JavaScript;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FilesProvider;
-using PetFamily.Application.FilesProvider.FilesData;
 using PetFamily.Application.SpeciesRepositoryInterface;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
