@@ -1,3 +1,8 @@
+using PetFamily.Application.Volunteers.Delete;
+
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 
-public record DeleteVolunteerRequest(Guid Id);
+public record DeleteVolunteerRequest()
+{
+    public DeleteVolunteerCommand ToCommand(Guid id) => new(id);
+}

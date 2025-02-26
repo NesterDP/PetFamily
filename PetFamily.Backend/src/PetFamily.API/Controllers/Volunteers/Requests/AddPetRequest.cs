@@ -1,5 +1,6 @@
 using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Volunteers.AddPet;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 
@@ -17,4 +18,22 @@ public record AddPetRequest(
     DateTime DateOfBirth,
     bool IsVaccinated,
     string HelpStatus,
-    IEnumerable<TransferDetailDto> TransferDetailsDto);
+    IEnumerable<TransferDetailDto> TransferDetailsDto)
+{
+    public AddPetCommand ToCommand(Guid id) => new(
+        id,
+        Name,
+        Description,
+        PetClassificationDto,
+        Color,
+        HealthInfo,
+        AddressDto,
+        Weight,
+        Height,
+        OwnerPhoneNumber,
+        IsCastrated,
+        DateOfBirth,
+        IsVaccinated,
+        HelpStatus,
+        TransferDetailsDto);
+}
