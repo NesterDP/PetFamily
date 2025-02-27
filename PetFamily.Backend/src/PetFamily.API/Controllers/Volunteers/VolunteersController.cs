@@ -3,6 +3,7 @@ using PetFamily.API.Controllers.Volunteers.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.Application.Volunteers.AddPet;
+using PetFamily.Application.Volunteers.ChangePetPosition;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.DeletePetPhotos;
@@ -122,6 +123,19 @@ public class VolunteersController : ControllerBase
         [FromRoute] Guid petId,
         [FromBody] DeletePetPhotosRequest request,
         [FromServices] DeletePetPhotosHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/pet/{petId:guid}")]
+    public async Task<ActionResult<Guid>> ChangePetPosition(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromBody] ChangePetPositionRequest request,
+        [FromServices] ChangePetPositionHandler handler,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(id, petId);
