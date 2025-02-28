@@ -9,6 +9,7 @@ using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
 
 namespace PetFamily.Application.Volunteers.UploadPhotosToPet;
 
@@ -64,7 +65,7 @@ public class UploadPhotosToPetHandler
             if (filePath.IsFailure)
                 return filePath.Error.ToErrorList();
 
-            var fileData = new FileData(file.Content, filePath.Value, BUCKET_NAME);
+            var fileData = new FileData(file.Content, new FileInfo(filePath.Value, BUCKET_NAME));
 
             filesData.Add(fileData);
         }
