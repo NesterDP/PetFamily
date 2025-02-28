@@ -6,7 +6,7 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Domain.SpeciesContext.Entities;
 
-public class Species : Shared.Entity<SpeciesId>
+public class Species : Entity<SpeciesId>
 {
     public Name Name { get; private set; }
 

@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
+
 namespace PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-public record SpeciesId
+public class SpeciesId : ValueObject, IComparable<SpeciesId>
 {
     public Guid Value { get; }
 
@@ -9,4 +11,18 @@ public record SpeciesId
     public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
     public static SpeciesId EmptySpeciesId => new(Guid.Empty);
     public static SpeciesId Create(Guid id) => new(id);
+    public static implicit operator SpeciesId(Guid speciesId) => new (speciesId);
+    public static implicit operator Guid(SpeciesId speciesId) => speciesId.Value;
+    
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
+    }
+
+    public int CompareTo(SpeciesId? other)
+    {
+        if (other == null)
+            throw new Exception("SpeciesId cannot be null");
+        return Value.CompareTo(other.Value);
+    }
 }

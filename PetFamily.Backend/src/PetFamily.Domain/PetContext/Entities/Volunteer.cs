@@ -6,7 +6,7 @@ using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
-public class Volunteer : Shared.Entity<VolunteerId>
+public class Volunteer : Entity<VolunteerId>
 {
     private bool _isDeleted = false;
     public FullName FullName { get; private set; }

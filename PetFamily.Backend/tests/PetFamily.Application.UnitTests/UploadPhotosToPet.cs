@@ -22,15 +22,27 @@ namespace PetFamily.Application.UnitTests;
 
 public class UploadPhotosToPet
 {
+    private readonly Mock<IValidator<UploadPhotosToPetCommand>> _validatorMock;
+    private readonly Mock<IVolunteersRepository> _volunteerRepositoryMock;
+    private readonly Mock<ILogger<UploadPhotosToPetHandler>> _loggerMock;
+    private readonly Mock<IFilesProvider> _fileProviderMock;
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+
+
+    public UploadPhotosToPet()
+    {
+        _validatorMock = new Mock<IValidator<UploadPhotosToPetCommand>>();
+        _volunteerRepositoryMock = new Mock<IVolunteersRepository>();
+        _loggerMock = new Mock<ILogger<UploadPhotosToPetHandler>>();
+        _fileProviderMock = new Mock<IFilesProvider>();
+        _unitOfWorkMock = new Mock<IUnitOfWork>();
+    }
+
     [Fact]
     public async Task Handle_Should_Upload_Photos_to_Pet()
     {
         // arrange
         var ct = new CancellationTokenSource().Token;
-        
-        var logger = LoggerFactory
-            .Create(builder => builder.AddConsole())
-            .CreateLogger<UploadPhotosToPetHandler>();
 
         var volunteer = CreateVolunteerWithPets(1);
 
@@ -44,48 +56,36 @@ public class UploadPhotosToPet
             volunteer.AllOwnedPets[0].Id.Value,
             files);
 
-        var fileProviderMock = new Mock<IFilesProvider>();
-
         List<FilePath> filePaths =
         [
             FilePath.Create(fileName).Value,
             FilePath.Create(fileName).Value
         ];
 
-        fileProviderMock
-            .Setup(v => v.UploadFiles(It.IsAny<List<FileData>>(), ct))
-            .ReturnsAsync(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
-        
-        var volunteerRepositoryMock = new Mock<IVolunteersRepository>();
+        _validatorMock.Setup(v => v.ValidateAsync(command, ct))
+            .ReturnsAsync(new ValidationResult());
 
-        volunteerRepositoryMock
+        _volunteerRepositoryMock
             .Setup(v => v.GetByIdAsync(volunteer.Id, ct))
             .ReturnsAsync(volunteer);
-        
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        //  .Returns(Task.FromResult<Result<Volunteer, Error>>(Result.Success<Volunteer, Error>(volunteer)));
 
-        unitOfWorkMock
+        _fileProviderMock
+            .Setup(v => v.UploadFiles(It.IsAny<List<FileData>>(), ct))
+            .ReturnsAsync(filePaths);
+        // .ReturnsAsync(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
+
+        _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync(ct))
             .Returns(Task.CompletedTask);
-        
-        /*
-        var loggerMock = new Mock<ILogger<UploadPhotosToPetHandler>>();
-        loggerMock
-            .Setup(l => l.LogInformation("Successfully uploaded photos to pet with ID"));*/
-        
-        
-        var validatorMock = new Mock<IValidator<UploadPhotosToPetCommand>>();
 
-        validatorMock.Setup(v => v.ValidateAsync(command, ct))
-            .ReturnsAsync(new ValidationResult());
-            
         var handler = new UploadPhotosToPetHandler(
-            validatorMock.Object,
-            volunteerRepositoryMock.Object,
-            logger,
-            fileProviderMock.Object,
-            unitOfWorkMock.Object);
-        
+            _validatorMock.Object,
+            _volunteerRepositoryMock.Object,
+            _loggerMock.Object,
+            _fileProviderMock.Object,
+            _unitOfWorkMock.Object);
+
         // act
         var result = await handler.HandleAsync(command, ct);
 
