@@ -3,13 +3,12 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FilesProvider;
-using PetFamily.Application.FilesProvider.FilesData;
+using PetFamily.Application.Files;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Application.Volunteers.DeletePetPhotos;
 
@@ -67,7 +66,7 @@ public class DeletePetPhotosHandler
         await _unitOfWork.SaveChangesAsync(cancellationToken); 
         
         // формируем данные для удаления
-        List<FileInfo> deleteData = new List<FileInfo>(); 
+        var deleteData = new List<FileInfo>(); 
         foreach (var path in command.PhotosNames)
         {
             deleteData.Add(new FileInfo(FilePath.Create(path).Value, BUCKET_NAME));

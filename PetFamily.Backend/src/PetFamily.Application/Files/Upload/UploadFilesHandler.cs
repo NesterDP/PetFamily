@@ -1,11 +1,10 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.FilesManagement.Upload;
-using PetFamily.Application.FilesProvider.FilesData;
+using PetFamily.Application.Files.FilesData;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
-namespace PetFamily.Application.FilesProvider.Upload;
+namespace PetFamily.Application.Files.Upload;
 
 public class UploadFilesHandler
 {

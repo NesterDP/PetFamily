@@ -2,12 +2,12 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
-using PetFamily.Application.FilesProvider;
-using PetFamily.Application.FilesProvider.FilesData;
+using PetFamily.Application.Files;
+using PetFamily.Application.Files.FilesData;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Infrastructure.Options;
-using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Infrastructure.Providers;
 

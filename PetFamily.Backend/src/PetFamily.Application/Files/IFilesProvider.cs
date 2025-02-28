@@ -1,10 +1,10 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.FilesProvider.FilesData;
+using PetFamily.Application.Files.FilesData;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
-namespace PetFamily.Application.FilesProvider;
+namespace PetFamily.Application.Files;
 
 public interface IFilesProvider
 {

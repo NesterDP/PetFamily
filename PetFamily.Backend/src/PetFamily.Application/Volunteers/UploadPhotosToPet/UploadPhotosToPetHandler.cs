@@ -3,13 +3,14 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FilesProvider;
-using PetFamily.Application.FilesProvider.FilesData;
+using PetFamily.Application.Files;
+using PetFamily.Application.Files.FilesData;
+using PetFamily.Application.Messaging;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.FilesProvider.FilesData.FileInfo;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Application.Volunteers.UploadPhotosToPet;
 
@@ -21,19 +22,22 @@ public class UploadPhotosToPetHandler
     private readonly ILogger<UploadPhotosToPetHandler> _logger;
     private readonly IFilesProvider _filesProvider;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public UploadPhotosToPetHandler(
         IValidator<UploadPhotosToPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UploadPhotosToPetHandler> logger,
         IFilesProvider filesProvider,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _filesProvider = filesProvider;
         _unitOfWork = unitOfWork;
+        _messageQueue = messageQueue;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -72,7 +76,10 @@ public class UploadPhotosToPetHandler
 
         var filePathsResult = await _filesProvider.UploadFiles(filesData, cancellationToken);
         if (filePathsResult.IsFailure)
+        {
+            await _messageQueue.WriteAsync(filesData.Select(f => f.Info), cancellationToken);
             return filePathsResult.Error.ToErrorList();
+        }
 
         var photoFiles = filePathsResult.Value
             .Select(f => new Photo(f))
