@@ -3,9 +3,8 @@ using Minio;
 using PetFamily.API.Controllers.FilesTest.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
-using PetFamily.Application.FilesManagement.Upload;
-using PetFamily.Application.FilesProvider.Delete;
-using PetFamily.Application.FilesProvider.Upload;
+using PetFamily.Application.Files.Delete;
+using PetFamily.Application.Files.Upload;
 
 namespace PetFamily.API.Controllers.FilesTest;
 
