@@ -1,6 +1,5 @@
 using PetFamily.Application.Dto.Shared;
-using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.Application.FilesManagement.Upload;
+namespace PetFamily.Application.Files.Upload;
 
 public record UploadFileCommand(IEnumerable<UploadFileDto> Files);
