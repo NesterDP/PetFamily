@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.FilesProvider.Delete;
 using PetFamily.Application.FilesProvider.Upload;
 using PetFamily.Application.Volunteers.AddPet;
+using PetFamily.Application.Volunteers.ChangePetPosition;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.DeletePetPhotos;
@@ -27,6 +28,7 @@ public static class Inject
         services.AddScoped<UploadFilesHandler>();
         services.AddScoped<DeleteFilesHandler>();
         services.AddScoped<UploadPhotosToPetHandler>();
+        services.AddScoped<ChangePetPositionHandler>();
         
         services.AddScoped<AddPetHandler>();
         services.AddScoped<DeletePetPhotosHandler>();
