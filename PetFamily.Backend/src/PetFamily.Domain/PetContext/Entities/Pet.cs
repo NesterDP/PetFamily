@@ -6,7 +6,7 @@ using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
-public sealed class Pet : Shared.Entity<PetId>
+public sealed class Pet : Entity<PetId>
 {
     private bool _isDeleted = false;
     public Name Name { get; private set; }

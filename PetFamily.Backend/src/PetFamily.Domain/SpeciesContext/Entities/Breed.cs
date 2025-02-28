@@ -4,7 +4,7 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 
 namespace PetFamily.Domain.SpeciesContext.Entities;
 
-public class Breed : Shared.Entity<BreedId>
+public class Breed : Entity<BreedId>
 {
     public Name Name { get; private set; }
     
