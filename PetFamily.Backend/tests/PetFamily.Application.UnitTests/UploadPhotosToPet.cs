@@ -54,13 +54,15 @@ public class UploadPhotosToPet
 
         fileProviderMock
             .Setup(v => v.UploadFiles(It.IsAny<List<FileData>>(), ct))
-            .ReturnsAsync(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
+            .ReturnsAsync(filePaths);
+         // .ReturnsAsync(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
         
         var volunteerRepositoryMock = new Mock<IVolunteersRepository>();
 
         volunteerRepositoryMock
             .Setup(v => v.GetByIdAsync(volunteer.Id, ct))
             .ReturnsAsync(volunteer);
+        //  .Returns(Task.FromResult<Result<Volunteer, Error>>(Result.Success<Volunteer, Error>(volunteer)));
         
         var unitOfWorkMock = new Mock<IUnitOfWork>();
 
