@@ -1,9 +1,8 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Application.FilesProvider.FilesData;
 using PetFamily.Domain.Shared.CustomErrors;
-using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
-namespace PetFamily.Application.Files.Delete;
+namespace PetFamily.Application.FilesProvider.Delete;
 
 public class DeleteFilesHandler
 {
@@ -19,10 +18,10 @@ public class DeleteFilesHandler
         DeleteFilesCommand command,
         CancellationToken cancellationToken)
     {
-        List<FileInfo> deleteData = new List<FileInfo>();
+        List<DeleteData> deleteData = new List<DeleteData>();
         foreach (var path in command.PhotosNames)
         {
-            deleteData.Add(new FileInfo(FilePath.Create(path).Value, BUCKET_NAME));
+            deleteData.Add(new DeleteData(path, BUCKET_NAME));
         }
         
         var deleteResult = await _filesProvider.DeleteFiles(deleteData, cancellationToken);
