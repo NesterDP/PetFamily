@@ -4,7 +4,7 @@ using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.UnitTests;
+namespace PetFamily.Domain.UnitTests;
 
 public class PetTests
 {

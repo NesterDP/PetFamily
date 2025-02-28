@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.Species;
+using PetFamily.Application.SpeciesRepositoryInterface;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;

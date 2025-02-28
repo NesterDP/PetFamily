@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Files.Delete;
-using PetFamily.Application.Files.Upload;
+using PetFamily.Application.FilesProvider.Delete;
+using PetFamily.Application.FilesProvider.Upload;
 using PetFamily.Application.Volunteers.AddPet;
 using PetFamily.Application.Volunteers.ChangePetPosition;
 using PetFamily.Application.Volunteers.Create;
