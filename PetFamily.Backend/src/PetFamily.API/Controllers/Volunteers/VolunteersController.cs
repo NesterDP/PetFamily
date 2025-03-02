@@ -2,22 +2,24 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Controllers.Volunteers.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
-using PetFamily.Application.Volunteers.AddPet;
-using PetFamily.Application.Volunteers.ChangePetPosition;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete;
-using PetFamily.Application.Volunteers.DeletePetPhotos;
-using PetFamily.Application.Volunteers.UpdateMainInfo;
-using PetFamily.Application.Volunteers.UpdateSocialNetworks;
-using PetFamily.Application.Volunteers.UpdateTransferDetails;
-using PetFamily.Application.Volunteers.UploadPhotosToPet;
+using PetFamily.Application.Dto.Volunteer;
+using PetFamily.Application.Models;
+using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
+using PetFamily.Application.Volunteers.UseCases.AddPet;
+using PetFamily.Application.Volunteers.UseCases.ChangePetPosition;
+using PetFamily.Application.Volunteers.UseCases.Create;
+using PetFamily.Application.Volunteers.UseCases.Delete;
+using PetFamily.Application.Volunteers.UseCases.DeletePetPhotos;
+using PetFamily.Application.Volunteers.UseCases.UpdateMainInfo;
+using PetFamily.Application.Volunteers.UseCases.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.UseCases.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.UseCases.UploadPhotosToPet;
 
 
 namespace PetFamily.API.Controllers.Volunteers;
 
-[ApiController]
-[Route("[controller]")]
-public class VolunteersController : ControllerBase
+
+public class VolunteersController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
@@ -141,5 +143,16 @@ public class VolunteersController : ControllerBase
         var command = request.ToCommand(id, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> Get(
+        [FromQuery] GetVolunteersWithPaginationRequest request,
+        [FromServices] GetVolunteersWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var result = await handler.HandlerAsync(query, cancellationToken);
+        return Ok(result);
     }
 }

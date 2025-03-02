@@ -19,13 +19,13 @@ public class FullName
     public static Result<FullName, Error> Create(string firstName, string lastName, string surname)
     {
         
-        if (string.IsNullOrWhiteSpace(firstName) || firstName.Length > Constants.MAX_NAME_LENGTH)
+        if (string.IsNullOrWhiteSpace(firstName) || firstName.Length > DomainConstants.MAX_NAME_LENGTH)
             return Errors.General.ValueIsInvalid("firstName");
         
-        if (string.IsNullOrWhiteSpace(lastName) || lastName.Length > Constants.MAX_NAME_LENGTH)
+        if (string.IsNullOrWhiteSpace(lastName) || lastName.Length > DomainConstants.MAX_NAME_LENGTH)
             return Errors.General.ValueIsInvalid("lastName");
         
-        if (string.IsNullOrWhiteSpace(surname) || surname.Length > Constants.MAX_NAME_LENGTH)
+        if (string.IsNullOrWhiteSpace(surname) || surname.Length > DomainConstants.MAX_NAME_LENGTH)
             return Errors.General.ValueIsInvalid("surname");
         
         var validFullname = new FullName(firstName, lastName, surname);

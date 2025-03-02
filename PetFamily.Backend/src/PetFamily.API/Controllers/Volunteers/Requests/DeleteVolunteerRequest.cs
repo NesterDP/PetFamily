@@ -1,4 +1,4 @@
-using PetFamily.Application.Volunteers.Delete;
+using PetFamily.Application.Volunteers.UseCases.Delete;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 

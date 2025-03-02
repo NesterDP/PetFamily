@@ -4,14 +4,15 @@ using PetFamily.Application.Volunteers;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
+using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class VolunteerRepository: IVolunteersRepository
+public class VolunteerRepository : IVolunteersRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly WriteDbContext _context;
 
-    public VolunteerRepository(ApplicationDbContext dbContext)
+    public VolunteerRepository(WriteDbContext dbContext)
     {
         _context = dbContext;
     }
@@ -21,20 +22,20 @@ public class VolunteerRepository: IVolunteersRepository
         await _context.Volunteers.AddAsync(volunteer, cancellationToken);
         return volunteer.Id.Value;
     }
-    
+
     public Guid Save(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         _context.Volunteers.Attach(volunteer);
         return volunteer.Id.Value;
     }
-    
+
 
     public Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         _context.Volunteers.Remove(volunteer);
         return volunteer.Id.Value;
     }
-    
+
     public async Task<Result<Volunteer, Error>> GetByIdAsync(VolunteerId id,
         CancellationToken cancellationToken = default)
     {
