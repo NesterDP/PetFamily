@@ -289,7 +289,7 @@ public class PetTests
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
         var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
-        var photosList = PhotosList.Create(new List<Photo>()).Value;
+        var photosList = new List<Photo>();
 
         var pet = new Pet(
             petId,

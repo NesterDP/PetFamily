@@ -55,12 +55,12 @@ public class DeletePetPhotosHandler
             return pet.Error.ToErrorList();
         
         // новый список фото питомцев = разность между текущим списком фото питомца и списком удаленных фото
-        var paths = pet.Value.PhotosList.Photos.Select(photo => photo.PathToStorage.Path).ToList();
+        var paths = pet.Value.PhotosList.Select(photo => photo.PathToStorage.Path).ToList();
         var intermediateCollection = paths.Except(command.PhotosNames);
         var updateList = intermediateCollection.Select(s => new Photo(FilePath.Create(s).Value)).ToList();
         
         // обновили фото питомца
-        volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, PhotosList.Create(updateList).Value);
+        volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updateList);
         
         // обновили соответсвующую запись в БД независимо от того, удалятся ли данные в minio
         await _unitOfWork.SaveChangesAsync(cancellationToken); 

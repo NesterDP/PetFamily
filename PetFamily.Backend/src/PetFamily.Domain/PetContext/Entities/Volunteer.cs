@@ -105,11 +105,11 @@ public class Volunteer : Entity<VolunteerId>
         }
     }
 
-    public void UpdatePetPhotos(PetId petId, PhotosList photosList)
+    public void UpdatePetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
         if (chosenPet != null)
-            chosenPet.UpdatePhotos(photosList);
+            chosenPet.UpdatePhotos(photos);
     }
 
     public void Restore()

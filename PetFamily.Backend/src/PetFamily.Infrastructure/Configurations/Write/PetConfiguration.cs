@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetContext.Entities;
@@ -151,7 +152,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         });
         
-        builder.OwnsOne(p => p.PhotosList, plb =>
+        /*builder.OwnsOne(p => p.PhotosList, plb =>
         {
             plb.ToJson("photos_list");
 
@@ -165,7 +166,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                     .HasMaxLength(DomainConstants.MAX_NAME_LENGTH);
             });
 
-        });
+        });*/
+
+        builder.Property(p => p.PhotosList)
+            .HasConversion(
+                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<List<Photo>>(json, JsonSerializerOptions.Default)!);
         
         builder.Property(p => p.CreationDate)
             .IsRequired()

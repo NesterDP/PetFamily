@@ -111,7 +111,7 @@ public class AddPetHandler
 
         var transferDetailsListResult = TransferDetailsList.Create(transferDetailsList).Value;
 
-        var photosListResult = PhotosList.Create([]).Value;
+        var photosListResult = new List<Photo>();
 
         var pet = new Pet(
             petId,

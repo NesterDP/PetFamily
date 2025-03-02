@@ -99,7 +99,7 @@ public class UploadPhotosToPet
         var result = await handler.HandleAsync(command, ct);
 
         // assert
-        volunteer.AllOwnedPets.First().PhotosList.Photos.Should().HaveCount(2);
+        volunteer.AllOwnedPets.First().PhotosList.Should().HaveCount(2);
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().Be(volunteer.AllOwnedPets[0].Id.Value);
     }
@@ -147,7 +147,7 @@ public class UploadPhotosToPet
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
         var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
-        var photosList = PhotosList.Create(new List<Photo>()).Value;
+        var photosList = new List<Photo>();
 
         var pet = new Pet(
             petId,
