@@ -48,7 +48,7 @@ public class UpdateSocialNetworksHandler
             socialNetworksList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateSocialNetworks(SocialNetworksList.Create(socialNetworksList).Value);
+        volunteerResult.Value.UpdateSocialNetworks(socialNetworksList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

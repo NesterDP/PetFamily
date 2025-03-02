@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -9,12 +10,15 @@ public class SocialNetwork
     public string Name { get; }
     public string Link { get; }
 
-
+    public SocialNetwork() { }
+    
+    [JsonConstructor]
     private SocialNetwork(string name, string link)
     {
         Name = name;
         Link = link;
     }
+    
 
     public static Result<SocialNetwork, Error> Create(string link, string name)
     {

@@ -113,8 +113,8 @@ public class UploadPhotosToPet
         var description = Description.Create("testDescription").Value;
         var experience = Experience.Create(1).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
-        var socialNetworksList = SocialNetworksList.Create(new List<SocialNetwork>()).Value;
-        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
+        var socialNetworksList = new List<SocialNetwork>();
+        var transferDetailsList = new List<TransferDetail>();
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -146,7 +146,7 @@ public class UploadPhotosToPet
         var dateOfBirth = DateOfBirth.Create(DateTime.Now.AddYears(-2)).Value;
         var isVaccinated = IsVaccinated.Create(true).Value;
         var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
-        var transferDetailsList = TransferDetailsList.Create(new List<TransferDetail>()).Value;
+        var transferDetailsList = new List<TransferDetail>();
         var photosList = new List<Photo>();
 
         var pet = new Pet(

@@ -60,16 +60,13 @@ public class CreateVolunteerHandler
             socialNetworksList.Add(result.Value);
         }
 
-        var socialNetworksListCreateResult = SocialNetworksList.Create(socialNetworksList);
-
         List<TransferDetail> transferDetailsList = [];
         foreach (var transferDetail in command.TransferDetailsDto)
         {
             var result = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
             transferDetailsList.Add(result.Value);
         }
-
-        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetailsList);
+        
 
         var volunteer = Volunteer.Create(
             volunteerId,
@@ -78,8 +75,8 @@ public class CreateVolunteerHandler
             descriptionCreateResult.Value,
             experienceCreateResult.Value,
             phoneNumberCreateResult.Value,
-            socialNetworksListCreateResult.Value,
-            transferDetailsListCreateResult.Value);
+            socialNetworksList,
+            transferDetailsList);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

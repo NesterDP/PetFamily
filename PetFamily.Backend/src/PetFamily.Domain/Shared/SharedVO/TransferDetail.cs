@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.CustomErrors;
 namespace PetFamily.Domain.Shared.SharedVO;
@@ -7,11 +8,15 @@ public record TransferDetail
     public string Name { get; private set; }
     public string Description { get; private set;}
     
+    TransferDetail() {}
+    
+    [JsonConstructorAttribute]
     private TransferDetail(string name, string description)
     {
         Name = name;
         Description = description;
     }
+    
 
     public static Result<TransferDetail, Error> Create(string name, string description)
     {

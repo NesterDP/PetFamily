@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Application.Dto.Pet;
+using PetFamily.Application.Dto.Shared;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
 
@@ -138,52 +140,18 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("help_status");
         });
         
-        builder.OwnsOne(p => p.TransferDetailsList, tdlb =>
-        {
-            tdlb.ToJson("transfer_details_list");
-
-            tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
-            {
-                tdb.Property(td => td.Name)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH);
-                tdb.Property(td => td.Description)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_HIGH_TEXT_LENGTH);
-            });
-
-        });
-        
-        /*builder.OwnsOne(p => p.PhotosList, plb =>
-        {
-            plb.ToJson("photos_list");
-
-            plb.OwnsMany(pl => pl.Photos, pb =>
-            {
-                pb.Property(p => p.PathToStorage)
-                    .HasConversion(
-                        p => p.Path,
-                        value => FilePath.Create(value).Value)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH);
-            });
-
-        });*/
+        builder.Property(p => p.TransferDetailsList)
+            .Json1DeepLvlVoCollectionConverter(
+                transferDetail => new TransferDetailDto(transferDetail.Name, transferDetail.Description),
+                dto => TransferDetail.Create(dto.Name, dto.Description).Value)
+            .HasColumnName("transfer_details");
 
         builder.Property(p => p.PhotosList)
             .HasConversion(
-                photos => JsonSerializer.Serialize(
-                    photos.Select(p => new PetPhotoDto
-                    { 
-                        PathToStorage = p.PathToStorage.Path
-                    }), JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<List<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
-                    .Select(dto => new Photo(FilePath.Create(dto.PathToStorage).Value))
-                    .ToList(),
-                new ValueComparer<IReadOnlyList<Photo>>(
-                    (c1, c2) => c1!.SequenceEqual(c2!),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
+                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<IReadOnlyList<Photo>>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("photos")
+            .HasColumnType("jsonb");
         
         builder.Property(p => p.CreationDate)
             .IsRequired()

@@ -17,9 +17,9 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
         
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Photos)
+        /*builder.Property(p => p.Photos)
             .HasConversion(
                 photos => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<PetPhotoDto[]>(json, JsonSerializerOptions.Default));
+                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!);*/
     }
 }

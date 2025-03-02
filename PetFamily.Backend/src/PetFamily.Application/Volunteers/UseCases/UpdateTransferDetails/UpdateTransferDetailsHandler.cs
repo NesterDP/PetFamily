@@ -43,13 +43,13 @@ public class UpdateTransferDetailsHandler
             return volunteerResult.Error.ToErrorList();
 
         List<TransferDetail> transferDetailsList = [];
-        foreach (var transferDetail in command.Dto.TransferDetails)
+        foreach (var transferDetail in command.TransferDetailDtos)
         {
             var tempResult = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
             transferDetailsList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateTransferDetails(TransferDetailsList.Create(transferDetailsList).Value);
+        volunteerResult.Value.UpdateTransferDetails(transferDetailsList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

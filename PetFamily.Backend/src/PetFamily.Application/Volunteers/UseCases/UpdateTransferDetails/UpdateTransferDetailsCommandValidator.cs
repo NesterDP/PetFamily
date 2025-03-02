@@ -10,7 +10,7 @@ public class UpdateTransferDetailsCommandValidator : AbstractValidator<UpdateTra
     public UpdateTransferDetailsCommandValidator()
     {
         RuleFor(r => r.Id).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleForEach(r => r.Dto.TransferDetails)
+        RuleForEach(r => r.TransferDetailDtos)
             .MustBeValueObject(t => TransferDetail.Create(t.Name, t.Description));
     }
 } 

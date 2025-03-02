@@ -109,8 +109,6 @@ public class AddPetHandler
             transferDetailsList.Add(result.Value);
         }
 
-        var transferDetailsListResult = TransferDetailsList.Create(transferDetailsList).Value;
-
         var photosListResult = new List<Photo>();
 
         var pet = new Pet(
@@ -128,7 +126,7 @@ public class AddPetHandler
             dateOfBirth,
             isVaccinated,
             helpStatus,
-            transferDetailsListResult,
+            transferDetailsList,
             photosListResult);
 
         return pet;

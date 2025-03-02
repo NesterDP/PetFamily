@@ -22,7 +22,14 @@ public sealed class Pet : Entity<PetId>
     public DateOfBirth DateOfBirth { get; private set; }
     public IsVaccinated IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public TransferDetailsList TransferDetailsList { get; private set; }
+    
+    private List<TransferDetail> _transferDetails = [];
+    
+    public IReadOnlyList<TransferDetail> TransferDetailsList
+    {
+        get => _transferDetails;
+        private set => _transferDetails = value.ToList();
+    }
     
     private List<Photo> _photos = [];
 
@@ -31,6 +38,7 @@ public sealed class Pet : Entity<PetId>
         get => _photos;
         private set => _photos = value.ToList();
     }
+    
     public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
     public Position Position { get; private set; }
     
@@ -53,7 +61,7 @@ public sealed class Pet : Entity<PetId>
         DateOfBirth dateOfBirth,
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
-        TransferDetailsList transferDetailsList,
+        IEnumerable<TransferDetail> transferDetails,
         IEnumerable<Photo> photos) : base(id)
     {
         Name = name;
@@ -69,7 +77,7 @@ public sealed class Pet : Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        TransferDetailsList = transferDetailsList;
+        TransferDetailsList = transferDetails.ToList();
         _photos = photos.ToList();
     }
 

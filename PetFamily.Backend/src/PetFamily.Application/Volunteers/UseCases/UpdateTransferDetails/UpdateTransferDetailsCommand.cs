@@ -4,4 +4,4 @@ namespace PetFamily.Application.Volunteers.UseCases.UpdateTransferDetails;
 
 public record UpdateTransferDetailsCommand(
     Guid Id,
-    TransferDetailsDto Dto);
+    List<TransferDetailDto> TransferDetailDtos);

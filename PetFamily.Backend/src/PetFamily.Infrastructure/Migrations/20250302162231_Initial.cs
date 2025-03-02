@@ -28,6 +28,8 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false),
+                    transfer_details = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -35,9 +37,7 @@ namespace PetFamily.Infrastructure.Migrations
                     first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    social_networks_list = table.Column<string>(type: "jsonb", nullable: false),
-                    transfer_details_list = table.Column<string>(type: "jsonb", nullable: false)
+                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,7 +67,8 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    photos_list = table.Column<string>(type: "text", nullable: false),
+                    transfer_details = table.Column<string>(type: "jsonb", nullable: false),
+                    photos = table.Column<string>(type: "jsonb", nullable: false),
                     creation_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
@@ -87,8 +88,7 @@ namespace PetFamily.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     position = table.Column<int>(type: "integer", nullable: false),
-                    weight_info = table.Column<float>(type: "real", nullable: false),
-                    transfer_details_list = table.Column<string>(type: "jsonb", nullable: false)
+                    weight_info = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {

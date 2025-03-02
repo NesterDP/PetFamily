@@ -10,8 +10,8 @@ namespace PetFamily.Infrastructure.DbContexts;
 
 public class ReadDbContext(IConfiguration configuration): DbContext, IReadDbContext
 {
-    public DbSet<VolunteerDto> Volunteers => Set<VolunteerDto>();
-    public DbSet<PetDto> Pets => Set<PetDto>();
+    public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
+    //public IQueryable<PetDto> Pets => Set<PetDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -20,10 +20,11 @@ public class ReadDbContext(IConfiguration configuration): DbContext, IReadDbCont
         //optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
     }
     
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder) 
     {
+        //base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(WriteDbContext).Assembly,
+            typeof(ReadDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
     }
 

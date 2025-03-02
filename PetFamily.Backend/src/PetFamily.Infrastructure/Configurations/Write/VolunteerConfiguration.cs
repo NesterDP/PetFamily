@@ -1,8 +1,14 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
 
@@ -67,34 +73,18 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(DomainConstants.MAX_PHONE_LENGTH)
                 .HasColumnName("phone_number");
         });
-
-        builder.OwnsOne(v => v.SocialNetworksList, slb =>
-        {
-            slb.ToJson("social_networks_list");
-
-            slb.OwnsMany(snl => snl.SocialNetworks, snb =>
-            {
-                snb.Property(sn => sn.Name)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH);
-                snb.Property(sn => sn.Link)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_LOW_TEXT_LENGTH);
-            });
-        });
         
-        builder.OwnsOne(v => v.TransferDetailsList, tdlb =>
-        {
-            tdlb.ToJson("transfer_details_list");
+        builder.Property(v => v.SocialNetworksList)
+            .Json1DeepLvlVoCollectionConverter(
+                socialNetwork => new SocialNetworkDto(socialNetwork.Name, socialNetwork.Link),
+                dto => SocialNetwork.Create(dto.Link, dto.Name).Value)
+            .HasColumnName("social_networks");
 
-            tdlb.OwnsMany(tdl => tdl.TransferDetails, tdb =>
-            {
-                tdb.Property(td => td.Name)
-                    .IsRequired();
-                tdb.Property(td => td.Description)
-                    .IsRequired();
-            });
-        });
+        builder.Property(v => v.TransferDetailsList)
+            .Json1DeepLvlVoCollectionConverter(
+                transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
+                dto => TransferDetail.Create(dto.Name, dto.Description).Value)
+            .HasColumnName("transfer_details");
 
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne()
