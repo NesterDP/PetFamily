@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PetFamily.Infrastructure;
 using PetFamily.Infrastructure.DbContexts;
 
 #nullable disable
@@ -14,15 +12,13 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250223013558_Initial")]
-    partial class Initial
+    partial class WriteDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -38,6 +34,11 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified))
                         .HasColumnName("creation_date");
+
+                    b.Property<string>("PhotosList")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("photos_list");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
@@ -398,52 +399,6 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Navigation("TransferDetails");
                         });
-
-                    b.OwnsOne("PetFamily.Domain.Shared.SharedVO.PhotosList", "PhotosList", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("id");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("photos_list");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fk_pets_pets_id");
-
-                            b1.OwnsMany("PetFamily.Domain.Shared.SharedVO.Photo", "Photos", b2 =>
-                                {
-                                    b2.Property<Guid>("PhotosListPetId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("PathToStorage")
-                                        .IsRequired()
-                                        .HasMaxLength(50)
-                                        .HasColumnType("character varying(50)");
-
-                                    b2.HasKey("PhotosListPetId", "Id")
-                                        .HasName("pk_pets");
-
-                                    b2.ToTable("pets");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("PhotosListPetId")
-                                        .HasConstraintName("fk_pets_pets_photos_list_pet_id");
-                                });
-
-                            b1.Navigation("Photos");
-                        });
-
-                    b.Navigation("PhotosList")
-                        .IsRequired();
 
                     b.Navigation("TransferDetailsList")
                         .IsRequired();

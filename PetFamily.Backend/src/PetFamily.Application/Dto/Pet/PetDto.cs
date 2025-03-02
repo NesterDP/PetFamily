@@ -20,7 +20,7 @@ public class PetDto
     public bool IsVaccinated { get; init; }
     public string HelpStatus { get; init; }  = string.Empty;
     public TransferDetailsDto TransferDetails { get; init; } = new([]);
-    public IEnumerable<string> Photos { get; init; } = [];
+    public PetPhotoDto[] Photos { get; init; } = [];
     public DateTime CreationDate { get; init; }
     public int Position { get; init; }
 }

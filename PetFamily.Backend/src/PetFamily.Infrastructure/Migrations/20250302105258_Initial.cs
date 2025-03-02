@@ -67,6 +67,7 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    photos_list = table.Column<string>(type: "text", nullable: false),
                     creation_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
@@ -87,7 +88,6 @@ namespace PetFamily.Infrastructure.Migrations
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     position = table.Column<int>(type: "integer", nullable: false),
                     weight_info = table.Column<float>(type: "real", nullable: false),
-                    photos_list = table.Column<string>(type: "jsonb", nullable: false),
                     transfer_details_list = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>

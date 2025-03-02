@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.Dto.Pet;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
@@ -170,8 +172,18 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.PhotosList)
             .HasConversion(
-                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<List<Photo>>(json, JsonSerializerOptions.Default)!);
+                photos => JsonSerializer.Serialize(
+                    photos.Select(p => new PetPhotoDto
+                    { 
+                        PathToStorage = p.PathToStorage.Path
+                    }), JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<List<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
+                    .Select(dto => new Photo(FilePath.Create(dto.PathToStorage).Value))
+                    .ToList(),
+                new ValueComparer<IReadOnlyList<Photo>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
         
         builder.Property(p => p.CreationDate)
             .IsRequired()
