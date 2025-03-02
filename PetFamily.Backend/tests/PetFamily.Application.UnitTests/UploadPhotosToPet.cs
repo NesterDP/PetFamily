@@ -10,6 +10,7 @@ using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Files;
 using PetFamily.Application.Files.FilesData;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Volunteers;
 using PetFamily.Application.Volunteers.UploadPhotosToPet;
 using PetFamily.Domain.PetContext.Entities;
@@ -17,6 +18,7 @@ using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Application.UnitTests;
 
@@ -27,6 +29,7 @@ public class UploadPhotosToPet
     private readonly Mock<ILogger<UploadPhotosToPetHandler>> _loggerMock;
     private readonly Mock<IFilesProvider> _fileProviderMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _iMessageQueue;
 
 
     public UploadPhotosToPet()
@@ -36,6 +39,7 @@ public class UploadPhotosToPet
         _loggerMock = new Mock<ILogger<UploadPhotosToPetHandler>>();
         _fileProviderMock = new Mock<IFilesProvider>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
+        _iMessageQueue =  new Mock<IMessageQueue<IEnumerable<FileInfo>>>();
     }
 
     [Fact]
@@ -79,12 +83,17 @@ public class UploadPhotosToPet
             .Setup(u => u.SaveChangesAsync(ct))
             .Returns(Task.CompletedTask);
 
-        /*var handler = new UploadPhotosToPetHandler(
+        _iMessageQueue
+            .Setup(m => m.WriteAsync(It.IsAny<IEnumerable<FileInfo>>(), ct))
+            .Returns(Task.CompletedTask);
+
+        var handler = new UploadPhotosToPetHandler(
             _validatorMock.Object,
             _volunteerRepositoryMock.Object,
             _loggerMock.Object,
             _fileProviderMock.Object,
-            _unitOfWorkMock.Object,);
+            _unitOfWorkMock.Object,
+            _iMessageQueue.Object);
 
         // act
         var result = await handler.HandleAsync(command, ct);
@@ -92,7 +101,7 @@ public class UploadPhotosToPet
         // assert
         volunteer.AllOwnedPets.First().PhotosList.Photos.Should().HaveCount(2);
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().Be(volunteer.AllOwnedPets[0].Id.Value);*/
+        result.Value.Should().Be(volunteer.AllOwnedPets[0].Id.Value);
     }
 
     private static Volunteer CreateVolunteer()
