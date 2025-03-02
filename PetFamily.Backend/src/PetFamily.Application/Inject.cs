@@ -2,16 +2,17 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Files.Delete;
 using PetFamily.Application.Files.Upload;
+using PetFamily.Application.Volunteers.Commands.AddPet;
+using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
+using PetFamily.Application.Volunteers.Commands.Create;
+using PetFamily.Application.Volunteers.Commands.Delete;
+using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
+using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
+using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
+using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
 using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
-using PetFamily.Application.Volunteers.UseCases.AddPet;
-using PetFamily.Application.Volunteers.UseCases.ChangePetPosition;
-using PetFamily.Application.Volunteers.UseCases.Create;
-using PetFamily.Application.Volunteers.UseCases.Delete;
-using PetFamily.Application.Volunteers.UseCases.DeletePetPhotos;
-using PetFamily.Application.Volunteers.UseCases.UpdateMainInfo;
-using PetFamily.Application.Volunteers.UseCases.UpdateSocialNetworks;
-using PetFamily.Application.Volunteers.UseCases.UpdateTransferDetails;
-using PetFamily.Application.Volunteers.UseCases.UploadPhotosToPet;
 
 namespace PetFamily.Application;
 
@@ -35,6 +36,7 @@ public static class Inject
         services.AddScoped<DeletePetPhotosHandler>();
 
         services.AddScoped<GetVolunteersWithPaginationHandler>();
+        services.AddScoped<GetVolunteerByIdHandler>();
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;

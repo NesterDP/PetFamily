@@ -18,6 +18,7 @@ public class ReadDbContext(IConfiguration configuration): DbContext, IReadDbCont
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(InfrastructureConstants.DATABASE));
         optionsBuilder.UseSnakeCaseNamingConvention();
         //optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder) 

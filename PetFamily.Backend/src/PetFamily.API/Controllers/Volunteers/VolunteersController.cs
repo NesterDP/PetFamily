@@ -4,16 +4,17 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Models;
+using PetFamily.Application.Volunteers.Commands.AddPet;
+using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
+using PetFamily.Application.Volunteers.Commands.Create;
+using PetFamily.Application.Volunteers.Commands.Delete;
+using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
+using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
+using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
+using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
 using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
-using PetFamily.Application.Volunteers.UseCases.AddPet;
-using PetFamily.Application.Volunteers.UseCases.ChangePetPosition;
-using PetFamily.Application.Volunteers.UseCases.Create;
-using PetFamily.Application.Volunteers.UseCases.Delete;
-using PetFamily.Application.Volunteers.UseCases.DeletePetPhotos;
-using PetFamily.Application.Volunteers.UseCases.UpdateMainInfo;
-using PetFamily.Application.Volunteers.UseCases.UpdateSocialNetworks;
-using PetFamily.Application.Volunteers.UseCases.UpdateTransferDetails;
-using PetFamily.Application.Volunteers.UseCases.UploadPhotosToPet;
 
 
 namespace PetFamily.API.Controllers.Volunteers;
@@ -144,7 +145,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-
+    
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetVolunteersWithPaginationRequest request,
@@ -154,5 +155,16 @@ public class VolunteersController : ApplicationController
         var query = request.ToQuery();
         var result = await handler.HandlerAsync(query, cancellationToken);
         return Ok(result);
+    }
+    
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<Guid>>  Get(
+        [FromRoute] Guid id,
+        [FromServices] GetVolunteerByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetVolunteerByIdQuery(id);
+        var result = await handler.HandlerAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }

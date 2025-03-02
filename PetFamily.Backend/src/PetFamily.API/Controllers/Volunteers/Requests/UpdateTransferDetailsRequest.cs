@@ -1,5 +1,5 @@
 using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Volunteers.UseCases.UpdateTransferDetails;
+using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;

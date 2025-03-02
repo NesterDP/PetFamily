@@ -1,5 +1,5 @@
 using PetFamily.Application.Dto.Volunteer;
-using PetFamily.Application.Volunteers.UseCases.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 

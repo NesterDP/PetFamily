@@ -12,7 +12,7 @@ using PetFamily.Application.Files;
 using PetFamily.Application.Files.FilesData;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.Volunteers;
-using PetFamily.Application.Volunteers.UseCases.UploadPhotosToPet;
+using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
