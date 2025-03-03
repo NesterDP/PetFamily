@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
@@ -21,19 +22,21 @@ public class AddPetHandler
     private readonly ISpeciesRepository _speciesRepository;
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IReadDbContext _readDbContext;
 
     public AddPetHandler(
         IValidator<AddPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ISpeciesRepository speciesRepository,
         ILogger<AddPetHandler> logger,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork, IReadDbContext readDbContext)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _speciesRepository = speciesRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _readDbContext = readDbContext;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -137,19 +140,18 @@ public class AddPetHandler
         Guid clientBreedId,
         CancellationToken cancellationToken)
     {
-        var speciesId = SpeciesId.Create(clientSpeciesId);
-        var breedId = BreedId.Create(clientBreedId);
+        var speciesExist = await _readDbContext.Species
+           .FirstOrDefaultAsync(s => s.Id == clientSpeciesId, cancellationToken);
 
-        var speciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);
+        if (speciesExist == null)
+            return Errors.General.ValueNotFound(clientSpeciesId);
         
-        if (speciesResult.IsFailure)
-            return speciesResult.Error;
+        var breedExist = await _readDbContext.Breeds.
+            FirstOrDefaultAsync(b => b.Id == clientBreedId, cancellationToken);
         
-        var breedResult = speciesResult.Value.GetBreedById(breedId);
+        if (breedExist == null)
+            return Errors.General.ValueNotFound(clientBreedId);
 
-        if (breedResult.IsFailure)
-            return breedResult.Error;
-        
         return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }
 }
