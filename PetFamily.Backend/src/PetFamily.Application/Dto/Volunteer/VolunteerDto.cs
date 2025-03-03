@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Shared;
 
@@ -30,10 +31,10 @@ public class VolunteerDto
     public string Description { get; init; } = string.Empty;
 
     public int Experience { get; init; } = default;
-    
     public SocialNetworkDto[] SocialNetworks { get; init; } = [];
     
     public TransferDetailDto[] TransferDetails { get; init; } = [];
     
     public PetDto[] Pets { get; init; } = [];
 }
+

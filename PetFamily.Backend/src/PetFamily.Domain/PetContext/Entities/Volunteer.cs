@@ -38,9 +38,7 @@ public class Volunteer : Entity<VolunteerId>
     public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
 
     // ef
-    public Volunteer(VolunteerId id) : base(id)
-    {
-    }
+    public Volunteer() { }
 
     public Volunteer(
         VolunteerId id,
