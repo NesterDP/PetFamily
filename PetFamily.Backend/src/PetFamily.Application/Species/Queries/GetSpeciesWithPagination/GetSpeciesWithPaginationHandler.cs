@@ -14,7 +14,7 @@ public class GetSpeciesWithPaginationHandler
         _readDbContext = readDbContext;
     }
 
-    public async Task<PagedList<SpeciesDto>> HandlerAsync(
+    public async Task<PagedList<SpeciesDto>> HandleAsync(
         GetSpeciesWithPaginationQuery query,
         CancellationToken cancellationToken)
     {

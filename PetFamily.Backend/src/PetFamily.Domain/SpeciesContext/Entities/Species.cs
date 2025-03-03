@@ -44,4 +44,16 @@ public class Species : Entity<SpeciesId>
             return Errors.General.ValueNotFound(breedId.Value);
         return breed;
     }
+    
+    public Result<Guid, Error> RemoveBreedById(BreedId breedId)
+    {
+        var breed = _breeds.FirstOrDefault(p => p.Id.Value == breedId.Value);
+        if (breed == null)
+            return Errors.General.ValueNotFound(breedId.Value);
+        
+        _breeds.Remove(breed);
+        return breedId.Value;
+    }
+    
+    
 }

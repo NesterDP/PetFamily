@@ -15,7 +15,7 @@ public class GetBreedsBySpeciesIdHandler
         _readDbContext = readDbContext;
     }
 
-    public async Task<List<BreedDto>> HandlerAsync(
+    public async Task<List<BreedDto>> HandleAsync(
         GetBreedsBySpeciesIdQuery query,
         CancellationToken cancellationToken)
     {

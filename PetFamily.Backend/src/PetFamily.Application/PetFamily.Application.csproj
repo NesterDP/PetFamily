@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Species\Commands\" />
       <Folder Include="Volunteers\Commands\" />
     </ItemGroup>
 
