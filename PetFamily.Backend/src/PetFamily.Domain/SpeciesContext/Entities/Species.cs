@@ -15,11 +15,9 @@ public class Species : Entity<SpeciesId>
     public IReadOnlyList<Breed> Breeds => _breeds;
 
     // ef core
-    public Species(SpeciesId id) : base(id) { }
+    public Species() { }
     
-
-
-    public Species(SpeciesId id, Name name, List<Breed> breeds) : base(id)
+    public Species(SpeciesId id, Name name) : base(id)
     {
         Name = name;
     }

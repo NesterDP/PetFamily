@@ -19,7 +19,6 @@ public class AddPetHandler
 {
     private readonly IValidator<AddPetCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly ISpeciesRepository _speciesRepository;
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReadDbContext _readDbContext;
@@ -33,7 +32,6 @@ public class AddPetHandler
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
-        _speciesRepository = speciesRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
         _readDbContext = readDbContext;
