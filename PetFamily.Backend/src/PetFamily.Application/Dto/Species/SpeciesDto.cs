@@ -8,5 +8,5 @@ public class SpeciesDto
     
     public string Name { get; init; }
     
-    public IReadOnlyList<BreedDto> Breeds { get; init; }
+    //public IReadOnlyList<BreedDto> Breeds { get; init; }
 }

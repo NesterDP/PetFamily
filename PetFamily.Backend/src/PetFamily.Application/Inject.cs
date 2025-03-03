@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Files.Delete;
 using PetFamily.Application.Files.Upload;
+using PetFamily.Application.Species.Queries.GetBreedsBySpeciesId;
+using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
 using PetFamily.Application.Volunteers.Commands.Create;
@@ -37,6 +39,8 @@ public static class Inject
 
         services.AddScoped<GetVolunteersWithPaginationHandler>();
         services.AddScoped<GetVolunteerByIdHandler>();
+        services.AddScoped<GetSpeciesWithPaginationHandler>();
+        services.AddScoped<GetBreedsBySpeciesIdHandler>();
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;

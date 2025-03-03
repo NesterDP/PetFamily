@@ -6,15 +6,6 @@ namespace PetFamily.Application.Dto.Volunteer;
 
 public class VolunteerDto
 {
-    /*public Guid Id { get; init; }
-    public FullNameDto FullName { get; init; } = new(string.Empty, string.Empty, string.Empty);
-    public string Email { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
-    public int Experience { get; init; }
-    public string PhoneNumber { get; init; } = string.Empty;
-    public SocialNetworkDto[] SocialNetworks { get; init; } = [];
-    public TransferDetailDto[] TransferDetails { get; init; } = [];
-    public PetDto[] Pets { get; init; } = [];*/
     
     public Guid Id { get; init; }
     
