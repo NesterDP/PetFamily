@@ -12,6 +12,7 @@ using PetFamily.Application.Volunteers.Commands.DeletePet;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
+using PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
 using PetFamily.Application.Volunteers.Commands.UpdatePetStatus;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
@@ -217,6 +218,19 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new DeletePetCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/pet/{petId:guid}/main-photo")]
+    public async Task<ActionResult<Guid>> MainPhoto(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromBody] UpdatePetMainPhotoRequest request,
+        [FromServices] UpdatePetMainPhotoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

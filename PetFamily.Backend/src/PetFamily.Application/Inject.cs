@@ -16,6 +16,7 @@ using PetFamily.Application.Volunteers.Commands.DeletePet;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
+using PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
 using PetFamily.Application.Volunteers.Commands.UpdatePetStatus;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
@@ -60,6 +61,8 @@ public static class Inject
         
         services.AddScoped<SoftDeletePetHandler>();
         services.AddScoped<HardDeletePetHandler>();
+        
+        services.AddScoped<UpdatePetMainPhotoHandler>();
         
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         

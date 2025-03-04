@@ -146,7 +146,13 @@ public sealed class Pet : Entity<PetId>
     {
         _photos = photos.ToList();
     }
-    
+
+    public void UpdateMainPhoto(Photo photo)
+    {
+        _photos.Remove(photo);
+        _photos.Insert(0, photo);
+    }
+
     public void Delete()
     {
         if (_isDeleted == false)
