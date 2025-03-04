@@ -10,6 +10,7 @@ using PetFamily.Application.Volunteers.Commands.Create;
 using PetFamily.Application.Volunteers.Commands.Delete;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
+using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
@@ -133,7 +134,7 @@ public class VolunteersController : ApplicationController
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
-    [HttpPut("{id:guid}/pet/{petId:guid}")]
+    [HttpPut("{id:guid}/pet/{petId:guid}/position")]
     public async Task<ActionResult<Guid>> ChangePetPosition(
         [FromRoute] Guid id,
         [FromRoute] Guid petId,
@@ -165,6 +166,19 @@ public class VolunteersController : ApplicationController
     {
         var query = new GetVolunteerByIdQuery(id);
         var result = await handler.HandlerAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/pet/{petId:guid}/info")]
+    public async Task<ActionResult<Guid>> UpdatePetInfo(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromBody] UpdatePetInfoRequest request,
+        [FromServices] UpdatePetInfoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }

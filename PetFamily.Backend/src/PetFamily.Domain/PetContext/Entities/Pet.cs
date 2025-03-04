@@ -80,12 +80,73 @@ public sealed class Pet : Entity<PetId>
         TransferDetailsList = transferDetails.ToList();
         _photos = photos.ToList();
     }
-
+    
+    public void UpdateName(Name name)
+    {
+        Name = name;
+    }
+    
+    public void UpdateDescription(Description description)
+    {
+        Description = description;
+    }
+    
+    public void UpdatePetClassification(PetClassification petClassification)
+    {
+        PetClassification = petClassification;
+    }
+    
+    public void UpdateColor(Color color)
+    {
+        Color = color;
+    }
+    public void UpdateHealthInfo(HealthInfo healthInfo)
+    {
+        HealthInfo = healthInfo;
+    }
+    public void UpdateAddress(Address address)
+    {
+        Address = address;
+    }
+    public void UpdateWeight(Weight weight)
+    {
+        Weight = weight;
+    }
+    public void UpdateHeight(Height height)
+    {
+        Height = height;
+    }
+    public void UpdateOwnerPhoneNumber(Phone ownerPhoneNumber)
+    {
+        OwnerPhoneNumber = ownerPhoneNumber;
+    }
+    public void UpdateIsCastrated(IsCastrated isCastrated)
+    {
+        IsCastrated = isCastrated;
+    }
+    public void UpdateDateOfBirth(DateOfBirth dateOfBirth)
+    {
+        DateOfBirth = dateOfBirth;
+    }
+    public void UpdateIsVaccinated(IsVaccinated isVaccinated)
+    {
+        IsVaccinated = isVaccinated;
+    }
+    public void UpdateHelpStatus(HelpStatus helpStatus)
+    {
+        HelpStatus = helpStatus;
+    }
+    public void UpdateTransferDetails(IEnumerable<TransferDetail> transferDetails)
+    {
+        TransferDetailsList = transferDetails.ToList();
+    }
+    
+    
     public void UpdatePhotos(IEnumerable<Photo> photos)
     {
         _photos = photos.ToList();
     }
-
+    
     public void Delete()
     {
         if (_isDeleted == false)

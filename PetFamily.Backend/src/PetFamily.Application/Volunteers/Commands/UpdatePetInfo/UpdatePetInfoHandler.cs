@@ -4,29 +4,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Species;
-using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
-using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Application.Volunteers.Commands.AddPet;
+namespace PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
 
-public class AddPetHandler
+public class UpdatePetInfoHandler
 {
-    private readonly IValidator<AddPetCommand> _validator;
+    private readonly IValidator<UpdatePetInfoCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly ILogger<AddPetHandler> _logger;
+    private readonly ILogger<UpdatePetInfoHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReadDbContext _readDbContext;
 
-    public AddPetHandler(
-        IValidator<AddPetCommand> validator,
+    public UpdatePetInfoHandler(
+        IValidator<UpdatePetInfoCommand> validator,
         IVolunteersRepository volunteersRepository,
-        ILogger<AddPetHandler> logger,
+        ILogger<UpdatePetInfoHandler> logger,
         IUnitOfWork unitOfWork,
         IReadDbContext readDbContext)
     {
@@ -38,7 +34,7 @@ public class AddPetHandler
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
-        AddPetCommand command,
+        UpdatePetInfoCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
@@ -58,22 +54,6 @@ public class AddPetHandler
 
         if (petClassification.IsFailure)
             return petClassification.Error.ToErrorList();
-
-        var pet = CreatePet(command, petClassification.Value);
-
-        volunteerResult.Value.AddPet(pet);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        _logger.LogInformation(
-            "Successfully added pet with ID = {ID} to volunteer with ID = {ID}", pet.Id.Value, volunteerId.Value);
-
-        return pet.Id.Value;
-    }
-
-    private Pet CreatePet(AddPetCommand command, PetClassification petClassification)
-    {
-        var petId = PetId.NewPetId();
 
         var name = Name.Create(command.Name).Value;
 
@@ -100,9 +80,6 @@ public class AddPetHandler
 
         var isVaccinated = IsVaccinated.Create(command.IsVaccinated).Value;
 
-        Enum.TryParse(command.HelpStatus, out PetStatus status);
-        var helpStatus = HelpStatus.Create(status).Value;
-
         List<TransferDetail> transferDetailsList = [];
         foreach (var transferDetail in command.TransferDetailsDto)
         {
@@ -110,13 +87,11 @@ public class AddPetHandler
             transferDetailsList.Add(result.Value);
         }
 
-        var photosListResult = new List<Photo>();
-
-        var pet = new Pet(
-            petId,
+        var updateResult = volunteerResult.Value.UpdatePetInfo(
+            command.PetId,
             name,
             description,
-            petClassification,
+            petClassification.Value,
             color,
             healthInfo,
             address,
@@ -126,12 +101,21 @@ public class AddPetHandler
             isCastrated,
             dateOfBirth,
             isVaccinated,
-            helpStatus,
-            transferDetailsList,
-            photosListResult);
+            transferDetailsList);
+        
+        if (updateResult.IsFailure)
+            return updateResult.Error.ToErrorList();
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return pet;
+        _logger.LogInformation(
+            "Successfully updated pet with ID = {ID} for volunteer with ID = {ID}",
+            command.PetId,
+            command.VolunteerId);
+
+        return command.PetId;
     }
+
 
     private async Task<Result<PetClassification, Error>> GetPetClassification(
         Guid clientSpeciesId,

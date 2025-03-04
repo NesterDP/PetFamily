@@ -122,6 +122,44 @@ public class Volunteer : Entity<VolunteerId>
             chosenPet.UpdatePhotos(photos);
     }
 
+    public UnitResult<Error>  UpdatePetInfo(
+        PetId petId,
+        Name name,
+        Description description,
+        PetClassification petClassification,
+        Color color,
+        HealthInfo healthInfo,
+        Address address,
+        Weight weight,
+        Height height,
+        Phone ownerPhoneNumber,
+        IsCastrated isCastrated,
+        DateOfBirth dateOfBirth,
+        IsVaccinated isVaccinated,
+        List<TransferDetail> transferDetails)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet == null)
+            return Errors.General.ValueNotFound(petId.Value);
+        
+        chosenPet.UpdateName(name);
+        chosenPet.UpdateDescription(description);
+        chosenPet.UpdatePetClassification(petClassification);
+        chosenPet.UpdateColor(color);
+        chosenPet.UpdateHealthInfo(healthInfo);
+        chosenPet.UpdateAddress(address);
+        chosenPet.UpdateWeight(weight);
+        chosenPet.UpdateHeight(height);
+        chosenPet.UpdateOwnerPhoneNumber(ownerPhoneNumber);
+        chosenPet.UpdateIsCastrated(isCastrated);
+        chosenPet.UpdateDateOfBirth(dateOfBirth);
+        chosenPet.UpdateIsVaccinated(isVaccinated);
+        chosenPet.UpdateTransferDetails(transferDetails);
+
+        return UnitResult.Success<Error>();
+    }
+    
+
     public void Restore()
     {
         if (_isDeleted)
