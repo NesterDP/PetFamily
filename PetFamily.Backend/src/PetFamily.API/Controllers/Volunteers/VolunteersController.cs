@@ -11,6 +11,7 @@ using PetFamily.Application.Volunteers.Commands.Delete;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
+using PetFamily.Application.Volunteers.Commands.UpdatePetStatus;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
@@ -175,6 +176,19 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid petId,
         [FromBody] UpdatePetInfoRequest request,
         [FromServices] UpdatePetInfoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPut("{id:guid}/pet/{petId:guid}/help-status")]
+    public async Task<ActionResult<Guid>> UpdatePetHelpStatus(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromBody] UpdatePetHelpStatusRequest request,
+        [FromServices] UpdatePetHelpStatusHandler handler,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(id, petId);

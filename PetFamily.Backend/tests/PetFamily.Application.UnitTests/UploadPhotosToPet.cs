@@ -145,7 +145,7 @@ public class UploadPhotosToPet
         var isCastrated = IsCastrated.Create(false).Value;
         var dateOfBirth = DateOfBirth.Create(DateTime.Now.AddYears(-2)).Value;
         var isVaccinated = IsVaccinated.Create(true).Value;
-        var helpStatus = HelpStatus.Create(PetStatus.NeedHelp).Value;
+        var helpStatus = HelpStatus.Create(PetStatus.InSearchOfHome).Value;
         var transferDetailsList = new List<TransferDetail>();
         var photosList = new List<Photo>();
 

@@ -33,9 +33,12 @@ public class Volunteer : Entity<VolunteerId>
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
-    public int PetsFoundHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
-    public int PetsSeekingHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.SeekingHome);
-    public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
+    public int PetsFoundHome() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
+    public int PetsInSearchOfHome() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.InSearchOfHome);
+    public int PetsUnderMedicalTreatment() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.UnderMedicalTreatment);
 
     // ef
     public Volunteer() { }
@@ -120,6 +123,19 @@ public class Volunteer : Entity<VolunteerId>
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
         if (chosenPet != null)
             chosenPet.UpdatePhotos(photos);
+    }
+
+    public UnitResult<Error> UpdatePetHelpStatus(
+        PetId petId,
+        HelpStatus helpStatus)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet == null)
+            return Errors.General.ValueNotFound(petId.Value);
+        
+        chosenPet.UpdateHelpStatus(helpStatus);
+
+        return UnitResult.Success<Error>();
     }
 
     public UnitResult<Error>  UpdatePetInfo(

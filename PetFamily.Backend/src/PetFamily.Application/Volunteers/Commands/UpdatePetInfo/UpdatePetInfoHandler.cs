@@ -108,10 +108,7 @@ public class UpdatePetInfoHandler
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Successfully updated pet with ID = {ID} for volunteer with ID = {ID}",
-            command.PetId,
-            command.VolunteerId);
+        _logger.LogInformation("Successfully updated info of pet with ID = {ID}", command.PetId);
 
         return command.PetId;
     }

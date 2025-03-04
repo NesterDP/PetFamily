@@ -29,7 +29,7 @@ public record HelpStatus
 
 public enum PetStatus
 {
-    NeedHelp,
-    SeekingHome,
+    InSearchOfHome,
+    UnderMedicalTreatment,
     FoundHome
 }
