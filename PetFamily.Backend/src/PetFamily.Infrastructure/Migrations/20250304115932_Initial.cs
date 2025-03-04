@@ -72,7 +72,7 @@ namespace PetFamily.Infrastructure.Migrations
                     photos = table.Column<string>(type: "jsonb", nullable: false),
                     creation_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     apartment = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     house = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),

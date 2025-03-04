@@ -49,7 +49,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<Guid?>("volunteer_id")
+                    b.Property<Guid>("volunteer_id")
                         .HasColumnType("uuid")
                         .HasColumnName("volunteer_id");
 
@@ -365,6 +365,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .WithMany("AllOwnedPets")
                         .HasForeignKey("volunteer_id")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
                 });
 

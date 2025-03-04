@@ -147,10 +147,16 @@ public sealed class Pet : Entity<PetId>
         _photos = photos.ToList();
     }
 
-    public void UpdateMainPhoto(Photo photo)
+    public void UpdateMainPhoto(Photo mainPhoto)
     {
-        _photos.Remove(photo);
-        _photos.Insert(0, photo);
+        var updatedPhotosList = new List<Photo>();
+        foreach (var photo in _photos)
+        {
+            if (photo.PathToStorage.Path != mainPhoto.PathToStorage.Path)
+                updatedPhotosList.Add(photo.CreateCopy(0));
+        }
+        updatedPhotosList.Add(mainPhoto.CreateCopy(1));
+        _photos = updatedPhotosList;
     }
 
     public void Delete()

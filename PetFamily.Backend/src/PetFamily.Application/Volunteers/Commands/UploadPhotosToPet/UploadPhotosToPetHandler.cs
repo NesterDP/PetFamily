@@ -87,9 +87,9 @@ public class UploadPhotosToPetHandler
 
         // новый список фото должен содержать как добавленные, так и старые фото
         var unionOfPhotos = pet.Value.PhotosList.Union(photoFiles);
-        var updatedList = unionOfPhotos.Select(u => new Photo(u.PathToStorage)).ToList();
+        //var updatedList = unionOfPhotos.Select(u => u.CreateCopy()).ToList();
 
-        volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updatedList);
+        volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, unionOfPhotos);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
