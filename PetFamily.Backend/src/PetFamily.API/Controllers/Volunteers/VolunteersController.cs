@@ -8,6 +8,7 @@ using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
 using PetFamily.Application.Volunteers.Commands.Create;
 using PetFamily.Application.Volunteers.Commands.Delete;
+using PetFamily.Application.Volunteers.Commands.DeletePet;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
@@ -171,7 +172,7 @@ public class VolunteersController : ApplicationController
     }
     
     [HttpPut("{id:guid}/pet/{petId:guid}/info")]
-    public async Task<ActionResult<Guid>> UpdatePetInfo(
+    public async Task<ActionResult<Guid>> PetInfo(
         [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] UpdatePetInfoRequest request,
@@ -184,7 +185,7 @@ public class VolunteersController : ApplicationController
     }
     
     [HttpPut("{id:guid}/pet/{petId:guid}/help-status")]
-    public async Task<ActionResult<Guid>> UpdatePetHelpStatus(
+    public async Task<ActionResult<Guid>> PetHelpStatus(
         [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] UpdatePetHelpStatusRequest request,
@@ -192,6 +193,30 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpDelete("{id:guid}/pet/{petId:guid}/soft")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromServices] SoftDeletePetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpDelete("{id:guid}/pet/{petId:guid}/hard")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromServices] HardDeletePetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetCommand(id, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

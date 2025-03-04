@@ -12,6 +12,7 @@ using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
 using PetFamily.Application.Volunteers.Commands.Create;
 using PetFamily.Application.Volunteers.Commands.Delete;
+using PetFamily.Application.Volunteers.Commands.DeletePet;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
@@ -47,12 +48,19 @@ public static class Inject
         services.AddScoped<GetVolunteerByIdHandler>();
         services.AddScoped<GetSpeciesWithPaginationHandler>();
         services.AddScoped<GetBreedsBySpeciesIdHandler>();
+        
         services.AddScoped<DeleteBreedByIdHandler>();
         services.AddScoped<DeleteSpeciesByIdHandler>();
+        
         services.AddScoped<CreateSpeciesHandler>();
         services.AddScoped<AddBreedToSpeciesHandler>();
+        
         services.AddScoped<UpdatePetInfoHandler>();
         services.AddScoped<UpdatePetHelpStatusHandler>();
+        
+        services.AddScoped<SoftDeletePetHandler>();
+        services.AddScoped<HardDeletePetHandler>();
+        
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;

@@ -206,6 +206,23 @@ public class Volunteer : Entity<VolunteerId>
         _pets.Add(pet);
         return Result.Success<Error>();
     }
+    
+    public UnitResult<Error> HardDeletePet(Pet pet)
+    {
+        _pets.Remove(pet);
+        foreach (var p in _pets.Where(p => p.Position.Value > pet.Position.Value))
+        {
+            var newPosition = (Position.Create(p.Position.Value - 1).Value);
+            p.SetPosition(newPosition);
+        }
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> SoftDeletePet(Pet pet)
+    {
+        pet.Delete();
+        return Result.Success<Error>();
+    }
 
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {

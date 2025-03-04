@@ -89,8 +89,10 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne()
             .HasForeignKey("volunteer_id")
-            .IsRequired(false)
+            .IsRequired(true)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(s => s.AllOwnedPets).AutoInclude();
 
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
