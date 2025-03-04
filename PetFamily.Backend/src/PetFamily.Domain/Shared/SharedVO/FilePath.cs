@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.CustomErrors;
 
@@ -8,7 +9,7 @@ public class FilePath
     public string Path { get; }
     
 
-
+    [JsonConstructor]
     private FilePath(string path)
     {
         Path = path;

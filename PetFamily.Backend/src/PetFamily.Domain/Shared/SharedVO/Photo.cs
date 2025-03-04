@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.CustomErrors;
 
@@ -7,6 +8,7 @@ public record Photo
 {
     public FilePath PathToStorage { get; }
     
+    [JsonConstructor]
     public Photo(FilePath pathToStorage) => PathToStorage = pathToStorage;
     
     public int CompareTo(object? o)

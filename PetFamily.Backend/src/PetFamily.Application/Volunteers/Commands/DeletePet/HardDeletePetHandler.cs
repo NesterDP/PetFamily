@@ -3,9 +3,11 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Volunteers.Commands.Delete;
+using PetFamily.Application.Files;
+using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
+using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Application.Volunteers.Commands.DeletePet;
 
@@ -15,17 +17,20 @@ public class HardDeletePetHandler
     private readonly ILogger<HardDeletePetHandler> _logger;
     private readonly IValidator<DeletePetCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IFilesProvider _filesProvider;
+    private readonly string BUCKET_NAME = "photos";
 
     public HardDeletePetHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<HardDeletePetHandler> logger,
         IValidator<DeletePetCommand> validator,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork, IFilesProvider filesProvider)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
         _unitOfWork = unitOfWork;
+        _filesProvider = filesProvider;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -48,9 +53,24 @@ public class HardDeletePetHandler
 
         volunteerResult.Value.HardDeletePet(pet);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await DeletePhotosFromFileProvider(pet, cancellationToken);
         
         _logger.LogInformation("Pet was hard deleted, his ID = {ID}", pet.Id);
 
         return pet.Id.Value;
+    }
+
+    private async Task DeletePhotosFromFileProvider(Pet pet, CancellationToken cancellationToken)
+    {
+        var filesPaths = pet.PhotosList.Select(p => p.PathToStorage); 
+        var deleteData = new List<FileInfo>(); 
+        foreach (var path in filesPaths)
+        {
+            deleteData.Add(new FileInfo(path, BUCKET_NAME));
+        }
+        
+        // удаляем из minio
+        await _filesProvider.DeleteFiles(deleteData, cancellationToken); 
     }
 }
