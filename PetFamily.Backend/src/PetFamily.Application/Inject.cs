@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
 using PetFamily.Application.Files.Delete;
 using PetFamily.Application.Files.Upload;
@@ -31,44 +32,30 @@ public static class Inject
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<CreateVolunteerHandler>();
-        services.AddScoped<UpdateMainInfoHandler>();
-        services.AddScoped<UpdateSocialNetworksHandler>();
-        services.AddScoped<UpdateTransferDetailsHandler>();
-        services.AddScoped<HardDeleteVolunteerHandler>();
-        services.AddScoped<SoftDeleteVolunteerHandler>();
-
-        services.AddScoped<UploadFilesHandler>();
-        services.AddScoped<DeleteFilesHandler>();
-        services.AddScoped<UploadPhotosToPetHandler>();
-        services.AddScoped<ChangePetPositionHandler>();
-        
-        services.AddScoped<AddPetHandler>();
-        services.AddScoped<DeletePetPhotosHandler>();
-
-        services.AddScoped<GetVolunteersWithPaginationHandler>();
-        services.AddScoped<GetVolunteerByIdHandler>();
-        services.AddScoped<GetSpeciesWithPaginationHandler>();
-        services.AddScoped<GetBreedsBySpeciesIdHandler>();
-        
-        services.AddScoped<DeleteBreedByIdHandler>();
-        services.AddScoped<DeleteSpeciesByIdHandler>();
-        
-        services.AddScoped<CreateSpeciesHandler>();
-        services.AddScoped<AddBreedToSpeciesHandler>();
-        
-        services.AddScoped<UpdatePetInfoHandler>();
-        services.AddScoped<UpdatePetHelpStatusHandler>();
-        
-        services.AddScoped<SoftDeletePetHandler>();
-        services.AddScoped<HardDeletePetHandler>();
-        
-        services.AddScoped<UpdatePetMainPhotoHandler>();
-
-        services.AddScoped<GetPetByIdHandler>();
-        
-        services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
+        // from scrutor
+        services
+            .AddCommands()
+            .AddQueries()
+            .AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;
+    }
+
+    private static IServiceCollection AddCommands(this IServiceCollection services)
+    {
+        return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
+            .AddClasses(classes => classes
+                .AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
+    }
+    
+    private static IServiceCollection AddQueries(this IServiceCollection services)
+    {
+        return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
+            .AddClasses(classes => classes
+                .AssignableTo(typeof(ICommandHandler<>)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
     }
 }
