@@ -8,6 +8,17 @@ namespace PetFamily.API.Controllers.Pets;
 
 public class PetsController : ApplicationController
 {
+    [HttpGet]
+    public async Task<ActionResult> GetAllPets(
+        [FromQuery] GetFilteredPetsWithPaginationRequest request,
+        [FromServices] GetFilteredPetsWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+    
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> Get(
         [FromRoute] Guid id,
@@ -19,14 +30,5 @@ public class PetsController : ApplicationController
         return Ok(result);
     }
     
-    [HttpGet]
-    public async Task<ActionResult> GetAllPets(
-        [FromQuery] GetFilteredPetsWithPaginationRequest request,
-        [FromServices] GetFilteredPetsWithPaginationHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = request.ToQuery();
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
-    }
+
 }

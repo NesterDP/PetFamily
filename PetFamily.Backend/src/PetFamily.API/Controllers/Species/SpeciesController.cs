@@ -22,29 +22,6 @@ public class SpeciesController : ApplicationController
         return Ok(result);
     }
     
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> DeleteSpecies(
-        [FromRoute] Guid id,
-        [FromServices] DeleteSpeciesByIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new DeleteSpeciesByIdCommand(id);
-        var result = await handler.HandleAsync(command, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
-
-    [HttpDelete("{id:guid}/breed/{breedId:guid}")]
-    public async Task<ActionResult> DeleteBreed(
-        [FromRoute] Guid id,
-        [FromRoute] Guid breedId,
-        [FromServices] DeleteBreedByIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new DeleteBreedByIdCommand(id, breedId);
-        var result = await handler.HandleAsync(command, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
-
     [HttpPost]
     public async Task<ActionResult> CreateSpecies(
         [FromBody] CreateSpeciesRequest request,
@@ -67,4 +44,28 @@ public class SpeciesController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
+    
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteSpecies(
+        [FromRoute] Guid id,
+        [FromServices] DeleteSpeciesByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteSpeciesByIdCommand(id);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+
+    [HttpDelete("{id:guid}/breed/{breedId:guid}")]
+    public async Task<ActionResult> DeleteBreed(
+        [FromRoute] Guid id,
+        [FromRoute] Guid breedId,
+        [FromServices] DeleteBreedByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteBreedByIdCommand(id, breedId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
 }
