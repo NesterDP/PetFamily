@@ -23,7 +23,7 @@ public class PetDto
     public DateTime DateOfBirth { get; init; }
     public bool IsVaccinated { get; init; }
     public string HelpStatus { get; init; }
-    //public List<TransferDetailDto> _transferDetails = [];
+    public TransferDetailDto[] TransferDetails { get; set; } = [];
     //public List<PhotoDto> _photos = [];
     public DateTime CreationDate { get; init; }
     public int Position { get; init; }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Extensions;
@@ -20,6 +21,8 @@ public class GetVolunteersWithPaginationHandler
     {
         var volunteersQuery = _readDbContext.Volunteers;
 
+        //var result = await volunteersQuery.ToListAsync();
+        
         return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }
 }
