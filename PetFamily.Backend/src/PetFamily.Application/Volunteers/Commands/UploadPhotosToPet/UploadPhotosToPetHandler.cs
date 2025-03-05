@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Files;
@@ -14,7 +15,7 @@ using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
 
 namespace PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
 
-public class UploadPhotosToPetHandler
+public class UploadPhotosToPetHandler : ICommandHandler<Guid, UploadPhotosToPetCommand>
 {
     private const string BUCKET_NAME = "photos";
     private readonly IValidator<UploadPhotosToPetCommand> _validator;

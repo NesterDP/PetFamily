@@ -157,7 +157,7 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();
-        var result = await handler.HandlerAsync(query, cancellationToken);
+        var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
     
@@ -168,8 +168,8 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = new GetVolunteerByIdQuery(id);
-        var result = await handler.HandlerAsync(query, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
     }
     
     [HttpPut("{id:guid}/pet/{petId:guid}/info")]

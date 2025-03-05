@@ -1,12 +1,11 @@
-using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Breed;
-using PetFamily.Domain.Shared.CustomErrors;
 
-namespace PetFamily.Application.Species.Queries.GetBreedsBySpeciesId;
+namespace PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
 
-public class GetBreedsBySpeciesIdHandler
+public class GetBreedsBySpeciesIdHandler : IQueryHandler<List<BreedDto>, GetBreedsBySpeciesIdQuery>
 {
     private readonly IReadDbContext _readDbContext;
 

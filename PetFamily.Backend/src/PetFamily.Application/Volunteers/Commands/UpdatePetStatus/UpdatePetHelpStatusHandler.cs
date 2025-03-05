@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
@@ -11,7 +12,7 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Volunteers.Commands.UpdatePetStatus;
 
-public class UpdatePetHelpStatusHandler
+public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpStatusCommand>
 {
     private readonly IValidator<UpdatePetHelpStatusCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;

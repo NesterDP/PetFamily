@@ -7,7 +7,7 @@ namespace PetFamily.Domain.Shared.SharedVO;
 public record Photo
 {
     public FilePath PathToStorage { get; }
-
+    
     public int Priority { get; } = 0;
     
     public Photo(FilePath pathToStorage) => PathToStorage = pathToStorage;

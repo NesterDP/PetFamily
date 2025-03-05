@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
 using PetFamily.Application.Files.Delete;
 using PetFamily.Application.Files.Upload;
 using PetFamily.Application.Pets.Queries;
@@ -7,7 +8,6 @@ using PetFamily.Application.Species.Commands.AddBreedToSpecies;
 using PetFamily.Application.Species.Commands.Create;
 using PetFamily.Application.Species.Commands.DeleteBreedById;
 using PetFamily.Application.Species.Commands.DeleteSpeciesById;
-using PetFamily.Application.Species.Queries.GetBreedsBySpeciesId;
 using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.ChangePetPosition;

@@ -2,6 +2,7 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -11,7 +12,7 @@ namespace PetFamily.Application.Species.Commands.Create;
 
 
 
-public class CreateSpeciesHandler
+public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
 {
     private readonly ISpeciesRepository _speciesRepository;
     private readonly ILogger<CreateSpeciesHandler> _logger;

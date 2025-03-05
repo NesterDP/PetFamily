@@ -2,8 +2,10 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
+using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -11,7 +13,7 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
 
-public class UpdatePetMainPhotoHandler
+public class UpdatePetMainPhotoHandler : ICommandHandler<Guid, UpdatePetMainPhotoCommand>
 {
     private readonly IValidator<UpdatePetMainPhotoCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;

@@ -1,3 +1,4 @@
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Species;
 using PetFamily.Application.Extensions;
@@ -5,7 +6,7 @@ using PetFamily.Application.Models;
 
 namespace PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 
-public class GetSpeciesWithPaginationHandler
+public class GetSpeciesWithPaginationHandler : IQueryHandler<PagedList<SpeciesDto>, GetSpeciesWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
 

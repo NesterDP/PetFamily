@@ -1,13 +1,14 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 
 namespace PetFamily.Application.Species.Commands.DeleteBreedById;
 
-public class DeleteBreedByIdHandler
+public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdCommand>
 {
     private readonly ISpeciesRepository _speciesRepository;
     private readonly IUnitOfWork _unitOfWork;

@@ -5,7 +5,6 @@ using PetFamily.Application.Species.Commands.AddBreedToSpecies;
 using PetFamily.Application.Species.Commands.Create;
 using PetFamily.Application.Species.Commands.DeleteBreedById;
 using PetFamily.Application.Species.Commands.DeleteSpeciesById;
-using PetFamily.Application.Species.Queries.GetBreedsBySpeciesId;
 using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 
 namespace PetFamily.API.Controllers.Species;
@@ -22,18 +21,7 @@ public class SpeciesController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-
-    [HttpGet("{id:guid}/breeds")]
-    public async Task<ActionResult> GetAllBreeds(
-        [FromRoute] Guid id,
-        [FromServices] GetBreedsBySpeciesIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = new GetBreedsBySpeciesIdQuery(id);
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
-    }
-
+    
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteSpecies(
         [FromRoute] Guid id,

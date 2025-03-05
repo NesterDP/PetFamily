@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -11,7 +12,7 @@ using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Application.Species.Commands.AddBreedToSpecies;
 
-public class AddBreedToSpeciesHandler
+public class AddBreedToSpeciesHandler : ICommandHandler<Guid, AddBreedToSpeciesCommand>
 {
     private readonly IValidator<AddBreedToSpeciesCommand> _validator;
     private readonly ISpeciesRepository _speciesRepository;

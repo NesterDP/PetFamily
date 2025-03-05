@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
@@ -9,7 +10,7 @@ using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.Volunteers.Commands.ChangePetPosition;
 
-public class ChangePetPositionHandler
+public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionCommand>
 {
     private readonly IValidator<ChangePetPositionCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;

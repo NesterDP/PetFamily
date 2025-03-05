@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
@@ -9,7 +10,7 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 
-public class UpdateTransferDetailsHandler
+public class UpdateTransferDetailsHandler : ICommandHandler<Guid, UpdateTransferDetailsCommand>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdateTransferDetailsHandler> _logger;

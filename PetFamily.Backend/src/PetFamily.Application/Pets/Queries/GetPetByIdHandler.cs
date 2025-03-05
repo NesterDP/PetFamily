@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Volunteer;
@@ -8,7 +9,7 @@ using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.Pets.Queries;
 
-public class GetPetByIdHandler
+public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -17,20 +18,13 @@ public class GetPetByIdHandler
         _readDbContext = readDbContext;
     }
 
-    public async Task<Result<PetDto, ErrorList>> HandlerAsync(
+    public async Task<PetDto> HandleAsync(
         GetPetByIdQuery query,
         CancellationToken cancellationToken)
     {
         var result = await _readDbContext.Pets
             .FirstOrDefaultAsync(v => v.Id == query.Id, cancellationToken);
         
-        if (result == null)
-        {
-            return Errors.General.ValueNotFound(query.Id).ToErrorList();
-        }
-        
-        result.TransferDetails = result.TransferDetails.OrderBy(t => t.Name).ToArray();
-
         return result;
     }
 }

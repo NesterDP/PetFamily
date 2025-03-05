@@ -1,3 +1,4 @@
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Shared;
 
@@ -18,4 +19,4 @@ public record AddPetCommand(
     DateTime DateOfBirth,
     bool IsVaccinated,
     string HelpStatus,
-    IEnumerable<TransferDetailDto> TransferDetailsDto);
+    IEnumerable<TransferDetailDto> TransferDetailsDto) : ICommand;

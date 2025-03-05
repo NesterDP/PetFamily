@@ -1,3 +1,4 @@
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Dto.Volunteer;
 
 namespace PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
@@ -7,5 +8,5 @@ public record UpdateMainInfoCommand(Guid Id,
     string Email,
     string Description,
     int Experience,
-    string PhoneNumber);
+    string PhoneNumber) : ICommand;
     

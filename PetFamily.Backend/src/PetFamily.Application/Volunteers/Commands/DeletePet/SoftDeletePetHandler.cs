@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
@@ -8,7 +9,7 @@ using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.Volunteers.Commands.DeletePet;
 
-public class SoftDeletePetHandler
+public class SoftDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<SoftDeletePetHandler> _logger;
