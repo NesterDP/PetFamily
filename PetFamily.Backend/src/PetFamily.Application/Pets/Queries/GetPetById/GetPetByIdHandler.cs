@@ -1,13 +1,9 @@
-using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Pet;
-using PetFamily.Application.Dto.Volunteer;
-using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Domain.Shared.CustomErrors;
 
-namespace PetFamily.Application.Pets.Queries;
+namespace PetFamily.Application.Pets.Queries.GetPetById;
 
 public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
 {

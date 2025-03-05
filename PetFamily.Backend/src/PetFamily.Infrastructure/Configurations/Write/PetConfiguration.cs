@@ -146,12 +146,18 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
 
-        builder.Property(p => p.PhotosList)
+        /*builder.Property(p => p.PhotosList)
             .HasConversion(
                 photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
                 json => JsonSerializer.Deserialize<IReadOnlyList<Photo>>(json, JsonSerializerOptions.Default)!)
             .HasColumnName("photos")
-            .HasColumnType("jsonb");
+            .HasColumnType("jsonb");*/
+        
+        builder.Property(p => p.PhotosList)
+            .Json1DeepLvlVoCollectionConverter(
+                photo => new PhotoDto(photo.PathToStorage.Path, photo.Priority),
+                dto => new Photo(FilePath.Create(dto.PathToStorage).Value, dto.Priority))
+            .HasColumnName("photos");
         
         builder.Property(p => p.CreationDate)
             .IsRequired()

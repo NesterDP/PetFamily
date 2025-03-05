@@ -3,6 +3,7 @@ using PetFamily.API.Controllers.Pets.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.Application.Pets.Queries;
 using PetFamily.Application.Pets.Queries.GetFilteredPetsWithPagination;
+using PetFamily.Application.Pets.Queries.GetPetById;
 
 namespace PetFamily.API.Controllers.Pets;
 
@@ -26,6 +27,17 @@ public class PetsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = new GetPetByIdQuery(id);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+    
+    [HttpGet("/dapper")]
+    public async Task<ActionResult> GetAllPetsDapper(
+        [FromQuery] GetFilteredPetsWithPaginationRequest request,
+        [FromServices] GetFilteredPetsWithPaginationHandlerDapper handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }

@@ -32,9 +32,9 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
                 transferDetail => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
                 json => JsonSerializer.Deserialize<TransferDetailDto[]>(json, JsonSerializerOptions.Default)!);
         
-        /*builder.Property(p => p.Photos)
+        builder.Property(v => v.Photos)
             .HasConversion(
-                photos => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!);*/
+                transferDetail => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!);
     }
 }

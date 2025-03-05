@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.SharedVO;
@@ -17,19 +18,29 @@ public class PetDto
     public string House { get; init;}
     public string? Apartment { get; init; }
     public float Weight { get; init; }
-  public float Height { get; init; }
+   public float Height { get; init; }
     public string OwnerPhoneNumber { get; init; }
     public bool IsCastrated { get; init; }
     public DateTime DateOfBirth { get; init; }
     public bool IsVaccinated { get; init; }
     public string HelpStatus { get; init; }
     public TransferDetailDto[] TransferDetails { get; set; } = [];
-    //public List<PhotoDto> _photos = [];
+    public PhotoDto[] Photos { get; set; } = [];
     public DateTime CreationDate { get; init; }
     public int Position { get; init; }
 }
-
 public class PhotoDto
 {
-    public string PathToStorage { get; set; } = string.Empty;
+    public string PathToStorage { get; init; } = string.Empty;
+    public int Priority { get; init; }
+    
+    public PhotoDto(string pathToStorage, int priority)
+    {
+        PathToStorage = pathToStorage;
+        Priority = priority;
+    }
 }
+
+/*
+[Serializable]
+public record PhotoDto(string PathToStorage, int Priority);*/
