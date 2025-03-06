@@ -22,12 +22,14 @@ public class VolunteerDtoConfiguration : IEntityTypeConfiguration<VolunteerDto>
         builder.Property(v => v.SocialNetworks)
             .HasConversion(
                 socialNetworks => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<SocialNetworkDto[]>(json, JsonSerializerOptions.Default)!);
+                json => JsonSerializer.Deserialize<SocialNetworkDto[]>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("social_networks");
         
         builder.Property(v => v.TransferDetails)
             .HasConversion(
                 transferDetails => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<TransferDetailDto[]>(json, JsonSerializerOptions.Default)!);
+                json => JsonSerializer.Deserialize<TransferDetailDto[]>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("transfer_details");
 
         builder.HasMany<PetDto>(v => v.Pets)
             .WithOne()

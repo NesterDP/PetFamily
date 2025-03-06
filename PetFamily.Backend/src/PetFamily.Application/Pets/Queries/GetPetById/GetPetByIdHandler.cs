@@ -20,6 +20,8 @@ public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
     {
         var result = await _readDbContext.Pets
             .FirstOrDefaultAsync(v => v.Id == query.Id, cancellationToken);
+
+        result!.Photos = result.Photos.OrderByDescending(p => p.Main).ToArray();
         
         return result;
     }

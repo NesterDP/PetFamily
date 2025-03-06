@@ -75,13 +75,13 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         });
         
         builder.Property(v => v.SocialNetworksList)
-            .Json1DeepLvlVoCollectionConverter(
+            .CustomJsonCollectionConverter(
                 socialNetwork => new SocialNetworkDto(socialNetwork.Name, socialNetwork.Link),
                 dto => SocialNetwork.Create(dto.Link, dto.Name).Value)
             .HasColumnName("social_networks");
 
         builder.Property(v => v.TransferDetailsList)
-            .Json1DeepLvlVoCollectionConverter(
+            .CustomJsonCollectionConverter(
                 transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
                 dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");

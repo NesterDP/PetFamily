@@ -31,11 +31,13 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
         builder.Property(v => v.TransferDetails)
             .HasConversion(
                 transferDetail => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<TransferDetailDto[]>(json, JsonSerializerOptions.Default)!);
+                json => JsonSerializer.Deserialize<TransferDetailDto[]>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("transfer_details");
         
         builder.Property(v => v.Photos)
             .HasConversion(
                 transferDetail => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!);
+                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("photos");
     }
 }

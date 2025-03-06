@@ -7,17 +7,15 @@ namespace PetFamily.Infrastructure.Extensions;
 
 public static class EfCorePropertyExtensions
 { 
-    public static PropertyBuilder<IReadOnlyList<TValueObject>> Json1DeepLvlVoCollectionConverter<TValueObject, TDto>(
-        this PropertyBuilder<IReadOnlyList<TValueObject>> builder, Func<TValueObject, TDto> selector,
-        Func<TDto, TValueObject> reverseSelector)
+    public static PropertyBuilder<IReadOnlyList<TValueObject>> CustomJsonCollectionConverter<TValueObject, TDto>(
+        this PropertyBuilder<IReadOnlyList<TValueObject>> builder,
+        Func<TValueObject, TDto> toDtoSelector,
+        Func<TDto, TValueObject> toValueObjectSelector)
     {
         return builder.HasConversion(
-                vo => SerializeVoCollection(vo, selector),
-                json => DeserializeDtoCollection(json, reverseSelector),
-                new ValueComparer<IReadOnlyList<TValueObject>>(
-                    (c1, c2) => c1!.SequenceEqual(c2!),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
-                    c => c.ToList()))
+                valueObjects => SerializeVoCollection(valueObjects, toDtoSelector),
+                json => DeserializeDtoCollection(json, toValueObjectSelector),
+                CreateCollectionValueComparer<TValueObject>())
             .HasColumnType("jsonb");
     }
 
@@ -36,5 +34,13 @@ public static class EfCorePropertyExtensions
         var dtos = JsonSerializer.Deserialize<IEnumerable<TDto>>(json, JsonSerializerOptions.Default) ?? [];
 
         return dtos.Select(selector).ToList();
+    }
+    
+    private static ValueComparer<IReadOnlyList<T>> CreateCollectionValueComparer<T>()
+    {
+        return new ValueComparer<IReadOnlyList<T>>(
+            (c1, c2) => c1!.SequenceEqual(c2!),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
+            c => c.ToList());
     }
 }   

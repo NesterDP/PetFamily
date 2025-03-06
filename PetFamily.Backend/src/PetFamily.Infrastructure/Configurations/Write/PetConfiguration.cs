@@ -141,7 +141,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         });
         
         builder.Property(p => p.TransferDetailsList)
-            .Json1DeepLvlVoCollectionConverter(
+            .CustomJsonCollectionConverter(
                 transferDetail => new TransferDetailDto(transferDetail.Name, transferDetail.Description),
                 dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
@@ -154,7 +154,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasColumnType("jsonb");*/
         
         builder.Property(p => p.PhotosList)
-            .Json1DeepLvlVoCollectionConverter(
+            .CustomJsonCollectionConverter(
                 photo => new PhotoDto(photo.PathToStorage.Path, photo.Main),
                 dto => new Photo(FilePath.Create(dto.PathToStorage).Value, dto.Main))
             .HasColumnName("photos");
