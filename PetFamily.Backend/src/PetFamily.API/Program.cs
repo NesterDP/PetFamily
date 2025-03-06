@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.HttpLogging;
@@ -35,7 +36,10 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication();
 
-
+var cultureInfo = new CultureInfo("ru-RU"); // Используем культуру, где точка — разделитель
+cultureInfo.NumberFormat.NumberDecimalSeparator = "."; // Устанавливаем разделитель
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 /*builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>

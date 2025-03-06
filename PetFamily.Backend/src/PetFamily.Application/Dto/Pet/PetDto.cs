@@ -8,6 +8,7 @@ namespace PetFamily.Application.Dto.Pet;
 public class PetDto
 {
     public Guid Id { get; init; }
+    public Guid OwnerId { get; init; }
     public string Name { get; init; }
     public string Description { get; init; }
     public Guid SpeciesId { get; init; }
@@ -28,17 +29,6 @@ public class PetDto
     public PhotoDto[] Photos { get; set; } = [];
     public DateTime CreationDate { get; init; }
     public int Position { get; init; }
-}
-public class PhotoDto
-{
-    public string PathToStorage { get; init; } = string.Empty;
-    public bool Main { get; init; }
-    
-    public PhotoDto(string pathToStorage, bool main)
-    {
-        PathToStorage = pathToStorage;
-        Main = main;
-    }
 }
 
 /*

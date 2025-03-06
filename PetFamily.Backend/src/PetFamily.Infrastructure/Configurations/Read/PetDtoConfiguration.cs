@@ -17,7 +17,8 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
         builder.ToTable("pets");
         
         builder.HasKey(p => p.Id);
-
+        
+        builder.Property(p => p.OwnerId).HasColumnName("volunteer_id");
         builder.Property(p => p.Height).HasColumnName("height_info");
         builder.Property(p => p.OwnerPhoneNumber).HasColumnName("owner_phone");
         builder.Property(p => p.Weight).HasColumnName("weight_info");
