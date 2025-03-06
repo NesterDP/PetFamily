@@ -56,14 +56,8 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
             return pet.Error.ToErrorList();
         
         // новый список фото питомцев = разность между текущим списком фото питомца и списком удаленных фото
-        /*var paths = pet.Value.PhotosList.Select(photo => photo.PathToStorage.Path).ToList();
-        var intermediateCollection = paths.Except(command.PhotosNames);
-        var updateList = intermediateCollection.Select(s => new Photo(FilePath.Create(s).Value)).ToList();*/
-
         var updateList = pet.Value.PhotosList.Select(p => p.CreateCopy()).ToList();
         updateList.RemoveAll(photo => command.PhotosNames.Contains(photo.PathToStorage.Path));
-        
-        
         
         // обновили фото питомца
         volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updateList);
