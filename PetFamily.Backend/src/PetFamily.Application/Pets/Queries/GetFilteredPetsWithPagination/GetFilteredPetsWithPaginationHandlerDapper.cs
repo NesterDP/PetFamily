@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using Dapper;
 using PetFamily.Application.Abstractions;
@@ -26,38 +27,36 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
         var connection = _sqlConnectionFactory.Create();
 
         var parameters = new DynamicParameters();
-        parameters.Add("@PageSize", query.PageSize);
-        parameters.Add("@Offset", (query.Page - 1) * query.PageSize);
 
-        /*var sql = """
-                  SELECT id, name, position, transfer_details, photos FROM pets
-                  ORDER BY position LIMIT @PageSize OFFSET @Offset
-                  """;
+        var totalCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM pets");
 
-        //var pets = await connection.QueryAsync<PetDto>(sql, parameters);
+        var sql = new StringBuilder();
 
-        var pets = await connection.QueryAsync<PetDto, string, string, PetDto>(
-            sql,
-            (pet, jsonsTransferDetails, jsonPhotos) =>
-            {
-                var tDtos = JsonSerializer.Deserialize<TransferDetailDto[]>(jsonsTransferDetails) ?? [];
-                pet.TransferDetails = tDtos;
+        var selector = new Selector();
 
-                var pDtos = JsonSerializer.Deserialize<PhotoDto[]>(jsonPhotos) ?? [];
-                pet.Photos = pDtos;
-                return pet;
-            },
-            splitOn: "transfer_details",
-        param: parameters);*/
-        
-        var sql = """
-                  SELECT *
-                  FROM pets
-                  ORDER BY position 
-                  LIMIT @PageSize OFFSET @Offset
-                  """;
+        sql.Append("""
+                   SELECT *
+                   FROM pets
+                   """);
 
-        var result = await connection.QueryAsync<dynamic>(sql, parameters);
+
+        if (!string.IsNullOrWhiteSpace(query.Name))
+        {
+            sql.Append(selector.Select("name = @Name"));
+            parameters.Add("@Name", query.Name);
+        }
+
+        if (query.OwnerId != null)
+        {
+            sql.Append(selector.Select("volunteer_id = @VolunteerId"));
+            parameters.Add("@VolunteerId", query.OwnerId);
+        }
+
+        sql.ApplySorting(parameters, query.SortBy, query.SortDirection);
+        sql.ApplyPagination(parameters, query.Page, query.PageSize);
+        var test = sql.ToString();
+
+        var result = await connection.QueryAsync<dynamic>(sql.ToString(), parameters);
 
         var pets = result.Select(row =>
         {
@@ -65,6 +64,7 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
             {
                 Id = row.id,
                 Name = row.name,
+                OwnerId = row.volunteer_id,
                 Description = row.description,
                 SpeciesId = row.species_id,
                 BreedId = row.breed_id,
@@ -88,8 +88,6 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
             return pet;
         }).ToList();
 
-        var totalCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM pets");
-
         return new PagedList<PetDto>()
         {
             Items = pets.ToList(),
@@ -97,5 +95,47 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
             TotalCount = totalCount,
             Page = query.PageSize
         };
+    }
+}
+
+public class Selector
+{
+    private const string WHERE = "\nWHERE ";
+    private const string AND = "\nAND ";
+    private int counter = 0;
+
+    public string Select(string filter)
+    {
+        var head = " " + (counter == 0 ? WHERE : AND) +"(";
+        var body = filter + ")";
+        counter++;
+        return head + body;
+    }
+}
+
+public static class DapperExtensions
+{
+    public static void ApplySorting(
+        this StringBuilder sqlBuilder,
+        DynamicParameters parameters,
+        string? sortBy,
+        string? sortDirection)
+    {
+        parameters.Add("@SortBy", sortBy?.ToLower() ?? "id");
+        parameters.Add("@SortDirection", sortDirection ?? "desc");
+
+        sqlBuilder.Append($"\nORDER BY @SortBy, @SortDirection");
+    }
+
+    public static void ApplyPagination(
+        this StringBuilder sqlBuilder,
+        DynamicParameters parameters,
+        int page,
+        int pageSize)
+    {
+        parameters.Add("@PageSize", pageSize);
+        parameters.Add("@Offset", (page - 1) * pageSize);
+
+        sqlBuilder.Append("\nLimit @PageSize OFFSET @Offset");
     }
 }
