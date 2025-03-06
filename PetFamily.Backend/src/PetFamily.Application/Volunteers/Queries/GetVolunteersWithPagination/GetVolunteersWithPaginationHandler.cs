@@ -24,7 +24,7 @@ public class GetVolunteersWithPaginationHandler : IQueryHandler<
     {
         var volunteersQuery = _readDbContext.Volunteers;
 
-        //var result = await volunteersQuery.ToListAsync();
+        //volunteersQuery = volunteersQuery.Where(x => x.Experience > 1);
         
         return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

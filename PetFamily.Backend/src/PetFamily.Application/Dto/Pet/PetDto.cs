@@ -32,12 +32,12 @@ public class PetDto
 public class PhotoDto
 {
     public string PathToStorage { get; init; } = string.Empty;
-    public int Priority { get; init; }
+    public bool Main { get; init; }
     
-    public PhotoDto(string pathToStorage, int priority)
+    public PhotoDto(string pathToStorage, bool main)
     {
         PathToStorage = pathToStorage;
-        Priority = priority;
+        Main = main;
     }
 }
 

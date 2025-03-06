@@ -20,8 +20,14 @@ public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerB
         GetVolunteerByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await _readDbContext.Volunteers
-            .FirstOrDefaultAsync(v => v.Id == query.Id, cancellationToken);
+        var customQuery = _readDbContext.Volunteers;
+
+        //var applyStaff = customQuery.Where(v => v.Experience > 11);
+        
+        //customQuery.Where(v => v.Experience > 10);
+
+        var result = await customQuery.FirstOrDefaultAsync();
+            
         
         return result;
     }

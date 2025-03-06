@@ -153,9 +153,9 @@ public sealed class Pet : Entity<PetId>
         foreach (var photo in _photos)
         {
             if (photo.PathToStorage.Path != mainPhoto.PathToStorage.Path)
-                updatedPhotosList.Add(photo.CreateCopy(0));
+                updatedPhotosList.Add(photo.CreateCopy(false));
         }
-        updatedPhotosList.Add(mainPhoto.CreateCopy(1));
+        updatedPhotosList.Add(mainPhoto.CreateCopy(true));
         _photos = updatedPhotosList;
     }
 

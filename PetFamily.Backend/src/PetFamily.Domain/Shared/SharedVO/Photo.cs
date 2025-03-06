@@ -8,25 +8,25 @@ public record Photo
 {
     public FilePath PathToStorage { get; }
     
-    public int Priority { get; } = 0;
+    public bool Main { get; } = false;
     
     public Photo(FilePath pathToStorage) => PathToStorage = pathToStorage;
 
     [JsonConstructor]
-    public Photo(FilePath pathToStorage, int priority)
+    public Photo(FilePath pathToStorage, bool main)
     {
         PathToStorage = pathToStorage;
-        Priority = priority;
+        Main = main;
     }
 
-    public Photo CreateCopy(int priority)
+    public Photo CreateCopy(bool main)
     {
-        return new Photo(FilePath.Create(PathToStorage.Path).Value, priority);
+        return new Photo(FilePath.Create(PathToStorage.Path).Value, main);
     }
     
     public Photo CreateCopy()
     {
-        return new Photo(FilePath.Create(PathToStorage.Path).Value, Priority);
+        return new Photo(FilePath.Create(PathToStorage.Path).Value, Main);
     }
     
     
@@ -34,7 +34,7 @@ public record Photo
     public int CompareTo(object? o)
     {
         if(o is Photo photo) return PathToStorage.Path.CompareTo(photo.PathToStorage.Path);
-        else throw new ArgumentException("Некорректное значение параметра");
+        throw new ArgumentException("Incorrect value of compared item");
     }
 
 
