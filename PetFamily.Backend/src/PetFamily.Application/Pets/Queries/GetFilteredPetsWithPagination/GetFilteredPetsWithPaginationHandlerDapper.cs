@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Pet;
@@ -14,10 +15,14 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
     GetFilteredPetsWithPaginationQuery>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
+    private readonly ILogger<GetFilteredPetsWithPaginationHandlerDapper> _logger;
 
-    public GetFilteredPetsWithPaginationHandlerDapper(ISqlConnectionFactory sqlConnectionFactory)
+    public GetFilteredPetsWithPaginationHandlerDapper(
+        ISqlConnectionFactory sqlConnectionFactory,
+        ILogger<GetFilteredPetsWithPaginationHandlerDapper> logger)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
+        _logger = logger;
     }
 
     public async Task<PagedList<PetDto>> HandleAsync(
@@ -54,7 +59,7 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
 
         sql.ApplySorting(parameters, query.SortBy, query.SortDirection);
         sql.ApplyPagination(parameters, query.Page, query.PageSize);
-        var test = sql.ToString();
+        //var test = sql.ToString();
 
         var result = await connection.QueryAsync<dynamic>(sql.ToString(), parameters);
 
@@ -87,6 +92,11 @@ public class GetFilteredPetsWithPaginationHandlerDapper : IQueryHandler<
             };
             return pet;
         }).ToList();
+
+        foreach (var pet in pets)
+        {
+            pet.Photos = pet.Photos.OrderByDescending(p => p.Main).ToArray();
+        }
 
         return new PagedList<PetDto>()
         {
@@ -121,10 +131,14 @@ public static class DapperExtensions
         string? sortBy,
         string? sortDirection)
     {
-        parameters.Add("@SortBy", sortBy?.ToLower() ?? "id");
-        parameters.Add("@SortDirection", sortDirection ?? "desc");
-
-        sqlBuilder.Append($"\nORDER BY @SortBy, @SortDirection");
+        var sortingParameter = sortBy?.ToLower() ?? "id";
+        var sortingDirection = sortDirection?.ToUpper() ?? "DESC";
+        sqlBuilder.Append($"\nORDER BY {sortingParameter} {sortingDirection}");
+        //parameters.Add("@orderBy", orderBy?.ToLower() ?? "id");
+        //parameters.Add("@SortDirection", sortDirection?.ToUpper() ?? "DESC");
+        //sqlBuilder.Append("ORDER BY name DESC");
+        //sqlBuilder.Append(" ORDER BY @sortBy ");
+        //sqlBuilder.Append("@SortDirection");
     }
 
     public static void ApplyPagination(
