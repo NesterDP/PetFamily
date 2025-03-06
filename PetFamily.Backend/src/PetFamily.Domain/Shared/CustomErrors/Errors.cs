@@ -26,6 +26,11 @@ public static class Errors
         {
             return Error.NotFound("record.not.found", $"record {message} not found");
         }
+        
+        public static Error Conflict(string? message)
+        {
+            return Error.Conflict("logic.conflict", $"{message}");
+        }
 
         public static Error LengthIsInvalid(int lessThen, string? propertyName = null)
         {

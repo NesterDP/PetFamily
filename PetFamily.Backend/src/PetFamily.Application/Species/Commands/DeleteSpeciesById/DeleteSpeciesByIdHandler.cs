@@ -13,7 +13,7 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeleteSpeciesByIdHandler> _logger;
     private readonly IReadDbContext _readDbContext;
-    
+
     public DeleteSpeciesByIdHandler(
         ISpeciesRepository speciesRepository,
         IUnitOfWork unitOfWork,
@@ -30,21 +30,23 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
         DeleteSpeciesByIdCommand command,
         CancellationToken cancellationToken)
     {
-        var isUsed = await _readDbContext.Pets.
-            FirstOrDefaultAsync(p => p.SpeciesId == command.Id, cancellationToken);
+        var isUsed = await _readDbContext.Pets
+            .FirstOrDefaultAsync(p => p.SpeciesId == command.Id, cancellationToken);
+        
         if (isUsed != null)
-            return Errors.General.ValueIsRequired(command.Id.ToString()).ToErrorList();
+            return Errors.General
+                .Conflict($"pets with SpeciesId = {command.Id} are still in database")
+                .ToErrorList();
 
         var speciesResult = await _speciesRepository.GetByIdAsync(command.Id, cancellationToken);
         if (speciesResult.IsFailure)
             return Errors.General.ValueNotFound().ToErrorList();
-        
+
         _speciesRepository.Delete(speciesResult.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Successfully deleted species with ID = {ID}", command.Id);
 
         return command.Id;
     }
-
 }

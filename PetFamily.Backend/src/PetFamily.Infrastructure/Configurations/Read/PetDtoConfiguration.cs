@@ -24,7 +24,7 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
         builder.Property(p => p.HelpStatus)
             .HasConversion(
                 status => 0,
-                    status => status.ToString())
+                    status => ((PetStatus)status).ToString())
                 .HasColumnName("help_status");
 
         builder.Property(v => v.TransferDetails)

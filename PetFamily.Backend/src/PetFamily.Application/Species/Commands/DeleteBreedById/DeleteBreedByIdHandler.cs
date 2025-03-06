@@ -34,12 +34,13 @@ public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdComma
         var isUsed = await _readDbContext.Pets.
             FirstOrDefaultAsync(p => p.BreedId == command.BreedId, cancellationToken);
         if (isUsed != null)
-            return Errors.General.ValueIsRequired(command.BreedId.ToString()).ToErrorList();
+            return Errors.General
+                .Conflict($"pets with BreedId = {command.BreedId} are still in database")
+                .ToErrorList();
 
         var speciesResult = await _speciesRepository.GetByIdAsync(command.SpeciesId, cancellationToken);
         if (speciesResult.IsFailure)
             return Errors.General.ValueNotFound().ToErrorList();
-        
         
         speciesResult.Value.RemoveBreedById(command.BreedId);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
