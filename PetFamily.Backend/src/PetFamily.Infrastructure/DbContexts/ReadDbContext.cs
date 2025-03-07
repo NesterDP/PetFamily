@@ -10,8 +10,14 @@ using PetFamily.Domain.SpeciesContext.Entities;
 
 namespace PetFamily.Infrastructure.DbContexts;
 
-public class ReadDbContext(IConfiguration configuration): DbContext, IReadDbContext
+public class ReadDbContext: DbContext, IReadDbContext
 {
+    private readonly string _connectionString;
+    public ReadDbContext(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
     public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
     public IQueryable<PetDto> Pets => Set<PetDto>();
     public IQueryable<SpeciesDto> Species => Set<SpeciesDto>();
@@ -20,7 +26,7 @@ public class ReadDbContext(IConfiguration configuration): DbContext, IReadDbCont
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString(InfrastructureConstants.DATABASE));
+        optionsBuilder.UseNpgsql(_connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
         //optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

@@ -24,7 +24,7 @@ public static class Inject
     {
         services
             .AddRepositories()
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddTransactionManagement()
             .AddHostedServices()
             .AddMessageQueues()
@@ -52,10 +52,14 @@ public static class Inject
     }
     
     private static IServiceCollection AddDbContexts(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>();
-        services.AddScoped<IReadDbContext, ReadDbContext>();
+        services.AddScoped<WriteDbContext>(_ =>
+            new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
+            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
         return services;
     }
     

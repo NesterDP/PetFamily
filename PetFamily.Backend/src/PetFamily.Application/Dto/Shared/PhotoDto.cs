@@ -1,4 +1,4 @@
-namespace PetFamily.Application.Dto.Pet;
+namespace PetFamily.Application.Dto.Shared;
 
 public class PhotoDto
 {
