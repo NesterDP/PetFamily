@@ -27,7 +27,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(ConfigureDefaultServices);
-        //base.ConfigureWebHost(builder);
     }
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
@@ -80,9 +79,9 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
             }
         );
     }
-
     public async Task ResetDatabaseAsync()
     {
         await _respawner.ResetAsync(_dbConnection);
     }
+    
 }

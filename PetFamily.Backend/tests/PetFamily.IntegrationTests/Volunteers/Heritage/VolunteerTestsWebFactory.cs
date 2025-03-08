@@ -8,7 +8,7 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.Heritage;
 
-public class VolunteersTestsWebFactory : IntegrationTestsWebFactory
+public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
 {
     private readonly IFilesProvider _filesServiceMock = Substitute.For<IFilesProvider>();
     

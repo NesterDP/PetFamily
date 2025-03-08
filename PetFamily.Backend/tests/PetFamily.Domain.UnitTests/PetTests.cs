@@ -8,7 +8,6 @@ namespace PetFamily.UnitTests;
 
 public class PetTests
 {
-
     [Fact]
     public void Add_Pet_To_Empty_Pet_List_Return_Success_Result()
     {

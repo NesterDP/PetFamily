@@ -1,9 +1,12 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
+using PetFamily.Application.Files;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.CustomErrors;
@@ -38,7 +41,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
         
-
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fullNameCreateResult = FullName.Create(
@@ -68,7 +70,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
             transferDetailsList.Add(result.Value);
         }
         
-
         var volunteer = Volunteer.Create(
             volunteerId,
             fullNameCreateResult.Value,
