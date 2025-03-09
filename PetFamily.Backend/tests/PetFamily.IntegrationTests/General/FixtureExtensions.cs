@@ -3,6 +3,8 @@ using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.Create;
+using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
+using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.General;
 
@@ -16,7 +18,7 @@ public static class FixtureExtensions
             .With(c => c.VolunteerCommandDto.Email, "test@test.com")
             .Create();
     }
-    
+
     public static AddPetCommand AddPetCommand(
         this Fixture fixture,
         Guid volunteerId,
@@ -27,7 +29,7 @@ public static class FixtureExtensions
             .With(c => c.VolunteerId, volunteerId)
             .With(c => c.Name, "Test Name")
             .With(c => c.Description, "Test Description")
-            .With( c => c.PetClassificationDto, petClassificationDto)
+            .With(c => c.PetClassificationDto, petClassificationDto)
             .With(c => c.Color, "test color")
             .With(c => c.HealthInfo, "test health info")
             .With(c => c.AddressDto, addressDto)
@@ -36,6 +38,29 @@ public static class FixtureExtensions
             .With(c => c.OwnerPhoneNumber, "8-9-222-32-12-32")
             .With(c => c.DateOfBirth, DateTime.UtcNow.AddYears(-5))
             .With(c => c.HelpStatus, "InSearchOfHome")
+            .Create();
+    }
+    public static UploadPhotosToPetCommand UploadPhotosToPetCommand(
+        this Fixture fixture,
+        Guid volunteerId,
+        Guid petId)
+    {
+        return fixture.Build<UploadPhotosToPetCommand>()
+            .With(c => c.VolunteerId, volunteerId)
+            .With(c => c.PetId, petId)
+            .Create();
+    }
+    
+    public static DeletePetPhotosCommand DeletePetPhotosCommand(
+        this Fixture fixture,
+        Guid volunteerId,
+        Guid petId,
+        List<string> photosForDeletion)
+    {
+        return fixture.Build<DeletePetPhotosCommand>()
+            .With(c => c.VolunteerId, volunteerId)
+            .With(c => c.PetId, petId)
+            .With(c => c.PhotosNames, photosForDeletion)
             .Create();
     }
 }

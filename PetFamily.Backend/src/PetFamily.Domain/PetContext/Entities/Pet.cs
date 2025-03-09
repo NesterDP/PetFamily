@@ -8,7 +8,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public sealed class Pet : Entity<PetId>
 {
-    private bool _isDeleted = false;
+    public bool _isDeleted { get; private set; }
     public Name Name { get; private set; }
     public Description Description { get; private set; }
     public PetClassification PetClassification { get; private set; }

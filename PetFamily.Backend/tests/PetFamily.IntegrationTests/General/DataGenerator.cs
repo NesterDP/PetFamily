@@ -95,7 +95,7 @@ public static class DataGenerator
 
         return breed;
     }
-    
+
     public static Volunteer CreateVolunteerWithPets(int count, Guid speciesId, Guid breedId)
     {
         var volunteer = CreateVolunteer();
@@ -103,31 +103,31 @@ public static class DataGenerator
         pets.ForEach(pet => volunteer.AddPet(pet));
         return volunteer;
     }
-    
+
     public static List<Pet> CreatePetList(int count, Guid speciesId, Guid breedId)
     {
         var pets = Enumerable.Range(1, count).Select(_ => CreatePet(speciesId, breedId));
         return pets.ToList();
     }
 
-    public static async Task<Guid> SeedVolunteer(WriteDbContext dbContext)
+    public static async Task<Volunteer> SeedVolunteer(WriteDbContext dbContext)
     {
         var volunteer = CreateVolunteer();
         dbContext.Volunteers.Add(volunteer);
         await dbContext.SaveChangesAsync();
-        return volunteer.Id;
+        return volunteer;
     }
 
-    public static async Task<Guid> SeedSpecies(WriteDbContext dbContext)
+    public static async Task<Species> SeedSpecies(WriteDbContext dbContext)
     {
         var species = CreateSpecies();
         dbContext.Species.Add(species);
         await dbContext.SaveChangesAsync();
 
-        return species.Id;
+        return species;
     }
 
-    public static async Task<Guid> SeedBreed(WriteDbContext dbContext, Guid speciesId)
+    public static async Task<Breed> SeedBreed(WriteDbContext dbContext, Guid speciesId)
     {
         var species = await dbContext.Species.FirstOrDefaultAsync(s => s.Id == speciesId);
 
@@ -135,10 +135,10 @@ public static class DataGenerator
         species!.AddBreed(breed);
         await dbContext.SaveChangesAsync();
 
-        return breed.Id;
+        return breed;
     }
-    
-    public static async Task<Guid> SeedVolunteerWithPets(
+
+    public static async Task<Volunteer> SeedVolunteerWithPets(
         WriteDbContext dbContext,
         int count,
         Guid speciesId,
@@ -147,8 +147,21 @@ public static class DataGenerator
         var volunteer = CreateVolunteerWithPets(count, speciesId, breedId);
         dbContext.Volunteers.Add(volunteer);
         await dbContext.SaveChangesAsync();
-        
-        return volunteer.Id;
+
+        return volunteer;
     }
-    
+
+    public static async Task<Volunteer> SeedVolunteerWithPets(
+        WriteDbContext dbContext,
+        int count)
+    {
+        var species = await SeedSpecies(dbContext);
+        var breed = await SeedBreed(dbContext, species.Id);
+
+        var volunteer = CreateVolunteerWithPets(count, species.Id, breed.Id);
+        dbContext.Volunteers.Add(volunteer);
+        await dbContext.SaveChangesAsync();
+
+        return volunteer;
+    }
 }

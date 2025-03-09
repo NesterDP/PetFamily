@@ -16,28 +16,21 @@ namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 public class AddPetHandlerTests : VolunteerTestsBase
 {
     private readonly ICommandHandler<Guid, AddPetCommand> _sut;
-    private readonly IFilesProvider _filesProvider;
-
     public AddPetHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, AddPetCommand>>();
-        _filesProvider = Scope.ServiceProvider.GetRequiredService<IFilesProvider>();
     }
 
     [Fact]
-    public async Task Add_pet_to_volunteer_that_doesnt_have_pets()
+    public async Task AddPet_success_should_add_pet_to_petless_volunteer()
     {
-        /*Factory.SetupFailureFileServiceMock();
-        var filesResult = await _filesProvider.UploadFiles(new List<FileData>());*/
-        /*filesResult.IsSuccess.Should().BeFalse();*/
-
         // arrange
-        var volunteerId = await DataGenerator.SeedVolunteer(WriteDbContext);
-        var speciesId = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breedId = await DataGenerator.SeedBreed(WriteDbContext, speciesId);
-        var petClassificationDto = new PetClassificationDto(speciesId, breedId);
+        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        var species = await DataGenerator.SeedSpecies(WriteDbContext);
+        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var petClassificationDto = new PetClassificationDto(species.Id, breed.Id);
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
-        var command = Fixture.AddPetCommand(volunteerId, petClassificationDto, addressDto);
+        var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
 
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
@@ -46,23 +39,27 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync();
-        volunteer!.AllOwnedPets.Should().NotBeEmpty();
+        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync();
+        volunteer!.AllOwnedPets.Count.Should().Be(1);
         volunteer!.AllOwnedPets[0].Id.Should().Be(result.Value);
+        
+        // single pet should have first position
+        volunteer!.AllOwnedPets[0].Position.Value.Should().Be(1);
     }
     
     [Fact]
-    public async Task Add_pet_to_volunteer_that_have_pets()
+    public async Task AddPet_success_should_add_pet_to_non_petless_volunteer()
     {
-        var PET_COUNT = 5;
         // arrange
-        var speciesId = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breedId = await DataGenerator.SeedBreed(WriteDbContext, speciesId);
-        var volunteerId = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, speciesId, breedId);
-        var petClassificationDto = new PetClassificationDto(speciesId, breedId);
+        var PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
-        var command = Fixture.AddPetCommand(volunteerId, petClassificationDto, addressDto);
-
+        
+        var species = await DataGenerator.SeedSpecies(WriteDbContext);
+        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var petClassificationDto = new PetClassificationDto(species.Id, breed.Id);
+        var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
+        
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
@@ -70,8 +67,13 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteerId);
+        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT + 1);
         volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value).Should().NotBeNull();
+        
+        // added pet should have the last position
+        volunteer!.AllOwnedPets
+            .FirstOrDefault(p => p.Address.House == addressDto.House)!
+            .Position.Value.Should().Be(PET_COUNT + 1);
     }
 }
