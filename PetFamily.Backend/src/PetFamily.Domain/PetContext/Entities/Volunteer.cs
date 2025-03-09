@@ -8,7 +8,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public class Volunteer : Entity<VolunteerId>
 {
-    private bool _isDeleted = false;
+    public bool _isDeleted { get; private set; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Description Description { get; private set; }

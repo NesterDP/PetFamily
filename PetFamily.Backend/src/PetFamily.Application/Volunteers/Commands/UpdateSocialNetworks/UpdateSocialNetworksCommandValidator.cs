@@ -10,7 +10,7 @@ public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSoci
     public UpdateSocialNetworksCommandValidator()
     {
         RuleFor(r => r.Id).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleForEach(r => r.Dto.SocialNetworks)
+        RuleForEach(r => r.SocialNetworks)
             .MustBeValueObject(s => SocialNetwork.Create(s.Name, s.Link));
     }
 } 

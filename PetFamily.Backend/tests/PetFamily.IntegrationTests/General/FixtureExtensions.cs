@@ -1,6 +1,7 @@
 using AutoFixture;
 using PetFamily.Application.Dto.Pet;
 using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.Create;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
@@ -10,15 +11,6 @@ namespace PetFamily.IntegrationTests.General;
 
 public static class FixtureExtensions
 {
-    public static CreateVolunteerCommand CreateVolunteerCommand(
-        this Fixture fixture)
-    {
-        return fixture.Build<CreateVolunteerCommand>()
-            .With(c => c.VolunteerCommandDto.PhoneNumber, "8-9-222-32-12-32")
-            .With(c => c.VolunteerCommandDto.Email, "test@test.com")
-            .Create();
-    }
-
     public static AddPetCommand AddPetCommand(
         this Fixture fixture,
         Guid volunteerId,

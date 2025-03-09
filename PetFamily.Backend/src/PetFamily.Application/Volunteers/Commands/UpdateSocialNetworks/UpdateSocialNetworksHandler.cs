@@ -43,7 +43,7 @@ public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNet
             return volunteerResult.Error.ToErrorList();
 
         List<SocialNetwork> socialNetworksList = [];
-        foreach (var socialNetwork in command.Dto.SocialNetworks)
+        foreach (var socialNetwork in command.SocialNetworks)
         {
             var tempResult = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
             socialNetworksList.Add(tempResult.Value);
