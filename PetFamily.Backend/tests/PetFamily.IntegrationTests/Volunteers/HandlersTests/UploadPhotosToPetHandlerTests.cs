@@ -24,7 +24,12 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
     public async Task UploadPhotos_success_should_add_photos_to_photoless_pet_in_database()
     {
         // arrange
-        Factory.SetupSuccessFileServiceMock();
+        List<FilePath> photosForUpload =
+        [
+            FilePath.Create("new_photo_1.jpg").Value,
+            FilePath.Create("new_photo_2.jpg").Value
+        ];
+        Factory.SetupSuccessFileServiceMock(photosForUpload);
         var PET_COUNT = 5;
         
         var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
@@ -40,21 +45,29 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         
         volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
-        pet.PhotosList.Count.Should().BeGreaterThan(0); // photos are actually added
+        
+        // photos are actually added
+        pet.PhotosList.Count.Should().Be(photosForUpload.Count);
+        photosForUpload.All(p => pet.PhotosList.Any(photo => photo.PathToStorage.Path == p.Path)).Should().BeTrue();
     }
     
     [Fact]
     public async Task UploadPhotos_success_should_add_photos_to_non_photoless_pet_in_database()
     {
         // arrange
-        Factory.SetupSuccessFileServiceMock();
+        List<FilePath> photosForUpload =
+        [
+            FilePath.Create("new_photo_1.jpg").Value,
+            FilePath.Create("new_photo_2.jpg").Value
+        ];
+        Factory.SetupSuccessFileServiceMock(photosForUpload);
         List<string> petPhotos = ["photo1", "photo2", "photo3"];
         var PET_COUNT = 5;
         
         var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
-        pet.UpdateMainPhoto(pet.PhotosList[0]); // first photo is main one
+        pet.UpdateMainPhoto(pet.PhotosList[0]); // "photo1" is main one
         await WriteDbContext.SaveChangesAsync();
         var command = Fixture.UploadPhotosToPetCommand(volunteer.Id, pet.Id);
         
@@ -67,7 +80,10 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         
         volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
-        pet.PhotosList.Count.Should().BeGreaterThan(petPhotos.Count); // photos are actually added
+        
+        // photos are actually added
+        pet!.PhotosList.Count.Should().Be(petPhotos.Count + photosForUpload.Count); 
+        photosForUpload.All(p => pet.PhotosList.Any(photo => photo.PathToStorage.Path == p.Path)).Should().BeTrue();
         
         // existed photos shouldn't be affected
         petPhotos.All(photoName => pet.PhotosList.Any(photo => photo.PathToStorage.Path == photoName)).Should().BeTrue();
@@ -87,7 +103,7 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
-        pet.UpdateMainPhoto(pet.PhotosList[0]); // first photo is main one
+        pet.UpdateMainPhoto(pet.PhotosList[0]); // "photo1" is main one
         await WriteDbContext.SaveChangesAsync();
         var command = Fixture.UploadPhotosToPetCommand(volunteer.Id, pet.Id);
         
@@ -99,6 +115,8 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         
         volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == pet.Id);
+        
+        // photos count is unchanged
         pet.PhotosList.Count.Should().Be(petPhotos.Count);
         
         // existed photos shouldn't be affected

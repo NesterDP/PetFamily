@@ -26,9 +26,8 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
         services.AddTransient<IFilesProvider>(_ => _filesServiceMock);
     }
 
-    public void SetupSuccessFileServiceMock()
+    public void SetupSuccessFileServiceMock(List<FilePath> data)
     {
-        List<FilePath> data = [FilePath.Create("first_file").Value];
         IReadOnlyList<FilePath> response = data;
 
         _filesServiceMock

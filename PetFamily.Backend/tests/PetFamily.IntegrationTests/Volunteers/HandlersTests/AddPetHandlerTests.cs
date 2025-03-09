@@ -8,6 +8,9 @@ using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Files;
 using PetFamily.Application.Files.FilesData;
 using PetFamily.Application.Volunteers.Commands.AddPet;
+using PetFamily.Domain.SpeciesContext.Entities;
+using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
+using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 
@@ -40,6 +43,8 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.Value.Should().NotBeEmpty();
 
         volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync();
+        
+        // pet was added
         volunteer!.AllOwnedPets.Count.Should().Be(1);
         volunteer!.AllOwnedPets[0].Id.Should().Be(result.Value);
         
@@ -68,6 +73,8 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.Value.Should().NotBeEmpty();
 
         volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        
+        // pet was added
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT + 1);
         volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value).Should().NotBeNull();
         
@@ -75,5 +82,57 @@ public class AddPetHandlerTests : VolunteerTestsBase
         volunteer!.AllOwnedPets
             .FirstOrDefault(p => p.Address.House == addressDto.House)!
             .Position.Value.Should().Be(PET_COUNT + 1);
+    }
+    
+    [Fact]
+    public async Task AddPet_failure_should_get_error_while_trying_to_add_pet_with_unknown_speciesId()
+    {
+        // arrange
+        var PET_COUNT = 5;
+        var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
+        
+        var species = await DataGenerator.SeedSpecies(WriteDbContext);
+        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var petClassificationDto = new PetClassificationDto(SpeciesId.NewSpeciesId(), breed.Id);
+        var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
+        
+        // act
+        var result = await _sut.HandleAsync(command, CancellationToken.None);
+
+        // assert
+        result.IsFailure.Should().BeTrue();
+
+        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        
+        // pet wasn't added
+        volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT);
+        volunteer!.AllOwnedPets.FirstOrDefault(p => p.Address.House == addressDto.House).Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task AddPet_failure_should_get_error_while_trying_to_add_pet_with_unknown_breedId()
+    {
+        // arrange
+        var PET_COUNT = 5;
+        var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
+        
+        var species = await DataGenerator.SeedSpecies(WriteDbContext);
+        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var petClassificationDto = new PetClassificationDto(species.Id, BreedId.NewBreedId());
+        var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
+        
+        // act
+        var result = await _sut.HandleAsync(command, CancellationToken.None);
+
+        // assert
+        result.IsFailure.Should().BeTrue();
+
+        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        
+        // pet wasn't added
+        volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT);
+        volunteer!.AllOwnedPets.FirstOrDefault(p => p.Address.House == addressDto.House).Should().BeNull();
     }
 }
