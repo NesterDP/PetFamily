@@ -7,30 +7,29 @@ namespace PetFamily.Application.Dto.Pet;
 
 public class PetDto
 {
-    public Guid Id { get; init; }
-    public Guid OwnerId { get; init; }
-    public string Name { get; init; }
-    public string Description { get; init; }
-    public Guid SpeciesId { get; init; }
-    public Guid BreedId { get; init; }
-    public string Color { get; init; }
-    public string HealthInfo { get; init; }
-    public string City { get; init;}
-    public string House { get; init;}
-    public string? Apartment { get; init; }
-    public float Weight { get; init; }
-   public float Height { get; init; }
-    public string OwnerPhoneNumber { get; init; }
-    public bool IsCastrated { get; init; }
-    public DateTime DateOfBirth { get; init; }
-    public bool IsVaccinated { get; init; }
-    public string HelpStatus { get; init; }
+    public Guid Id { get; set; }
+    public Guid OwnerId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public Guid SpeciesId { get; set; }
+    public Guid BreedId { get; set; }
+    public string Color { get; set; }
+    public string HealthInfo { get; set; }
+    public string City { get; set;}
+    public string House { get; set;}
+    public string? Apartment { get; set; }
+    public float Weight { get; set; }
+   public float Height { get; set; }
+    public string OwnerPhoneNumber { get; set; }
+    public bool IsCastrated { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public bool IsVaccinated { get; set; }
+    public string HelpStatus { get; set; }
     public TransferDetailDto[] TransferDetails { get; set; } = [];
     public PhotoDto[] Photos { get; set; } = [];
-    public DateTime CreationDate { get; init; }
-    public int Position { get; init; }
+    public DateTime CreationDate { get; set; }
+    public int Position { get; set; }
+    
+    [JsonIgnore]
+    public bool IsDeleted { get; set; }
 }
-
-/*
-[Serializable]
-public record PhotoDto(string PathToStorage, int Priority);*/

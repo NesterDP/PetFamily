@@ -28,6 +28,8 @@ public class GetFilteredPetsWithPaginationHandler : IQueryHandler<
     {
         var petsQuery = _readDbContext.Pets;
         
+        petsQuery = petsQuery.Where(p => p.IsDeleted == false);
+        
         petsQuery = petsQuery.WhereIf(
             query.OwnerId != null,
             p => p.OwnerId == query.OwnerId);

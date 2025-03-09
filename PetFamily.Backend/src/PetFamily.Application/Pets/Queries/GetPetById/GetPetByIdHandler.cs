@@ -19,7 +19,7 @@ public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
         CancellationToken cancellationToken)
     {
         var result = await _readDbContext.Pets
-            .FirstOrDefaultAsync(v => v.Id == query.Id, cancellationToken);
+            .FirstOrDefaultAsync(v => v.Id == query.Id && v.IsDeleted == false, cancellationToken);
 
         result!.Photos = result.Photos.OrderByDescending(p => p.Main).ToArray();
         

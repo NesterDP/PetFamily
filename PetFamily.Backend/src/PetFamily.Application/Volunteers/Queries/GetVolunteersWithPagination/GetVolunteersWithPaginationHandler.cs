@@ -23,8 +23,8 @@ public class GetVolunteersWithPaginationHandler : IQueryHandler<
         CancellationToken cancellationToken)
     {
         var volunteersQuery = _readDbContext.Volunteers;
-
-        //volunteersQuery = volunteersQuery.Where(x => x.Experience > 1);
+        
+        volunteersQuery = volunteersQuery.Where(v => v.IsDeleted == false);
         
         return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

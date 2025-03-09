@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Dto.Volunteer;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.Shared.CustomErrors;
 
 namespace PetFamily.Application.Volunteers.Queries.GetVolunteerById;
@@ -22,12 +23,9 @@ public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerB
     {
         var customQuery = _readDbContext.Volunteers;
 
-        //var applyStaff = customQuery.Where(v => v.Experience > 11);
-        
-        //customQuery.Where(v => v.Experience > 10);
+        customQuery = customQuery.Where(v => v.Id == query.Id && v.IsDeleted == false);
 
         var result = await customQuery.FirstOrDefaultAsync();
-            
         
         return result;
     }
