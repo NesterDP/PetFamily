@@ -36,7 +36,7 @@ public static class DataGenerator
         return volunteer;
     }
 
-    private static Pet CreatePet(Guid speciesId, Guid breedId, string suffix = "")
+    public static Pet CreatePet(Guid speciesId, Guid breedId, string suffix = "")
     {
         var petId = PetId.NewPetId();
         var name = Name.Create($"testName{suffix}").Value;
@@ -116,6 +116,19 @@ public static class DataGenerator
         dbContext.Volunteers.Add(volunteer);
         await dbContext.SaveChangesAsync();
         return volunteer;
+    }
+    
+    public static async Task<List<Volunteer>> SeedVolunteers(WriteDbContext dbContext, int count)
+    {
+        List<Volunteer> volunteers = [];
+        for (int i = 0; i < count; i++)
+        {
+            var volunteer = CreateVolunteer();
+            dbContext.Volunteers.Add(volunteer);
+            await dbContext.SaveChangesAsync();
+            volunteers.Add(volunteer);
+        }
+        return volunteers;
     }
 
     public static async Task<Species> SeedSpecies(WriteDbContext dbContext)

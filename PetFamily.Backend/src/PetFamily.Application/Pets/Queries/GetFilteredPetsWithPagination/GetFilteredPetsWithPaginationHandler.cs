@@ -11,9 +11,7 @@ namespace PetFamily.Application.Pets.Queries.GetFilteredPetsWithPagination;
 
 
 
-public class GetFilteredPetsWithPaginationHandler : IQueryHandler<
-    PagedList<PetDto>,
-    GetFilteredPetsWithPaginationQuery>
+public class GetFilteredPetsWithPaginationHandler : IQueryHandler<PagedList<PetDto>, GetFilteredPetsWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -44,7 +42,7 @@ public class GetFilteredPetsWithPaginationHandler : IQueryHandler<
         
         petsQuery = petsQuery.WhereIf(
             !string.IsNullOrWhiteSpace(query.Color),
-            p => p.Name.Contains(query.Color!));
+            p => p.Color.Contains(query.Color!));
         
         petsQuery = petsQuery.WhereIf(
             query.SpeciesId != null,

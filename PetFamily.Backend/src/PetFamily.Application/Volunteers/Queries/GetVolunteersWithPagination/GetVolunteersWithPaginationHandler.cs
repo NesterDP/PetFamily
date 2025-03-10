@@ -7,9 +7,7 @@ using PetFamily.Application.Models;
 
 namespace PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
 
-public class GetVolunteersWithPaginationHandler : IQueryHandler<
-    PagedList<VolunteerDto>,
-    GetVolunteersWithPaginationQuery>
+public class GetVolunteersWithPaginationHandler : IQueryHandler<PagedList<VolunteerDto>, GetVolunteersWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
 
