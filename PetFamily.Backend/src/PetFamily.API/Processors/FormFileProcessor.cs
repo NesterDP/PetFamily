@@ -1,5 +1,4 @@
 using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Volunteers.AddPet;
 
 namespace PetFamily.API.Processors;
 

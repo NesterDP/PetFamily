@@ -1,3 +1,5 @@
+using PetFamily.Infrastructure.DbContexts;
+
 namespace PetFamily.Infrastructure;
 
 using System.Data;
@@ -8,9 +10,9 @@ using PetFamily.Application.Database;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly WriteDbContext _dbContext;
 
-    public UnitOfWork(ApplicationDbContext dbContext)
+    public UnitOfWork(WriteDbContext dbContext)
     {
         _dbContext = dbContext;
     }

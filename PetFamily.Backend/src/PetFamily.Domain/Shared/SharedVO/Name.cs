@@ -11,7 +11,7 @@ public record Name
 
     public static Result<Name, Error> Create(string name)
     {
-        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_NAME_LENGTH)
+        if (string.IsNullOrWhiteSpace(name) || name.Length > DomainConstants.MAX_NAME_LENGTH)
             return Errors.General.ValueIsInvalid("name");
 
         var validName = new Name(name);
