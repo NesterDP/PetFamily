@@ -26,7 +26,7 @@ public class GetBreedsBySpeciesIdHandlerTests : SpeciesTestsBase
     public async Task GetBreedsBySpeciesId_returns_all_breeds_for_speciesId()
     {
         // arrange
-        var REQUIRED_PET_COUNT = 3;
+        var REQUIRED_BREED_COUNT = 3;
         var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
         var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
         var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
@@ -42,7 +42,7 @@ public class GetBreedsBySpeciesIdHandlerTests : SpeciesTestsBase
         
         // assert
         result.Should().NotBeNull();
-        result.Count.Should().Be(REQUIRED_PET_COUNT);
+        result.Count.Should().Be(REQUIRED_BREED_COUNT);
     }
     
     
