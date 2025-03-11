@@ -47,7 +47,7 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
             new TransferDetailDto("visa", "for transfers outside of country")
         ];
 
-        var volunteerCommandDto = new VolunteerCommandDto(
+        var volunteerCommandDto = new CreateVolunteerDto(
             fullName,
             email,
             phoneNumber,

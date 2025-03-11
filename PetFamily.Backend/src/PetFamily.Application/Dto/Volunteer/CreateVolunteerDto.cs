@@ -1,6 +1,6 @@
 namespace PetFamily.Application.Dto.Volunteer;
 
-public record VolunteerCommandDto(
+public record CreateVolunteerDto(
     FullNameDto FullName,
     string Email,
     string PhoneNumber,

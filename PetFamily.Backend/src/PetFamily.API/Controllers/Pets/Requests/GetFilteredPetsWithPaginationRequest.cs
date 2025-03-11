@@ -1,4 +1,5 @@
 using PetFamily.Application.Pets.Queries.GetFilteredPetsWithPagination;
+using PetFamily.Application.Pets.Queries.GetFilteredPetsWithPaginationDapper;
 
 namespace PetFamily.API.Controllers.Pets.Requests;
 
@@ -24,6 +25,27 @@ public record GetFilteredPetsWithPaginationRequest(
     string? SortDirection)
 {
     public GetFilteredPetsWithPaginationQuery ToQuery() =>  new GetFilteredPetsWithPaginationQuery(
+        Page,
+        PageSize,
+        OwnerId,
+        Name,
+        SpeciesId,
+        BreedId,
+        Color,
+        City,
+        House,
+        Apartment,
+        Weight,
+        Height,
+        OwnerPhoneNumber,
+        IsCastrated,
+        Age,
+        IsVaccinated,
+        HelpStatus,
+        SortBy,
+        SortDirection);
+    
+    public GetFilteredPetsWithPaginationDapperQuery ToDapperQuery() =>  new GetFilteredPetsWithPaginationDapperQuery(
         Page,
         PageSize,
         OwnerId,

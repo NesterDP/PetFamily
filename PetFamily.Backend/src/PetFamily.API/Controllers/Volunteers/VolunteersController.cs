@@ -27,7 +27,7 @@ namespace PetFamily.API.Controllers.Volunteers;
 public class VolunteersController : ApplicationController
 {
     [HttpGet]
-    public async Task<ActionResult> Get(
+    public async Task<ActionResult> GetVolunteers(
         [FromQuery] GetVolunteersWithPaginationRequest request,
         [FromServices] GetVolunteersWithPaginationHandler handler,
         CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ public class VolunteersController : ApplicationController
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Guid>>  Get(
+    public async Task<ActionResult<Guid>>  GetById(
         [FromRoute] Guid id,
         [FromServices] GetVolunteerByIdHandler handler,
         CancellationToken cancellationToken)

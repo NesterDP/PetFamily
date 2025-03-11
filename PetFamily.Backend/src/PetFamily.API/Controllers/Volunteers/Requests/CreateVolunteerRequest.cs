@@ -5,9 +5,9 @@ using PetFamily.Application.Volunteers.Commands.Create;
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 
 public record CreateVolunteerRequest(
-    VolunteerCommandDto VolunteerCommandDto,
+    CreateVolunteerDto CreateVolunteerDto,
     IEnumerable<SocialNetworkDto> SocialNetworksDto,
     IEnumerable<TransferDetailDto> TransferDetailsDto)
 {
-    public CreateVolunteerCommand ToCommand() => new(VolunteerCommandDto, SocialNetworksDto, TransferDetailsDto);
+    public CreateVolunteerCommand ToCommand() => new(CreateVolunteerDto, SocialNetworksDto, TransferDetailsDto);
 }

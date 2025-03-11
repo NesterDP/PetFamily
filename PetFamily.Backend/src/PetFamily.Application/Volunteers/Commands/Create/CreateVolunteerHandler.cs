@@ -44,17 +44,17 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fullNameCreateResult = FullName.Create(
-            command.VolunteerCommandDto.FullName.FirstName,
-            command.VolunteerCommandDto.FullName.LastName,
-            command.VolunteerCommandDto.FullName.Surname);
+            command.CreateVolunteerDto.FullName.FirstName,
+            command.CreateVolunteerDto.FullName.LastName,
+            command.CreateVolunteerDto.FullName.Surname);
 
-        var emailCreateResult = Email.Create(command.VolunteerCommandDto.Email);
+        var emailCreateResult = Email.Create(command.CreateVolunteerDto.Email);
 
-        var descriptionCreateResult = Description.Create(command.VolunteerCommandDto.Description);
+        var descriptionCreateResult = Description.Create(command.CreateVolunteerDto.Description);
 
-        var experienceCreateResult = Experience.Create(command.VolunteerCommandDto.Experience);
+        var experienceCreateResult = Experience.Create(command.CreateVolunteerDto.Experience);
 
-        var phoneNumberCreateResult = Phone.Create(command.VolunteerCommandDto.PhoneNumber);
+        var phoneNumberCreateResult = Phone.Create(command.CreateVolunteerDto.PhoneNumber);
 
         List<SocialNetwork> socialNetworksList = [];
         foreach (var socialNetwork in command.SocialNetworksDto)
