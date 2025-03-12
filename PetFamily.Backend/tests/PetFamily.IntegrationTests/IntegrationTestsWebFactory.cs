@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using PetFamily.API;
-using PetFamily.Application.Database;
 using PetFamily.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;

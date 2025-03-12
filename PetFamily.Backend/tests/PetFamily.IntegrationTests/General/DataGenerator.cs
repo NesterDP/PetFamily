@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Domain.PetContext.Entities;
-using PetFamily.Domain.PetContext.ValueObjects.PetVO;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
+using PetFamily.Domain.SpeciesManagment.Entities;
+using PetFamily.Domain.VolunteerManagment.Entities;
+using PetFamily.Domain.VolunteerManagment.ValueObjects.PetVO;
+using PetFamily.Domain.VolunteerManagment.ValueObjects.VolunteerVO;
 using PetFamily.Infrastructure.DbContexts;
-using Address = PetFamily.Domain.PetContext.ValueObjects.PetVO.Address;
+using PetFamily.Core.SharedVO;
+using Address = PetFamily.Domain.VolunteerManagment.ValueObjects.PetVO.Address;
 
 namespace PetFamily.IntegrationTests.General;
 

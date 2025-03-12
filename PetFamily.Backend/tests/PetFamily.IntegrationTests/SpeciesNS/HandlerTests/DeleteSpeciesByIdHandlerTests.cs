@@ -1,14 +1,13 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Extensions;
 using PetFamily.Application.Species.Commands.DeleteSpeciesById;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
+using PetFamily.Domain.SpeciesManagment.Entities;
 using PetFamily.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.SharedVO;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 

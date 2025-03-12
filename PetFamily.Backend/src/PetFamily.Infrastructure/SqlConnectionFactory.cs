@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using PetFamily.Application.Database;
+using PetFamily.Core;
 
 namespace PetFamily.Infrastructure;
 

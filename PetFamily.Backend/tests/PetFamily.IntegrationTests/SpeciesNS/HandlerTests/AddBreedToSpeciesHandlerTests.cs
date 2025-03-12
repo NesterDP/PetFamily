@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
 using PetFamily.Application.Species.Commands.AddBreedToSpecies;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
+using PetFamily.Core.Abstractions;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 

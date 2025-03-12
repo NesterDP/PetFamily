@@ -1,13 +1,13 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Pets.Queries.GetPetById;
 using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.VolunteerManagment.ValueObjects.VolunteerVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Volunteer;
+using PetFamily.Core.SharedVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

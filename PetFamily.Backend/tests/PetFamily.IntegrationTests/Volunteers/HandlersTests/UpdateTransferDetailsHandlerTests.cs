@@ -1,13 +1,12 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Shared;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

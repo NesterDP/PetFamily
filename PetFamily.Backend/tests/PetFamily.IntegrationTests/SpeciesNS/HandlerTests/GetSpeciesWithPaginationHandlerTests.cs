@@ -1,9 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
 using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
-using PetFamily.Application.Dto.Breed;
-using PetFamily.Application.Dto.Species;
 using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;

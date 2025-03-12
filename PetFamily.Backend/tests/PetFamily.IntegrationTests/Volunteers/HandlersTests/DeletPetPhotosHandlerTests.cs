@@ -2,16 +2,13 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
 using PetFamily.Application.Volunteers.Commands.DeletePet;
 using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
 using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
-using PetFamily.Domain.PetContext.Entities;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.SharedVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

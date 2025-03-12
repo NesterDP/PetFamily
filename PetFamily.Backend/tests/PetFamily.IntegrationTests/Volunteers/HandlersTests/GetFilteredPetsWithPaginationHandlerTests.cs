@@ -1,15 +1,12 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Pet;
-using PetFamily.Application.Models;
 using PetFamily.Application.Pets.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
-using PetFamily.Domain.PetContext.ValueObjects.PetVO;
-using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.VolunteerManagment.ValueObjects.PetVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.SharedVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

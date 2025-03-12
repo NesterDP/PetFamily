@@ -1,6 +1,6 @@
 using System.Threading.Channels;
-using PetFamily.Application.Messaging;
-using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
+using PetFamily.Core.Messaging;
+using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 
 namespace PetFamily.Infrastructure.MessageQueues;
 

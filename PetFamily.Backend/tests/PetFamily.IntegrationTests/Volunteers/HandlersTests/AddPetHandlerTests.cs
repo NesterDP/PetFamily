@@ -2,17 +2,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Pet;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
 using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Domain.SpeciesContext.Entities;
-using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
-using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
+using PetFamily.Domain.SpeciesManagment.ValueObjects.BreedVO;
+using PetFamily.Domain.SpeciesManagment.ValueObjects.SpeciesVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Pet;
+using PetFamily.Core.Dto.Shared;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

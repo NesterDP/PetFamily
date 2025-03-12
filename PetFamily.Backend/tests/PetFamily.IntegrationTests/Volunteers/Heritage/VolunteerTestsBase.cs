@@ -2,15 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Database;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
 using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Domain.PetContext.Entities;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 
