@@ -4,14 +4,15 @@ using PetFamily.Application.Species;
 using PetFamily.Domain.Shared.CustomErrors;
 using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
+using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
 public class SpeciesRepository : ISpeciesRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly WriteDbContext _context;
 
-    public SpeciesRepository(ApplicationDbContext dbContext)
+    public SpeciesRepository(WriteDbContext dbContext)
     {
         _context = dbContext;
     }

@@ -7,6 +7,7 @@ using PetFamily.Application.Messaging;
 using PetFamily.Application.Species;
 using PetFamily.Application.Volunteers;
 using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.DbContexts;
 using PetFamily.Infrastructure.Files;
 using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Options;
@@ -21,16 +22,14 @@ public static class Inject
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ApplicationDbContext>();
-        services.AddScoped<IVolunteersRepository, VolunteerRepository>();
-        services.AddScoped<ISpeciesRepository, SpeciesRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
-        services.AddMinio(configuration);
-
-        services.AddHostedService<FilesCleanerBackgroundService>();
-        services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
-        services.AddScoped<IFilesCleanerService, FilesCleanerService>();
+        services
+            .AddRepositories()
+            .AddDbContexts(configuration)
+            .AddTransactionManagement()
+            .AddHostedServices()
+            .AddMessageQueues()
+            .AddServices()
+            .AddMinio(configuration);
 
         return services;
     }
@@ -49,6 +48,58 @@ public static class Inject
         });
         
         services.AddScoped<IFilesProvider, MinioProvider>();
+        return services;
+    }
+    
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<WriteDbContext>(_ =>
+            new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
+            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        return services;
+    }
+    
+    private static IServiceCollection AddRepositories(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IVolunteersRepository, VolunteerRepository>();
+        services.AddScoped<ISpeciesRepository, SpeciesRepository>();
+        return services;
+    }
+    
+    private static IServiceCollection AddTransactionManagement(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+        
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddHostedServices(
+        this IServiceCollection services)
+    {
+        services.AddHostedService<FilesCleanerBackgroundService>();
+        return services;
+    }
+    
+    private static IServiceCollection AddMessageQueues(
+        this IServiceCollection services)
+    {
+        services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
+        return services;
+    }
+    
+    private static IServiceCollection AddServices(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IFilesCleanerService, FilesCleanerService>();
         return services;
     }
 }

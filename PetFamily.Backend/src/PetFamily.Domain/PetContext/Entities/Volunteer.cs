@@ -8,25 +8,44 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public class Volunteer : Entity<VolunteerId>
 {
-    private bool _isDeleted = false;
+    public bool _isDeleted { get; private set; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Description Description { get; private set; }
     public Experience Experience { get; private set; }
 
     public Phone PhoneNumber { get; private set; }
-    public SocialNetworksList SocialNetworksList { get; private set; }
-    public TransferDetailsList TransferDetailsList { get; private set; }
+
+    private List<SocialNetwork> _socialNetworks = [];
+
+    public IReadOnlyList<SocialNetwork> SocialNetworksList
+    {
+        get => _socialNetworks;
+        private set => _socialNetworks = value.ToList();
+    }
+
+    private List<TransferDetail> _transferDetails = [];
+
+    public IReadOnlyList<TransferDetail> TransferDetailsList
+    {
+        get => _transferDetails;
+        private set => _transferDetails = value.ToList();
+    }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
-    public int PetsFoundHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
-    public int PetsSeekingHome() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.SeekingHome);
-    public int PetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus.Value == PetStatus.NeedHelp);
+    public int PetsFoundHome() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.FoundHome);
+
+    public int PetsInSearchOfHome() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.InSearchOfHome);
+
+    public int PetsUnderMedicalTreatment() => AllOwnedPets
+        .Count(p => p.HelpStatus.Value == PetStatus.UnderMedicalTreatment);
 
     // ef
-    public Volunteer(VolunteerId id) : base(id)
+    public Volunteer()
     {
     }
 
@@ -37,16 +56,16 @@ public class Volunteer : Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworksList socialNetworksList,
-        TransferDetailsList transferDetailsList) : base(id)
+        IEnumerable<SocialNetwork> socialNetworks,
+        IEnumerable<TransferDetail> transferDetails) : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        SocialNetworksList = socialNetworksList;
-        TransferDetailsList = transferDetailsList;
+        SocialNetworksList = socialNetworks.ToList();
+        TransferDetailsList = transferDetails.ToList();
     }
 
     public static Result<Volunteer, Error> Create(
@@ -56,8 +75,8 @@ public class Volunteer : Entity<VolunteerId>
         Description description,
         Experience experience,
         Phone phoneNumber,
-        SocialNetworksList socialNetworksList,
-        TransferDetailsList transferDetailsList)
+        IEnumerable<SocialNetwork> socialNetworks,
+        IEnumerable<TransferDetail> transferDetails)
     {
         return new Volunteer(
             id,
@@ -66,8 +85,8 @@ public class Volunteer : Entity<VolunteerId>
             description,
             experience,
             phoneNumber,
-            socialNetworksList,
-            transferDetailsList);
+            socialNetworks.ToList(),
+            transferDetails.ToList());
     }
 
     public void UpdateMainInfo(
@@ -84,14 +103,14 @@ public class Volunteer : Entity<VolunteerId>
         PhoneNumber = phoneNumber;
     }
 
-    public void UpdateSocialNetworks(SocialNetworksList socialNetworksList)
+    public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
     {
-        SocialNetworksList = socialNetworksList;
+        SocialNetworksList = socialNetworks.ToList();
     }
 
-    public void UpdateTransferDetails(TransferDetailsList transferDetailsList)
+    public void UpdateTransferDetails(IEnumerable<TransferDetail> transferDetails)
     {
-        TransferDetailsList = transferDetailsList;
+        TransferDetailsList = transferDetails.ToList();
     }
 
     public void Delete()
@@ -105,12 +124,77 @@ public class Volunteer : Entity<VolunteerId>
         }
     }
 
-    public void UpdatePetPhotos(PetId petId, PhotosList photosList)
+    public void UpdatePetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
         if (chosenPet != null)
-            chosenPet.UpdatePhotos(photosList);
+            chosenPet.UpdatePhotos(photos);
     }
+
+    public UnitResult<Error> UpdatePetMainPhoto(PetId petId, string path)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet == null)
+            return Errors.General.ValueNotFound(petId);
+
+        var photo = chosenPet.PhotosList.FirstOrDefault(p => p.PathToStorage.Path == path);
+        if (photo == null)
+            return Errors.General.ValueNotFound();
+        
+        chosenPet.UpdateMainPhoto(photo);
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> UpdatePetHelpStatus(
+        PetId petId,
+        HelpStatus helpStatus)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet == null)
+            return Errors.General.ValueNotFound(petId.Value);
+
+        chosenPet.UpdateHelpStatus(helpStatus);
+
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> UpdatePetInfo(
+        PetId petId,
+        Name name,
+        Description description,
+        PetClassification petClassification,
+        Color color,
+        HealthInfo healthInfo,
+        Address address,
+        Weight weight,
+        Height height,
+        Phone ownerPhoneNumber,
+        IsCastrated isCastrated,
+        DateOfBirth dateOfBirth,
+        IsVaccinated isVaccinated,
+        List<TransferDetail> transferDetails)
+    {
+        var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+        if (chosenPet == null)
+            return Errors.General.ValueNotFound(petId.Value);
+
+        chosenPet.UpdateName(name);
+        chosenPet.UpdateDescription(description);
+        chosenPet.UpdatePetClassification(petClassification);
+        chosenPet.UpdateColor(color);
+        chosenPet.UpdateHealthInfo(healthInfo);
+        chosenPet.UpdateAddress(address);
+        chosenPet.UpdateWeight(weight);
+        chosenPet.UpdateHeight(height);
+        chosenPet.UpdateOwnerPhoneNumber(ownerPhoneNumber);
+        chosenPet.UpdateIsCastrated(isCastrated);
+        chosenPet.UpdateDateOfBirth(dateOfBirth);
+        chosenPet.UpdateIsVaccinated(isVaccinated);
+        chosenPet.UpdateTransferDetails(transferDetails);
+
+        return UnitResult.Success<Error>();
+    }
+
 
     public void Restore()
     {
@@ -143,6 +227,21 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<Error>();
     }
 
+    public void HardDeletePet(Pet pet)
+    {
+        _pets.Remove(pet);
+        foreach (var p in _pets.Where(p => p.Position.Value > pet.Position.Value))
+        {
+            var newPosition = (Position.Create(p.Position.Value - 1).Value);
+            p.SetPosition(newPosition);
+        }
+    }
+
+    public void SoftDeletePet(Pet pet)
+    {
+        pet.Delete();
+    }
+
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
         var currentPosition = pet.Position;
@@ -155,13 +254,13 @@ public class Volunteer : Entity<VolunteerId>
             return adjustedPosition.Error;
 
         newPosition = adjustedPosition.Value;
-        
+
         var result = AdjustPositionWithinBorders(newPosition, currentPosition);
         if (result.IsFailure)
             return result.Error;
-        
+
         pet.Move(newPosition);
-        
+
         return Result.Success<Error>();
     }
 
@@ -192,7 +291,7 @@ public class Volunteer : Entity<VolunteerId>
                     return result.Error;
             }
         }
-        
+
         return Result.Success<Error>();
     }
 
