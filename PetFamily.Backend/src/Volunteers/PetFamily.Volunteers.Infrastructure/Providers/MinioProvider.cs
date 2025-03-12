@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using PetFamily.Core;
-using PetFamily.Core.CustomErrors;
 using PetFamily.Core.Files.FilesData;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Infrastructure.Options;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 

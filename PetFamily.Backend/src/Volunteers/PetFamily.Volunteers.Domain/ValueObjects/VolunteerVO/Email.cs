@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using PetFamily.Core.CustomErrors;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 

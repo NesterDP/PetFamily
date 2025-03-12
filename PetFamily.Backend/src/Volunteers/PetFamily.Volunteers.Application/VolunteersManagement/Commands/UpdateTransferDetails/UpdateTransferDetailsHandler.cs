@@ -3,9 +3,9 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.CustomErrors;
 using PetFamily.Core.Extensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.VolunteersManagement.Commands.UpdateTransferDetails;

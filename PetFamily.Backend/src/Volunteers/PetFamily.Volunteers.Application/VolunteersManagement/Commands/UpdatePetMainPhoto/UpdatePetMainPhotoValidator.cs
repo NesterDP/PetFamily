@@ -1,6 +1,6 @@
 using FluentValidation;
 using PetFamily.Core.Extensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Volunteers.Application.VolunteersManagement.Commands.UpdatePetMainPhoto;
 

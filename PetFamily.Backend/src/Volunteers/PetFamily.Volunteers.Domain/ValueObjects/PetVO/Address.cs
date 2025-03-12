@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Core.CustomErrors;
-using PetFamily.Core.GeneralClasses;
+using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
@@ -19,13 +19,13 @@ public record Address
 
     public static Result<Address, Error> Create(string city, string house, string? apartment)
     {
-        if (string.IsNullOrWhiteSpace(city) || city.Length > DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
+        if (string.IsNullOrWhiteSpace(city) || city.Length > SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
             return Errors.General.ValueIsInvalid("city");
         
-        if (string.IsNullOrWhiteSpace(house) || house.Length > DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
+        if (string.IsNullOrWhiteSpace(house) || house.Length > SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
             return Errors.General.ValueIsInvalid("house");
         
-        if (string.IsNullOrWhiteSpace(apartment) || apartment.Length > DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
+        if (string.IsNullOrWhiteSpace(apartment) || apartment.Length > SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
             return Errors.General.ValueIsInvalid("apartment");
 
         var validAddress = new Address(city, house, apartment);

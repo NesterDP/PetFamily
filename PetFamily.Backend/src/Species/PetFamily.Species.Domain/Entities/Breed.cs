@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Domain.ValueObjects.BreedVO;
 
 namespace PetFamily.Species.Domain.Entities;

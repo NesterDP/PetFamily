@@ -1,8 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.CustomErrors;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Species.Application.SpeciesManagement.Commands.DeleteSpeciesById;
 

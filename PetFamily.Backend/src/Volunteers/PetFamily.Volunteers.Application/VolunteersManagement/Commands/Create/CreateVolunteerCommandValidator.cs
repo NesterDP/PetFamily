@@ -1,6 +1,6 @@
 using FluentValidation;
 using PetFamily.Core.Extensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.VolunteersManagement.Commands.Create;

@@ -1,6 +1,6 @@
 using FluentValidation;
-using PetFamily.Core.CustomErrors;
 using PetFamily.Core.Extensions;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Application.VolunteersManagement.Commands.Delete;
 

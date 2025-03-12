@@ -1,7 +1,5 @@
-using System.Net;
-using System.Text;
-using PetFamily.Core.CustomErrors;
-using PetFamily.Core.Response;
+using PetFamily.Core.Models;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Web.Middlewares;
 

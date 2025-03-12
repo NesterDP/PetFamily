@@ -1,11 +1,10 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.CustomErrors;
 using PetFamily.Core.Extensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Domain.Entities;
 using PetFamily.Species.Domain.ValueObjects.BreedVO;
 using PetFamily.Species.Domain.ValueObjects.SpeciesVO;

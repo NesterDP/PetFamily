@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Core;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
-using PetFamily.Core.GeneralClasses;
-using PetFamily.Core.SharedVO;
+using PetFamily.Core.Extensions;
+using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
@@ -27,17 +28,17 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             fnb.Property(pn => pn.FirstName)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
                 .HasColumnName("first_name");
             
             fnb.Property(pn => pn.LastName)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
                 .HasColumnName("last_name");
             
             fnb.Property(pn => pn.Surname)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
                 .HasColumnName("surname");
         });
 
@@ -45,7 +46,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             eb.Property(e => e.Value)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_LOW_TEXT_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("email");
         });
         
@@ -53,7 +54,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             db.Property(d => d.Value)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_HIGH_TEXT_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_HIGH_TEXT_LENGTH)
                 .HasColumnName("description");
         });
         
@@ -68,7 +69,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             pnb.Property(p => p.Value)
                 .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_PHONE_LENGTH)
+                .HasMaxLength(SharedConstants.MAX_PHONE_LENGTH)
                 .HasColumnName("phone_number");
         });
         

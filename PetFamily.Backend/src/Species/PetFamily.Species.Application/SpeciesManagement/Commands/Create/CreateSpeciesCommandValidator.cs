@@ -1,6 +1,6 @@
 using FluentValidation;
 using PetFamily.Core.Extensions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Species.Application.SpeciesManagement.Commands.Create;
 
