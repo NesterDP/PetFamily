@@ -1,11 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Species.Commands.DeleteBreedById;
-using PetFamily.Application.Species.Commands.DeleteSpeciesById;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
 using PetFamily.Core.Abstractions;
+using PetFamily.Species.Application.Commands.DeleteBreedById;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 
@@ -22,9 +21,9 @@ public class DeleteBreedByIdHandlerTests : SpeciesTestsBase
     public async Task DeleteBreedById_success_should_delete_breed_from_database()
     {
         // arrange
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed1 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var command = new DeleteBreedByIdCommand(species.Id, breed1.Id);
 
         // act
@@ -34,7 +33,7 @@ public class DeleteBreedByIdHandlerTests : SpeciesTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var updatedSpecies = await WriteDbContext.Species.FirstOrDefaultAsync(s => s.Id == species.Id);
+        var updatedSpecies = await SpeciesWriteDbContext.Species.FirstOrDefaultAsync(s => s.Id == species.Id);
         updatedSpecies!.Breeds.Count.Should().Be(1);
         
         // selected breed was deleted
@@ -49,10 +48,10 @@ public class DeleteBreedByIdHandlerTests : SpeciesTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var command = new DeleteBreedByIdCommand(species.Id, breed.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
@@ -60,7 +59,7 @@ public class DeleteBreedByIdHandlerTests : SpeciesTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
 
-        var updatedSpecies = await WriteDbContext.Species.FirstOrDefaultAsync(s => s.Id == species.Id);
+        var updatedSpecies = await SpeciesWriteDbContext.Species.FirstOrDefaultAsync(s => s.Id == species.Id);
         updatedSpecies!.Breeds.Count.Should().Be(1);
         
         // selected breed should still be in database

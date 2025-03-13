@@ -2,13 +2,11 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.Commands.DeletePet;
-using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
-using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -34,11 +32,11 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         List<string> petPhotos = ["photo1", "photo2", "photo3"];
         var PET_COUNT = 5;
         
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
         pet.UpdateMainPhoto(pet.PhotosList[1]); // "photo2" is main one
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         
         // expected result
         var resultList = petPhotos.Except(photosForDeletion.Select(p => p.Path)).ToList();
@@ -54,7 +52,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
         
         // size equality
@@ -76,11 +74,11 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         List<string> petPhotos = ["photo1", "photo2", "photo3"];
         List<string> photosForDeletion = ["photo1", "photo3"];
         
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
         pet.UpdateMainPhoto(pet.PhotosList[1]); // "photo2" is main one
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         
         // expected result
         var resultList = petPhotos.Except(photosForDeletion).ToList();
@@ -92,7 +90,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == pet.Id);
         
         // size equality

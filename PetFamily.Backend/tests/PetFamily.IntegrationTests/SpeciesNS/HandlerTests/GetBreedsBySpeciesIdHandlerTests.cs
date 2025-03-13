@@ -1,12 +1,11 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
-using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Breed;
+using PetFamily.Species.Application.Queries.GetBreedsBySpeciesId;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 
@@ -24,14 +23,14 @@ public class GetBreedsBySpeciesIdHandlerTests : SpeciesTestsBase
     {
         // arrange
         var REQUIRED_BREED_COUNT = 3;
-        var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed3 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
+        var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed1 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed3 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
         
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed4 = await DataGenerator.SeedBreed(WriteDbContext, species2.Id);
-        var breed5 = await DataGenerator.SeedBreed(WriteDbContext, species2.Id);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed4 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
+        var breed5 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
         var query = new GetBreedsBySpeciesIdQuery(species1.Id);
 
         // act
@@ -47,12 +46,12 @@ public class GetBreedsBySpeciesIdHandlerTests : SpeciesTestsBase
     public async Task GetBreedsBySpeciesId_returns_empty_list_if_there_are_no_breeds_for_speciesId()
     {
         // arrange
-        var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed3 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
+        var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed1 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed3 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
         
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var query = new GetBreedsBySpeciesIdQuery(species2.Id);
 
         // act
@@ -66,10 +65,10 @@ public class GetBreedsBySpeciesIdHandlerTests : SpeciesTestsBase
     public async Task GetBreedsBySpeciesId_returns_empty_list_if_there_are_no_such_speciesId()
     {
         // arrange
-        var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var breed3 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
+        var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed1 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var breed3 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
         
         var query = new GetBreedsBySpeciesIdQuery(Guid.NewGuid());
 

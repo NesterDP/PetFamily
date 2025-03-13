@@ -1,13 +1,12 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
-using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
+using PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -26,9 +25,9 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         const string name = "Test Pet";
@@ -72,7 +71,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var updatedVolunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        var updatedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         var updatedPet = updatedVolunteer.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
 
         // all data is updated correctly
@@ -103,9 +102,9 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
 
@@ -123,9 +122,9 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(Guid.NewGuid(), breed.Id);
@@ -144,11 +143,11 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species2.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(species.Id, breed2.Id);
@@ -166,11 +165,11 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species2.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(species2.Id, breed.Id);

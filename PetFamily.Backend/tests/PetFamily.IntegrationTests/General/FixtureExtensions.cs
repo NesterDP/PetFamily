@@ -1,10 +1,9 @@
 using AutoFixture;
-using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Application.Volunteers.Commands.Create;
-using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
-using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
+using PetFamily.Volunteers.Application.Commands.AddPet;
+using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
+using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.General;
 

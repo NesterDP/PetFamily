@@ -1,13 +1,12 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Pets.Queries.GetPetById;
-using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Queries.GetPetById;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -38,15 +37,15 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
             new Photo(FilePath.Create(MAIN_PHOTO).Value, true)
         ];
 
-        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var pet = DataGenerator.CreatePet(species.Id, breed.Id, "1");
         pet.UpdatePhotos(photos);
         pet.UpdateTransferDetails(transferDetails);
         volunteer.AddPet(pet);
-        await WriteDbContext.SaveChangesAsync();
-        var petSeeder = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        await VolunteersWriteDbContext.SaveChangesAsync();
+        var petSeeder = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetPetByIdQuery(pet.Id);
 
         // act
@@ -93,10 +92,10 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         volunteer.SoftDeletePet(pet);
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var query = new GetPetByIdQuery(pet.Id);
 
         // act
@@ -111,7 +110,7 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetPetByIdQuery(Guid.NewGuid());
 
         // act

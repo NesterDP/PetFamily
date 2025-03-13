@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.Volunteers.Contracts;
+using PetFamily.Volunteers.Contracts.Requests;
 
 namespace PetFamily.Species.Application.Commands.DeleteSpeciesById;
 
@@ -11,31 +13,29 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
     private readonly ISpeciesRepository _speciesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeleteSpeciesByIdHandler> _logger;
-    private readonly IReadDbContext _readDbContext;
+    private readonly ISpeciesToPetExistenceContract _contract;
 
     public DeleteSpeciesByIdHandler(
         ISpeciesRepository speciesRepository,
         [FromKeyedServices("species")] IUnitOfWork unitOfWork,
         ILogger<DeleteSpeciesByIdHandler> logger,
-        IReadDbContext readDbContext)
+        IReadDbContext readDbContext,
+        ISpeciesToPetExistenceContract contract)
     {
         _speciesRepository = speciesRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _readDbContext = readDbContext;
+        _contract = contract;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         DeleteSpeciesByIdCommand command,
         CancellationToken cancellationToken)
     {
-        /*var isUsed = await _readDbContext.Pets
-            .FirstOrDefaultAsync(p => p.SpeciesId == command.Id, cancellationToken);
-        
-        if (isUsed != null)
-            return Errors.General
-                .Conflict($"pets with SpeciesId = {command.Id} are still in database")
-                .ToErrorList();*/
+        var request = new SpeciesToPetExistenceRequest(command.Id);
+        var checkResult = await _contract.SpeciesToPetExistence(request, cancellationToken);
+        if (checkResult.IsFailure)
+            return checkResult.Error.ToErrorList();
 
         var speciesResult = await _speciesRepository.GetByIdAsync(command.Id, cancellationToken);
         if (speciesResult.IsFailure)

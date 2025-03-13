@@ -1,13 +1,12 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Pets.Queries.GetPetById;
-using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Domain.VolunteerManagment.ValueObjects.VolunteerVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Volunteer;
-using PetFamily.Core.SharedVO;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Queries.GetVolunteerById;
+using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -37,11 +36,11 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
             SocialNetwork.Create("mail.ru", "my less used social network").Value
         ];
         
-        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         volunteer.UpdateSocialNetworks(socialNetworks);
         volunteer.UpdateTransferDetails(transferDetails);
-        await WriteDbContext.SaveChangesAsync();
-        var anotherVolunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        await VolunteersWriteDbContext.SaveChangesAsync();
+        var anotherVolunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         var query = new GetVolunteerByIdQuery(volunteer.Id);
 
         // act
@@ -75,9 +74,9 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         volunteer.Delete();
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var query = new GetVolunteerByIdQuery(volunteer.Id);
 
         // act
@@ -92,7 +91,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetVolunteerByIdQuery(Guid.NewGuid());
 
         // act

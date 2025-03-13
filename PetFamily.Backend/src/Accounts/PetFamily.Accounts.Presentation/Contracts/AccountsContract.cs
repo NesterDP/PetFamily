@@ -1,4 +1,4 @@
-namespace PetFamily.Accounts.Presentation;
+namespace PetFamily.Accounts.Presentation.Contracts;
 
 public class AccountsContract
 {

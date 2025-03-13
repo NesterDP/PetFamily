@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.Volunteers.Contracts;
+using PetFamily.Volunteers.Contracts.Requests;
 
 namespace PetFamily.Species.Application.Commands.DeleteBreedById;
 
@@ -11,31 +13,30 @@ public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdComma
     private readonly ISpeciesRepository _speciesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeleteBreedByIdHandler> _logger;
-    private readonly IReadDbContext _readDbContext;
+    private readonly IBreedToPetExistenceContract _contract;
     
     public DeleteBreedByIdHandler(
         ISpeciesRepository speciesRepository,
         [FromKeyedServices("species")] IUnitOfWork unitOfWork,
         ILogger<DeleteBreedByIdHandler> logger,
-        IReadDbContext readDbContext)
+        IReadDbContext readDbContext,
+        IBreedToPetExistenceContract contract)
     {
         _speciesRepository = speciesRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _readDbContext = readDbContext;
+        _contract = contract;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         DeleteBreedByIdCommand command,
         CancellationToken cancellationToken)
     {
-        /*var isUsed = await _readDbContext.Pets.
-            FirstOrDefaultAsync(p => p.BreedId == command.BreedId, cancellationToken);
-        if (isUsed != null)
-            return Errors.General
-                .Conflict($"pets with BreedId = {command.BreedId} are still in database")
-                .ToErrorList();*/
-
+        var request = new BreedToPetExistenceRequest(command.BreedId);
+        var checkResult = await _contract.BreedToPetExistence(request, cancellationToken);
+        if (checkResult.IsFailure)
+            return checkResult.Error.ToErrorList();
+        
         var speciesResult = await _speciesRepository.GetByIdAsync(command.SpeciesId, cancellationToken);
         if (speciesResult.IsFailure)
             return Errors.General.ValueNotFound().ToErrorList();

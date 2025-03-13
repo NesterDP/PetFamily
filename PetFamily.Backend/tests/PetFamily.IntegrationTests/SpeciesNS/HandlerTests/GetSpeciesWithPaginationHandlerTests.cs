@@ -1,9 +1,8 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
-using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
+using PetFamily.Species.Application.Queries.GetSpeciesWithPagination;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 
@@ -24,9 +23,9 @@ public class GetSpeciesWithPaginationHandlerTests : SpeciesTestsBase
         var SPECIES_COUNT = 3;
         var PAGE = 1;
         var PAGE_SIZE = 10;
-        var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var species3 = await DataGenerator.SeedSpecies(WriteDbContext);
+        var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var species3 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
 
         var query = new GetSpeciesWithPaginationQuery(PAGE, PAGE_SIZE);
         // act

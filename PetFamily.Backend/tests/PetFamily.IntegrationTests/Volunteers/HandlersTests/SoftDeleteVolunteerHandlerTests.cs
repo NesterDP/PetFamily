@@ -1,11 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.Commands.Delete;
-using PetFamily.Infrastructure.Repositories;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
+using PetFamily.Volunteers.Application.Commands.Delete;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -23,7 +22,7 @@ public class SoftDeleteVolunteerHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var command = new DeleteVolunteerCommand(volunteer.Id);
         
         // act
@@ -33,7 +32,7 @@ public class SoftDeleteVolunteerHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         volunteer._isDeleted.Should().BeTrue();
         volunteer!.AllOwnedPets.All(p => p._isDeleted == true)!.Should().BeTrue();
     }

@@ -1,12 +1,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.Commands.Create;
-using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
+using PetFamily.Volunteers.Application.Commands.Create;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -60,7 +59,7 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
+        var volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
 
         // all data is bounded correctly
         volunteer.FullName.FirstName.Should().Be(firstName);

@@ -128,19 +128,6 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
         var result = await _contract.BreedToSpeciesExistence(request, cancellationToken);
         if (result.IsFailure)
             return result.Error;
-        
-        /*var speciesExist = await _readDbContext.Species
-            .FirstOrDefaultAsync(s => s.Id == clientSpeciesId, cancellationToken);
-
-        if (speciesExist == null)
-            return Errors.General.ValueNotFound(clientSpeciesId);
-
-        var breedExist = await _readDbContext.Breeds
-            .FirstOrDefaultAsync(b => b.Id == clientBreedId &&
-                                      b.SpeciesId == clientSpeciesId, cancellationToken);
-
-        if (breedExist == null)
-            return Errors.General.ValueNotFound(clientBreedId);*/
 
         return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }
