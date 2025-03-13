@@ -1,5 +1,5 @@
-using PetFamily.Volunteers.Application.VolunteersManagement.Queries.GetFilteredPetsWithPagination;
-using PetFamily.Volunteers.Application.VolunteersManagement.Queries.GetFilteredPetsWithPaginationDapper;
+using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
+using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPaginationDapper;
 
 namespace PetFamily.Volunteers.Presentation.Pets.Requests;
 

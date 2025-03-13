@@ -2,9 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using Minio.AspNetCore;
-using PetFamily.Infrastructure.BackgroundServices;
-using PetFamily.Infrastructure.Files;
-using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Core;
 using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
@@ -13,9 +10,10 @@ using ServiceCollectionExtensions = Minio.ServiceCollectionExtensions;
 
 namespace PetFamily.Infrastructure;
 
+/*
 public static class Inject
 {
-    /*public static IServiceCollection AddInfrastructure(
+    public static IServiceCollection AddInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -81,8 +79,10 @@ public static class Inject
     private static IServiceCollection AddHostedServices(
         this IServiceCollection services)
     {
+        //services.AddHostedService()
         services.AddHostedService<FilesCleanerBackgroundService>();
         return services;
+        
     }
     
     private static IServiceCollection AddMessageQueues(
@@ -97,5 +97,5 @@ public static class Inject
     {
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
         return services;
-    }*/
-}
+    }
+}*/

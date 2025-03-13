@@ -1,4 +1,4 @@
-using PetFamily.Volunteers.Application.VolunteersManagement.Commands.UpdatePetMainPhoto;
+using PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 

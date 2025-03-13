@@ -1,12 +1,35 @@
 using System.Globalization;
+using PetFamily.Accounts.Application;
+using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Presentation;
 using PetFamily.Web.Middlewares;
 using PetFamily.Application;
-using PetFamily.Core.Extensions;
-using PetFamily.Infrastructure;
+using PetFamily.Species.Application;
+using PetFamily.Species.Infrastructure;
+using PetFamily.Species.Presentation.Species;
+using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Infrastructure;
+using PetFamily.Volunteers.Presentation.Volunteers;
 using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cultureInfo = new CultureInfo("ru-RU"); // Используем культуру, где точка — разделитель
+cultureInfo.NumberFormat.NumberDecimalSeparator = "."; // Устанавливаем разделитель
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+
+/*builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = actionContext =>
+    {
+        var responseError = new ResponseError(
+            "model.binding.error", "failed to bind the received model", "null");
+        return new BadRequestObjectResult(Envelope.Error([responseError]));
+    };
+});*/
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq")
@@ -18,28 +41,33 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
     .CreateLogger();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddSerilog();
 
-builder.Services
-    //.AddInfrastructure(builder.Configuration)
-    .AddApplication();
+// настройка сервисов, связанных с авторизацией
+// ..
 
-var cultureInfo = new CultureInfo("ru-RU"); // Используем культуру, где точка — разделитель
-cultureInfo.NumberFormat.NumberDecimalSeparator = "."; // Устанавливаем разделитель
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-/*builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.InvalidModelStateResponseFactory = actionContext =>
-    {
-        var responseError = new ResponseError(
-            "model.binding.error", "failed to bind the received model", "null");
-        return new BadRequestObjectResult(Envelope.Error([responseError]));
-    };
-});*/
+// настройка модулей
+builder.Services
+    .AddAccountsApplication()
+    .AddAccountsInfrastructure(builder.Configuration)
+
+    .AddVolunteersApplication()
+    .AddVolunteersInfrastructure(builder.Configuration)
+
+    .AddSpeciesApplication()
+    .AddSpeciesInfrastructure(builder.Configuration);
+
+
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(AccountsController).Assembly)
+    .AddApplicationPart(typeof(VolunteersController).Assembly)
+    .AddApplicationPart(typeof(SpeciesController).Assembly);
+
+builder.Services.AddEndpointsApiExplorer();
+
+
 
 var app = builder.Build();
 
@@ -53,7 +81,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    await app.ApplyMigrations();
+    //await app.ApplyMigrations();
 }
 
 //app.UseHttpsRedirection();

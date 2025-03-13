@@ -1,4 +1,4 @@
-using PetFamily.Volunteers.Application.VolunteersManagement.Commands.ChangePetPosition;
+using PetFamily.Volunteers.Application.Commands.ChangePetPosition;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 

@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Requests\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\PetFamily.Core\PetFamily.Core.csproj" />
+      <ProjectReference Include="..\..\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
+    </ItemGroup>
+
 </Project>

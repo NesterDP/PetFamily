@@ -1,4 +1,4 @@
-using PetFamily.Volunteers.Application.VolunteersManagement.Commands.UpdatePetStatus;
+using PetFamily.Volunteers.Application.Commands.UpdatePetStatus;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 

@@ -1,5 +1,5 @@
 using PetFamily.Core.Dto.Volunteer;
-using PetFamily.Volunteers.Application.VolunteersManagement.Commands.UpdateMainInfo;
+using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 

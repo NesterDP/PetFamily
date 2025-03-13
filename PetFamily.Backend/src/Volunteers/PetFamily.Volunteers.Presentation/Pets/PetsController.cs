@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Core.Controllers;
-using PetFamily.Volunteers.Application.VolunteersManagement.Queries.GetFilteredPetsWithPagination;
-using PetFamily.Volunteers.Application.VolunteersManagement.Queries.GetFilteredPetsWithPaginationDapper;
-using PetFamily.Volunteers.Application.VolunteersManagement.Queries.GetPetById;
+using PetFamily.Framework;
+using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
+using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPaginationDapper;
+using PetFamily.Volunteers.Application.Queries.GetPetById;
 using PetFamily.Volunteers.Presentation.Pets.Requests;
 
 namespace PetFamily.Volunteers.Presentation.Pets;
