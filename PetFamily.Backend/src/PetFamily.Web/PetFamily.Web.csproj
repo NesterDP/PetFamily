@@ -31,8 +31,6 @@
       <ProjectReference Include="..\Accounts\PetFamily.Accounts.Presentation\PetFamily.Accounts.Presentation.csproj" />
       <ProjectReference Include="..\Accounts\PetFamily.Accounts.Domain\PetFamily.Accounts.Domain.csproj" />
       <ProjectReference Include="..\Accounts\PetFamily.Accounts.Infrastructure\PetFamily.Accounts.Infrastructure.csproj" />
-      <ProjectReference Include="..\PetFamily.Application\PetFamily.Application.csproj" />
-      <ProjectReference Include="..\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
       <ProjectReference Include="..\Shared\PetFamily.Framework\PetFamily.Framework.csproj" />
       <ProjectReference Include="..\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
       <ProjectReference Include="..\Species\PetFamily.Species.Application\PetFamily.Species.Application.csproj" />

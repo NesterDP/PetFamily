@@ -3,13 +3,13 @@ using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Web.Middlewares;
-using PetFamily.Application;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
 using PetFamily.Species.Presentation.Species;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure;
+using PetFamily.Volunteers.Presentation;
 using PetFamily.Volunteers.Presentation.Volunteers;
 using Serilog;
 using Serilog.Events;
@@ -53,13 +53,15 @@ builder.Services.AddSerilog();
 builder.Services
     .AddAccountsApplication()
     .AddAccountsInfrastructure(builder.Configuration)
+    .AddAccountsContracts()
 
     .AddVolunteersApplication()
     .AddVolunteersInfrastructure(builder.Configuration)
+    .AddVolunteersContracts()
 
     .AddSpeciesApplication()
-    .AddSpeciesContracts()
-    .AddSpeciesInfrastructure(builder.Configuration);
+    .AddSpeciesInfrastructure(builder.Configuration)
+    .AddSpeciesContracts();
 
 
 builder.Services.AddControllers()
