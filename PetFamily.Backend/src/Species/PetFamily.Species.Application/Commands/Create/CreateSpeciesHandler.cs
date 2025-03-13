@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
 
@@ -23,7 +24,7 @@ public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
         ISpeciesRepository speciesRepository,
         ILogger<CreateSpeciesHandler> logger,
         IValidator<CreateSpeciesCommand> validator,
-        [FromKeyedServices("species")] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork)
     {
         _speciesRepository = speciesRepository;
         _logger = logger;

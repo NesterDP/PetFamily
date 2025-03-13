@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Contracts;
 using PetFamily.Volunteers.Contracts.Requests;
 
@@ -17,9 +18,8 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
 
     public DeleteSpeciesByIdHandler(
         ISpeciesRepository speciesRepository,
-        [FromKeyedServices("species")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork,
         ILogger<DeleteSpeciesByIdHandler> logger,
-        IReadDbContext readDbContext,
         ISpeciesToPetExistenceContract contract)
     {
         _speciesRepository = speciesRepository;

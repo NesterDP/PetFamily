@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Contracts;
 using PetFamily.Species.Contracts.Requests;
@@ -26,7 +27,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         IValidator<AddPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<AddPetHandler> logger,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
         IBreedToSpeciesExistenceContract contract)
     {
         _validator = validator;

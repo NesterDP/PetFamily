@@ -8,6 +8,7 @@ using Minio;
 using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
 using PetFamily.Core;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.Files;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
@@ -76,7 +77,7 @@ public static class DependencyInjection
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
-        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>("volunteer");
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Volunteers);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

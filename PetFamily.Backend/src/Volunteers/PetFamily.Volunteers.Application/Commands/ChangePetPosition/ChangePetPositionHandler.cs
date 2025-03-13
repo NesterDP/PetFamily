@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
@@ -21,7 +22,7 @@ public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionC
         IValidator<ChangePetPositionCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<ChangePetPositionHandler> logger,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;

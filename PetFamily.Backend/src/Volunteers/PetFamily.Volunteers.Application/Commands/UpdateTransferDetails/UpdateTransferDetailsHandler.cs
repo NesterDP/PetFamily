@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
@@ -21,7 +22,7 @@ public class UpdateTransferDetailsHandler : ICommandHandler<Guid, UpdateTransfer
         IVolunteersRepository volunteersRepository,
         ILogger<UpdateTransferDetailsHandler> logger,
         IValidator<UpdateTransferDetailsCommand> validator,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;

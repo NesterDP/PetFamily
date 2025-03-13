@@ -6,6 +6,7 @@ using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
@@ -25,7 +26,7 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
         IVolunteersRepository volunteersRepository,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
         ILogger<DeletePetPhotosHandler> logger,
         IFilesProvider filesProvider)
     {

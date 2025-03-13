@@ -6,6 +6,7 @@ using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
@@ -25,7 +26,7 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
         IVolunteersRepository volunteersRepository,
         ILogger<HardDeletePetHandler> logger,
         IValidator<DeletePetCommand> validator,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
         IFilesProvider filesProvider)
     {
         _volunteersRepository = volunteersRepository;

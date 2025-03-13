@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
@@ -22,7 +23,7 @@ public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpSta
         IValidator<UpdatePetHelpStatusCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetHelpStatusHandler> logger,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
         IReadDbContext readDbContext)
     {
         _validator = validator;

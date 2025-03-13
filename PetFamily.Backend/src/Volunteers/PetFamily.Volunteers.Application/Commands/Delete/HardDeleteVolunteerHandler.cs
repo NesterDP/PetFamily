@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.Delete;
@@ -20,7 +21,7 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
         IVolunteersRepository volunteersRepository,
         ILogger<HardDeleteVolunteerHandler> logger,
         IValidator<DeleteVolunteerCommand> validator,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;

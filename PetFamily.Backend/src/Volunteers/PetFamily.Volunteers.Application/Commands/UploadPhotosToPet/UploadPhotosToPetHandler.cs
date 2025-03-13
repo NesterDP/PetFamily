@@ -8,6 +8,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.Core.Files.FilesData;
 using PetFamily.Core.Messaging;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
@@ -30,7 +31,7 @@ public class UploadPhotosToPetHandler : ICommandHandler<Guid, UploadPhotosToPetC
         IVolunteersRepository volunteersRepository,
         ILogger<UploadPhotosToPetHandler> logger,
         IFilesProvider filesProvider,
-        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
         IMessageQueue<IEnumerable<FileInfo>> messageQueue)
     {
         _validator = validator;
