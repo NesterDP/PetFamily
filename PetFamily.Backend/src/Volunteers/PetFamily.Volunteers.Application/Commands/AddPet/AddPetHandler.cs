@@ -20,7 +20,6 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IReadDbContext _readDbContext;
     private readonly IBreedToSpeciesExistenceContract _contract;
 
     public AddPetHandler(
@@ -28,14 +27,12 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         IVolunteersRepository volunteersRepository,
         ILogger<AddPetHandler> logger,
         [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
-        IReadDbContext readDbContext,
         IBreedToSpeciesExistenceContract contract)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _readDbContext = readDbContext;
         _contract = contract;
     }
 
@@ -140,12 +137,11 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         Guid clientBreedId,
         CancellationToken cancellationToken)
     {
-        
         var request = new BreedToSpeciesExistenceRequest(clientSpeciesId, clientBreedId);
         var result = await _contract.BreedToSpeciesExistence(request, cancellationToken);
         if (result.IsFailure)
             return result.Error;
-        
+
 
         return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }

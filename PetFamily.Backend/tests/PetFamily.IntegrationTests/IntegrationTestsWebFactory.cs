@@ -45,13 +45,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         if (readContext is not null)
             services.Remove(readContext);
         
-        
-        /*services.AddKeyedScoped<WriteDbContext>("Volunteers",  (_, _) =>
-            new WriteDbContext(_dbContainer.GetConnectionString()));
-
-        services.AddKeyedScoped<IReadDbContext, ReadDbContext>("Volunteers", (_, _) =>
-            new ReadDbContext(_dbContainer.GetConnectionString()));*/
-
         services.AddScoped<WriteDbContext>(_ =>
             new WriteDbContext(_dbContainer.GetConnectionString()));
 
@@ -70,14 +63,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         if (readContext is not null)
             services.Remove(readContext);
-
-        /*services.AddKeyedScoped<Species.Infrastructure.DbContexts.WriteDbContext>("Species", (_, _) =>
-            new Species.Infrastructure.DbContexts.WriteDbContext(_dbContainer.GetConnectionString()));
-
-        services.AddKeyedScoped<Species.Application.IReadDbContext, Species.Infrastructure.DbContexts.ReadDbContext>(
-            "Species", (_, _) =>
-                new Species.Infrastructure.DbContexts.ReadDbContext(_dbContainer.GetConnectionString()));*/
-
+        
         services.AddScoped<Species.Infrastructure.DbContexts.WriteDbContext>(_ =>
             new Species.Infrastructure.DbContexts.WriteDbContext(_dbContainer.GetConnectionString()));
 

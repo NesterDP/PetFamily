@@ -19,7 +19,6 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdatePetInfoHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IReadDbContext _readDbContext;
     private readonly IBreedToSpeciesExistenceContract _contract;
 
     public UpdatePetInfoHandler(
@@ -27,14 +26,12 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetInfoHandler> logger,
         [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
-        IReadDbContext readDbContext,
         IBreedToSpeciesExistenceContract contract)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _readDbContext = readDbContext;
         _contract = contract;
     }
 
@@ -107,10 +104,10 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
             dateOfBirth,
             isVaccinated,
             transferDetailsList);
-        
+
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Successfully updated info of pet with ID = {ID}", command.PetId);
