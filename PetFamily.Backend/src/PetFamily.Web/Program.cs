@@ -6,6 +6,7 @@ using PetFamily.Web.Middlewares;
 using PetFamily.Application;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
+using PetFamily.Species.Presentation;
 using PetFamily.Species.Presentation.Species;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure;
@@ -57,6 +58,7 @@ builder.Services
     .AddVolunteersInfrastructure(builder.Configuration)
 
     .AddSpeciesApplication()
+    .AddSpeciesContracts()
     .AddSpeciesInfrastructure(builder.Configuration);
 
 

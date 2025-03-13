@@ -3,7 +3,7 @@ using PetFamily.Core.Dto.Species;
 using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Queries.GetSpeciesWithPagination;
+namespace PetFamily.Species.Application.Queries.GetSpeciesWithPagination;
 
 public class GetSpeciesWithPaginationHandler : IQueryHandler<PagedList<SpeciesDto>, GetSpeciesWithPaginationQuery>
 {

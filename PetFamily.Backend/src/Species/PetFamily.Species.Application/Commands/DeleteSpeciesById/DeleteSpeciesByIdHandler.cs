@@ -1,9 +1,10 @@
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Commands.DeleteSpeciesById;
+namespace PetFamily.Species.Application.Commands.DeleteSpeciesById;
 
 public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdCommand>
 {
@@ -14,7 +15,7 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
 
     public DeleteSpeciesByIdHandler(
         ISpeciesRepository speciesRepository,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices("species")] IUnitOfWork unitOfWork,
         ILogger<DeleteSpeciesByIdHandler> logger,
         IReadDbContext readDbContext)
     {

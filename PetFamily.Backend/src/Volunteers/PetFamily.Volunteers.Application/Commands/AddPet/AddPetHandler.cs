@@ -1,10 +1,13 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Species.Contracts;
+using PetFamily.Species.Contracts.Requests;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
@@ -18,19 +21,22 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReadDbContext _readDbContext;
+    private readonly IBreedToSpeciesExistenceContract _contract;
 
     public AddPetHandler(
         IValidator<AddPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<AddPetHandler> logger,
-        IUnitOfWork unitOfWork,
-        IReadDbContext readDbContext)
+        [FromKeyedServices("volunteer")] IUnitOfWork unitOfWork,
+        IReadDbContext readDbContext,
+        IBreedToSpeciesExistenceContract contract)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
         _readDbContext = readDbContext;
+        _contract = contract;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -134,6 +140,12 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         Guid clientBreedId,
         CancellationToken cancellationToken)
     {
+        
+        var request = new BreedToSpeciesExistenceRequest(clientSpeciesId, clientBreedId);
+        var result = await _contract.BreedToSpeciesExistence(request, cancellationToken);
+        if (result.IsFailure)
+            return result.Error;
+        
         /*var speciesExist = await _readDbContext.Species
             .FirstOrDefaultAsync(s => s.Id == clientSpeciesId, cancellationToken);
 

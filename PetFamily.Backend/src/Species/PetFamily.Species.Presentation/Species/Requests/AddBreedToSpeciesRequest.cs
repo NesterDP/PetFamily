@@ -1,4 +1,4 @@
-using PetFamily.Species.Application.SpeciesManagement.Commands.AddBreedToSpecies;
+using PetFamily.Species.Application.Commands.AddBreedToSpecies;
 
 namespace PetFamily.Species.Presentation.Species.Requests;
 

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Breed;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Queries.GetBreedsBySpeciesId;
+namespace PetFamily.Species.Application.Queries.GetBreedsBySpeciesId;
 
 public class GetBreedsBySpeciesIdHandler : IQueryHandler<List<BreedDto>, GetBreedsBySpeciesIdQuery>
 {

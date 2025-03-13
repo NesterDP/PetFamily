@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
@@ -9,7 +10,7 @@ using PetFamily.Species.Domain.Entities;
 using PetFamily.Species.Domain.ValueObjects.BreedVO;
 using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Commands.AddBreedToSpecies;
+namespace PetFamily.Species.Application.Commands.AddBreedToSpecies;
 
 public class AddBreedToSpeciesHandler : ICommandHandler<Guid, AddBreedToSpeciesCommand>
 {
@@ -22,7 +23,7 @@ public class AddBreedToSpeciesHandler : ICommandHandler<Guid, AddBreedToSpeciesC
         IValidator<AddBreedToSpeciesCommand> validator,
         ISpeciesRepository speciesRepository,
         ILogger<AddBreedToSpeciesHandler> logger,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices("species")] IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _speciesRepository = speciesRepository;

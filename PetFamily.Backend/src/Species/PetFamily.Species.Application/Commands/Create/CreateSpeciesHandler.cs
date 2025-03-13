@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
@@ -7,7 +8,7 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Commands.Create;
+namespace PetFamily.Species.Application.Commands.Create;
 
 
 
@@ -22,7 +23,7 @@ public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
         ISpeciesRepository speciesRepository,
         ILogger<CreateSpeciesHandler> logger,
         IValidator<CreateSpeciesCommand> validator,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices("species")] IUnitOfWork unitOfWork)
     {
         _speciesRepository = speciesRepository;
         _logger = logger;

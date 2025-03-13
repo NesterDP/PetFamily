@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.Species.Application;
-using PetFamily.Species.Application.SpeciesManagement;
 using PetFamily.Species.Infrastructure.DbContexts;
 using PetFamily.Species.Infrastructure.Repositories;
 
@@ -42,7 +41,7 @@ public static class DependencyInjection
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>("species");
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

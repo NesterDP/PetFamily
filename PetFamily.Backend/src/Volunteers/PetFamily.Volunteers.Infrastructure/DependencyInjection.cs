@@ -76,7 +76,7 @@ public static class DependencyInjection
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>("volunteer");
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

@@ -2,7 +2,7 @@ using FluentValidation;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.ValueObjects;
 
-namespace PetFamily.Species.Application.SpeciesManagement.Commands.AddBreedToSpecies;
+namespace PetFamily.Species.Application.Commands.AddBreedToSpecies;
 
 public class AddBreedToSpeciesValidator : AbstractValidator<AddBreedToSpeciesCommand>
 {
