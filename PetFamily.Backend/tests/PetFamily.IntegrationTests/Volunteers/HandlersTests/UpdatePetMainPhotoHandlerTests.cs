@@ -2,11 +2,11 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -31,10 +31,10 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             new Photo(FilePath.Create("new_photo_3.jpg").Value)
         ];
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var NEW_MAIN_PHOTO = "new_photo_2.jpg";
         
         var command = new UpdatePetMainPhotoCommand(volunteer.Id, pet.Id, NEW_MAIN_PHOTO);
@@ -45,7 +45,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
         
         // photo actually is main while the rest are not
@@ -65,11 +65,11 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             new Photo(FilePath.Create("new_photo_3.jpg").Value)
         ];
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);
         pet.UpdateMainPhoto(photos[0]);
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var NEW_MAIN_PHOTO = "new_photo_3.jpg";
         
         var command = new UpdatePetMainPhotoCommand(volunteer.Id, pet.Id, NEW_MAIN_PHOTO);
@@ -80,7 +80,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
         
         // photo actually is main while the rest are not
@@ -99,11 +99,11 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             new Photo(FilePath.Create("new_photo_2.jpg").Value)
         ];
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);
         pet.UpdateMainPhoto(photos[0]);
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var NEW_MAIN_PHOTO = "new_photo_3.jpg";
         var OLD_MAIN_PHOTO = "new_photo_1.jpg";
         
@@ -114,7 +114,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == pet.Id);
         
         // first photo is still the main one

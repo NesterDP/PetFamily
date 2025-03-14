@@ -1,18 +1,14 @@
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Pet;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
-using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Domain.SpeciesContext.Entities;
-using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
-using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Pet;
+using PetFamily.Core.Dto.Shared;
+using PetFamily.Species.Domain.ValueObjects.BreedVO;
+using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
+using PetFamily.Volunteers.Application.Commands.AddPet;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -28,9 +24,9 @@ public class AddPetHandlerTests : VolunteerTestsBase
     public async Task AddPet_success_should_add_pet_to_petless_volunteer()
     {
         // arrange
-        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var petClassificationDto = new PetClassificationDto(species.Id, breed.Id);
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
@@ -42,7 +38,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync();
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync();
         
         // pet was added
         volunteer!.AllOwnedPets.Count.Should().Be(1);
@@ -59,9 +55,9 @@ public class AddPetHandlerTests : VolunteerTestsBase
         var PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed= await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var petClassificationDto = new PetClassificationDto(species.Id, breed.Id);
         var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
         
@@ -72,7 +68,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         
         // pet was added
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT + 1);
@@ -91,9 +87,9 @@ public class AddPetHandlerTests : VolunteerTestsBase
         var PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed= await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var petClassificationDto = new PetClassificationDto(SpeciesId.NewSpeciesId(), breed.Id);
         var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
         
@@ -103,7 +99,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         
         // pet wasn't added
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT);
@@ -117,9 +113,9 @@ public class AddPetHandlerTests : VolunteerTestsBase
         var PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed= await DataGenerator.SeedBreed(WriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed= await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var petClassificationDto = new PetClassificationDto(species.Id, BreedId.NewBreedId());
         var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
         
@@ -129,7 +125,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         
         // pet wasn't added
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT);
@@ -143,11 +139,11 @@ public class AddPetHandlerTests : VolunteerTestsBase
         var PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
-        var species1 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed1 = await DataGenerator.SeedBreed(WriteDbContext, species1.Id);
-        var species2 = await DataGenerator.SeedSpecies(WriteDbContext);
-        var breed2 = await DataGenerator.SeedBreed(WriteDbContext, species2.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT, species1.Id, breed1.Id);
+        var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed1 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species1.Id);
+        var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species1.Id, breed1.Id);
         var petClassificationDto = new PetClassificationDto(species1.Id, breed2.Id);
         var command = Fixture.AddPetCommand(volunteer.Id, petClassificationDto, addressDto);
         
@@ -157,7 +153,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
 
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         
         // pet wasn't added
         volunteer!.AllOwnedPets.Count.Should().Be(PET_COUNT);

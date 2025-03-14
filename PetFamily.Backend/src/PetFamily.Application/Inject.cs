@@ -1,31 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Breeds.Queries.GetBreedsBySpeciesId;
-using PetFamily.Application.Files.Delete;
-using PetFamily.Application.Files.Upload;
-using PetFamily.Application.Pets.Queries;
-using PetFamily.Application.Pets.Queries.GetFilteredPetsWithPagination;
-using PetFamily.Application.Species.Commands.AddBreedToSpecies;
-using PetFamily.Application.Species.Commands.Create;
-using PetFamily.Application.Species.Commands.DeleteBreedById;
-using PetFamily.Application.Species.Commands.DeleteSpeciesById;
-using PetFamily.Application.Species.Queries.GetSpeciesWithPagination;
-using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Application.Volunteers.Commands.ChangePetPosition;
-using PetFamily.Application.Volunteers.Commands.Create;
-using PetFamily.Application.Volunteers.Commands.Delete;
-using PetFamily.Application.Volunteers.Commands.DeletePet;
-using PetFamily.Application.Volunteers.Commands.DeletePetPhotos;
-using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
-using PetFamily.Application.Volunteers.Commands.UpdatePetInfo;
-using PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
-using PetFamily.Application.Volunteers.Commands.UpdatePetStatus;
-using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
-using PetFamily.Application.Volunteers.Commands.UpdateTransferDetails;
-using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
-using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
+using PetFamily.Core.Abstractions;
 
 namespace PetFamily.Application;
 

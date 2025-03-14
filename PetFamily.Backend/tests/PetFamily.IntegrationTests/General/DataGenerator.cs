@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Domain.PetContext.Entities;
-using PetFamily.Domain.PetContext.ValueObjects.PetVO;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
-using PetFamily.Infrastructure.DbContexts;
-using Address = PetFamily.Domain.PetContext.ValueObjects.PetVO.Address;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Species.Domain.Entities;
+using PetFamily.Volunteers.Domain.Entities;
+using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
+using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
+using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.IntegrationTests.General;
 
@@ -78,11 +77,11 @@ public static class DataGenerator
         return pet;
     }
 
-    public static Species CreateSpecies(string suffix = "")
+    public static Species.Domain.Entities.Species CreateSpecies(string suffix = "")
     {
         var speciesId = Guid.NewGuid();
         var name = Name.Create($"test specie{suffix}").Value;
-        var species = new Species(speciesId, name);
+        var species = new Species.Domain.Entities.Species(speciesId, name);
 
         return species;
     }
@@ -131,7 +130,8 @@ public static class DataGenerator
         return volunteers;
     }
 
-    public static async Task<Species> SeedSpecies(WriteDbContext dbContext)
+    public static async Task<Species.Domain.Entities.Species> SeedSpecies(
+        Species.Infrastructure.DbContexts.WriteDbContext dbContext)
     {
         var species = CreateSpecies();
         dbContext.Species.Add(species);
@@ -140,7 +140,9 @@ public static class DataGenerator
         return species;
     }
 
-    public static async Task<Breed> SeedBreed(WriteDbContext dbContext, Guid speciesId)
+    public static async Task<Breed> SeedBreed(
+        Species.Infrastructure.DbContexts.WriteDbContext dbContext,
+        Guid speciesId)
     {
         var species = await dbContext.Species.FirstOrDefaultAsync(s => s.Id == speciesId);
 
@@ -166,10 +168,11 @@ public static class DataGenerator
 
     public static async Task<Volunteer> SeedVolunteerWithPets(
         WriteDbContext dbContext,
+        Species.Infrastructure.DbContexts.WriteDbContext speciesDbContext,
         int count)
     {
-        var species = await SeedSpecies(dbContext);
-        var breed = await SeedBreed(dbContext, species.Id);
+        var species = await SeedSpecies(speciesDbContext);
+        var breed = await SeedBreed(speciesDbContext, species.Id);
 
         var volunteer = CreateVolunteerWithPets(count, species.Id, breed.Id);
         dbContext.Volunteers.Add(volunteer);

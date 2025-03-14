@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Volunteers.Commands.Delete;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Volunteers.Application.Commands.Delete;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -21,7 +21,7 @@ public class HardDeleteVolunteerHandlerTests : VolunteerTestsBase
     {
         // arrange
         var PET_COUNT = 5;
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var command = new DeleteVolunteerCommand(volunteer.Id);
         
         // act
@@ -31,13 +31,13 @@ public class HardDeleteVolunteerHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var deletedVolunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        var deletedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         
         // volunteer and all his pets should be deleted from database
         deletedVolunteer.Should().BeNull();
         foreach (var pet in volunteer.AllOwnedPets)
         {
-            var deletedPet = await ReadDbContext.Pets.FirstOrDefaultAsync(p => p.Id == pet.Id);
+            var deletedPet = await VolunteersReadDbContext.Pets.FirstOrDefaultAsync(p => p.Id == pet.Id);
             deletedPet.Should().BeNull();
         }
     }

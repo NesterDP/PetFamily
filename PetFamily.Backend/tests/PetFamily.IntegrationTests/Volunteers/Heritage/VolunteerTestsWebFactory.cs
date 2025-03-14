@@ -1,11 +1,11 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
-using PetFamily.Domain.Shared.CustomErrors;
-using PetFamily.Domain.Shared.SharedVO;
-using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
+using PetFamily.Core;
+using PetFamily.Core.Files.FilesData;
+using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.ValueObjects;
+using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 
 namespace PetFamily.IntegrationTests.Volunteers.Heritage;
 

@@ -1,14 +1,11 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Volunteer;
-using PetFamily.Application.Models;
-using PetFamily.Application.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Volunteer;
+using PetFamily.Core.Models;
+using PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -29,7 +26,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
         var VOLUNTEERS_COUNT = 16;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteers = await DataGenerator.SeedVolunteers(WriteDbContext, VOLUNTEERS_COUNT);
+        var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var volunteersIds = volunteers.Select(v => v.Id.Value).ToHashSet();
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
@@ -50,7 +47,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
         var VOLUNTEERS_COUNT = 16;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteers = await DataGenerator.SeedVolunteers(WriteDbContext, VOLUNTEERS_COUNT);
+        var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         
         // all previously seeded volunteers are being soft deleted
         foreach (var volunteer in volunteers)
@@ -58,7 +55,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
             volunteer.Delete();
         }
         // non soft deleted volunteer
-        var nonSoftDeletedVolunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        var nonSoftDeletedVolunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -95,7 +92,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
         var VOLUNTEERS_COUNT = 16;
         var PAGE_SIZE = 8;
         var PAGE = 1;
-        var volunteers = await DataGenerator.SeedVolunteers(WriteDbContext, VOLUNTEERS_COUNT);
+        var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -114,7 +111,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
         var VOLUNTEERS_COUNT = 16;
         var PAGE_SIZE = 4;
         var PAGE = 3;
-        var volunteers = await DataGenerator.SeedVolunteers(WriteDbContext, VOLUNTEERS_COUNT);
+        var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -132,7 +129,7 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
         var VOLUNTEERS_COUNT = 16;
         var PAGE_SIZE = 4;
         var PAGE = 4;
-        var volunteers = await DataGenerator.SeedVolunteers(WriteDbContext, VOLUNTEERS_COUNT);
+        var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act

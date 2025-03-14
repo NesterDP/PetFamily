@@ -1,13 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Species.Commands.Create;
-using PetFamily.Application.Species.Commands.DeleteSpeciesById;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Species.Application.Commands.Create;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 
@@ -34,7 +31,7 @@ public class CreateSpeciesHandlerTests : SpeciesTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var species = await WriteDbContext.Species.FirstOrDefaultAsync(v => v.Id == result.Value);
+        var species = await SpeciesWriteDbContext.Species.FirstOrDefaultAsync(v => v.Id == result.Value);
         species.Should().NotBeNull();
         species.Name.Value.Should().Be(SPECIES_NAME);
     }

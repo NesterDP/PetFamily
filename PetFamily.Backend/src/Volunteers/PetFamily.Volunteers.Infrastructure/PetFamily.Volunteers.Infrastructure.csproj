@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PetFamily.Volunteers.Application\PetFamily.Volunteers.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+      <PackageReference Include="Minio" Version="6.0.1" />
+      <PackageReference Include="Minio.AspNetCore" Version="6.0.1" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+        <HintPath>..\..\..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.4\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

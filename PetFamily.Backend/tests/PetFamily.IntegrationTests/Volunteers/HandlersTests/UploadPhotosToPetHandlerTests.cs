@@ -2,11 +2,11 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Volunteers.Commands.UploadPhotosToPet;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -32,7 +32,7 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         Factory.SetupSuccessFileServiceMock(photosForUpload);
         var PET_COUNT = 5;
         
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         var command = Fixture.UploadPhotosToPetCommand(volunteer.Id, pet.Id);
         
@@ -43,7 +43,7 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
         
         // photos are actually added
@@ -64,11 +64,11 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         List<string> petPhotos = ["photo1", "photo2", "photo3"];
         var PET_COUNT = 5;
         
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
         pet.UpdateMainPhoto(pet.PhotosList[0]); // "photo1" is main one
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var command = Fixture.UploadPhotosToPetCommand(volunteer.Id, pet.Id);
         
         // act
@@ -78,7 +78,7 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
         
         // photos are actually added
@@ -100,11 +100,11 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         List<string> petPhotos = ["photo1", "photo2", "photo3"];
         var PET_COUNT = 5;
         
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(WriteDbContext, PET_COUNT);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
         pet.UpdateMainPhoto(pet.PhotosList[0]); // "photo1" is main one
-        await WriteDbContext.SaveChangesAsync();
+        await VolunteersWriteDbContext.SaveChangesAsync();
         var command = Fixture.UploadPhotosToPetCommand(volunteer.Id, pet.Id);
         
         // act
@@ -113,7 +113,7 @@ public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
         
-        volunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
+        volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == pet.Id);
         
         // photos count is unchanged

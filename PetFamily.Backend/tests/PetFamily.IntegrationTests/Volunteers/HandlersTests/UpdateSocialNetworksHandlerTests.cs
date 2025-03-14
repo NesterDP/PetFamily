@@ -1,15 +1,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Volunteer;
-using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
-using PetFamily.Application.Volunteers.Commands.UpdatePetMainPhoto;
-using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Volunteer;
+using PetFamily.Volunteers.Application.Commands.UpdateSocialNetworks;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -32,7 +28,7 @@ public class UpdateSocialNetworksHandlerTests : VolunteerTestsBase
             new SocialNetworkDto("mail", "mail.com")
         ];
 
-        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
 
 
         var command = new UpdateSocialNetworksCommand(
@@ -46,7 +42,7 @@ public class UpdateSocialNetworksHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var updatedVolunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
+        var updatedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
 
         updatedVolunteer!.SocialNetworksList[0].Name.Should().Be(socialNetworks[0].Name);
         updatedVolunteer!.SocialNetworksList[0].Link.Should().Be(socialNetworks[0].Link);

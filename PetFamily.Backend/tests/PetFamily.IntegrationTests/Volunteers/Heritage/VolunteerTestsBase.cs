@@ -1,26 +1,17 @@
 using AutoFixture;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Database;
-using PetFamily.Application.Files;
-using PetFamily.Application.Files.FilesData;
-using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Domain.PetContext.Entities;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Domain.SpeciesContext.Entities;
-using PetFamily.Infrastructure.DbContexts;
-using PetFamily.IntegrationTests.General;
+using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.IntegrationTests.Volunteers.Heritage;
 
 //public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
 public class VolunteerTestsBase : IClassFixture<VolunteerTestsWebFactory>, IAsyncLifetime
 {
-    protected readonly WriteDbContext WriteDbContext;
-    protected readonly IReadDbContext ReadDbContext;
+    protected readonly WriteDbContext VolunteersWriteDbContext;
+    protected readonly IReadDbContext VolunteersReadDbContext;
+    protected readonly Species.Infrastructure.DbContexts.WriteDbContext SpeciesWriteDbContext;
+    protected readonly Species.Application.IReadDbContext SpeciesReadDbContext;
     protected readonly IServiceScope Scope;
     protected readonly Fixture Fixture;
     protected readonly VolunteerTestsWebFactory Factory;
@@ -29,11 +20,20 @@ public class VolunteerTestsBase : IClassFixture<VolunteerTestsWebFactory>, IAsyn
     {
         Factory = factory;
         Scope = factory.Services.CreateScope();
-        WriteDbContext = Scope.ServiceProvider.GetRequiredService<WriteDbContext>();
-        ReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
+        /*VolunteersWriteDbContext = Scope.ServiceProvider.GetRequiredKeyedService<WriteDbContext>("Volunteers");
+        VolunteersReadDbContext = Scope.ServiceProvider.GetRequiredKeyedService<IReadDbContext>("Volunteers");
+        SpeciesWriteDbContext = Scope.ServiceProvider.GetRequiredKeyedService<Species.Infrastructure.DbContexts.WriteDbContext>("Species");
+        SpeciesReadDbContext = Scope.ServiceProvider.GetRequiredKeyedService<Species.Application.IReadDbContext>("Species");*/
+
+        VolunteersWriteDbContext = Scope.ServiceProvider.GetRequiredService<WriteDbContext>();
+        VolunteersReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
+        SpeciesWriteDbContext =
+            Scope.ServiceProvider.GetRequiredService<Species.Infrastructure.DbContexts.WriteDbContext>();
+        SpeciesReadDbContext =
+            Scope.ServiceProvider.GetRequiredService<Species.Application.IReadDbContext>();
         Fixture = new Fixture();
     }
-    
+
     public Task InitializeAsync() => Task.CompletedTask;
 
     public async Task DisposeAsync()

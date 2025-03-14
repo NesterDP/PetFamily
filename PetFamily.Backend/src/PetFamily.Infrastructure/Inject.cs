@@ -1,22 +1,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
-using PetFamily.Application.Database;
-using PetFamily.Application.Files;
-using PetFamily.Application.Messaging;
-using PetFamily.Application.Species;
-using PetFamily.Application.Volunteers;
-using PetFamily.Infrastructure.BackgroundServices;
-using PetFamily.Infrastructure.DbContexts;
-using PetFamily.Infrastructure.Files;
-using PetFamily.Infrastructure.MessageQueues;
-using PetFamily.Infrastructure.Options;
-using PetFamily.Infrastructure.Providers;
-using PetFamily.Infrastructure.Repositories;
-using FileInfo = PetFamily.Application.Files.FilesData.FileInfo;
+using Minio.AspNetCore;
+using PetFamily.Core;
+using PetFamily.Core.Files;
+using PetFamily.Core.Messaging;
+using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
+using ServiceCollectionExtensions = Minio.ServiceCollectionExtensions;
 
 namespace PetFamily.Infrastructure;
 
+/*
 public static class Inject
 {
     public static IServiceCollection AddInfrastructure(
@@ -37,7 +31,7 @@ public static class Inject
     private static IServiceCollection AddMinio(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMinio(options =>
+        ServiceCollectionExtensions.AddMinio(services, options =>
         {
             var minioOptions = configuration.GetSection(MinioOptions.MINIO).Get<MinioOptions>()
                                ?? throw new ApplicationException("Missing minio configuration");
@@ -85,8 +79,10 @@ public static class Inject
     private static IServiceCollection AddHostedServices(
         this IServiceCollection services)
     {
+        //services.AddHostedService()
         services.AddHostedService<FilesCleanerBackgroundService>();
         return services;
+        
     }
     
     private static IServiceCollection AddMessageQueues(
@@ -102,4 +98,4 @@ public static class Inject
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
         return services;
     }
-}
+}*/

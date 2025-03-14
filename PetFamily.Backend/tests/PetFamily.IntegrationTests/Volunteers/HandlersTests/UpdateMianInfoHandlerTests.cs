@@ -1,15 +1,13 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.Dto.Volunteer;
-using PetFamily.Application.Volunteers.Commands.Create;
-using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
-using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Volunteer;
+using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
+using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -38,10 +36,10 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
             TransferDetail.Create("visa", "for transfers outside of country").Value
         ];
 
-        var volunteer = await DataGenerator.SeedVolunteer(WriteDbContext);
+        var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         volunteer.UpdateSocialNetworks(socialNetworks);
         volunteer.UpdateTransferDetails(transferDetails);
-        WriteDbContext.SaveChangesAsync();
+        VolunteersWriteDbContext.SaveChangesAsync();
         
         const string firstName = "Alexandr";
         const string lastName = "Volkov";
@@ -68,7 +66,7 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var updatedVolunteer = await WriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
+        var updatedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
 
         // all data is updated correctly
         updatedVolunteer.FullName.FirstName.Should().Be(firstName);

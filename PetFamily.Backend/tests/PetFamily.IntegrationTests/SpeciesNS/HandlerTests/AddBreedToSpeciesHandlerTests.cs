@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Abstractions;
-using PetFamily.Application.Species.Commands.AddBreedToSpecies;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
+using PetFamily.Core.Abstractions;
+using PetFamily.Species.Application.Commands.AddBreedToSpecies;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.HandlerTests;
 
@@ -22,8 +22,8 @@ public class AddBreedToSpeciesHandlerTests : SpeciesTestsBase
     {
         // arrange
         var BREED_NAME = "Test Breed";
-        var species = await DataGenerator.SeedSpecies(WriteDbContext);
-        var existedBred = await DataGenerator.SeedBreed(WriteDbContext, species.Id);
+        var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
+        var existedBred = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var command = new AddBreedToSpeciesCommand(species.Id, BREED_NAME);
 
         // act
@@ -33,7 +33,7 @@ public class AddBreedToSpeciesHandlerTests : SpeciesTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
         
-        var updatedSpecies = await WriteDbContext.Species.FirstOrDefaultAsync(v => v.Id == species.Id);
+        var updatedSpecies = await SpeciesWriteDbContext.Species.FirstOrDefaultAsync(v => v.Id == species.Id);
         species.Breeds.Count.Should().Be(2); // both existed and added breeds are now in database
         species.Breeds.FirstOrDefault(breed => breed.Name.Value == BREED_NAME).Should().NotBeNull();
     }
