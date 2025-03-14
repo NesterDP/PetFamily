@@ -1,9 +1,6 @@
-using System.Data;
-using CSharpFunctionalExtensions;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PetFamily.Core;
@@ -12,12 +9,14 @@ using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Files.FilesData;
 using PetFamily.Core.Messaging;
 using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
+
 
 namespace PetFamily.Application.UnitTests;
 

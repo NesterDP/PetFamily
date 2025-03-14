@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;

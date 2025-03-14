@@ -7,7 +7,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
-using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Species.Application.Commands.Create;
 

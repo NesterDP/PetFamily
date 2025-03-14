@@ -6,8 +6,7 @@ using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
-using PetFamily.Species.Domain.ValueObjects.BreedVO;
-using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;

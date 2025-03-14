@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.CustomErrors;
-using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Species.Application;
 

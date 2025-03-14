@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Species.Domain.ValueObjects.BreedVO;
+namespace PetFamily.SharedKernel.ValueObjects.Ids;
 
 public class BreedId : ValueObject, IComparable<BreedId>
 {
