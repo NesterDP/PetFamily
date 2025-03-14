@@ -23,10 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\PetFamily.Application\PetFamily.Application.csproj" />
-      <ProjectReference Include="..\..\src\PetFamily.Domain\PetFamily.Domain.csproj" />
-      <ProjectReference Include="..\..\src\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
-      <ProjectReference Include="..\..\src\PetFamily.Web\PetFamily.Web.csproj" />
+      <ProjectReference Include="..\..\src\Shared\PetFamily.Core\PetFamily.Core.csproj" />
+      <ProjectReference Include="..\..\src\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\src\Species\PetFamily.Species.Domain\PetFamily.Species.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Volunteers\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
     </ItemGroup>
 
 </Project>
