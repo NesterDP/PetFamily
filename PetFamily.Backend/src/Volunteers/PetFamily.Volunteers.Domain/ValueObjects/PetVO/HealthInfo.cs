@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Domain.ValueObjects.PetVO;
@@ -12,7 +13,7 @@ public record HealthInfo
 
     public static Result<HealthInfo, Error> Create(string healthInfo)
     {
-        if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > SharedConstants.MAX_MEDIUM_TEXT_LENGTH)
+        if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > DomainConstants.MAX_MEDIUM_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("healthInfo");
 
         var validHealthInfo = new HealthInfo(healthInfo);

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure.DbContexts;

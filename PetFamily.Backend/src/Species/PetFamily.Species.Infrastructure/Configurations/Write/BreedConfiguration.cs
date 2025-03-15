@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
 
@@ -22,7 +23,7 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
         {
             nb.Property(n => n.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
                 .HasColumnName("name");
         });
     }

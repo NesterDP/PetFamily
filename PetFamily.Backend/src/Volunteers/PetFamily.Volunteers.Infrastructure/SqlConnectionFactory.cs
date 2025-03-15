@@ -2,6 +2,7 @@ using System.Data;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.Volunteers.Infrastructure;
 

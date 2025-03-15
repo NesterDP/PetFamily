@@ -1,4 +1,4 @@
-namespace PetFamily.Species.Infrastructure;
+namespace PetFamily.SharedKernel.Constants;
 
 public static class InfrastructureConstants
 {

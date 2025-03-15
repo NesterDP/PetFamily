@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Species.Infrastructure.Configurations.Write;
@@ -21,7 +22,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Domain.Entities.Spe
         {
             nb.Property(n => n.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
                 .HasColumnName("name");
         });
 

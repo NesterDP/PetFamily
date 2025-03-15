@@ -8,6 +8,7 @@ using Minio;
 using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
 using PetFamily.Core;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.Files;

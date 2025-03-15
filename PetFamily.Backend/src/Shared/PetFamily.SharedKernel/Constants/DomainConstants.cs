@@ -1,6 +1,6 @@
-namespace PetFamily.SharedKernel;
+namespace PetFamily.SharedKernel.Constants;
 
-public static class SharedConstants
+public static class DomainConstants
 {
     public const int MAX_LOW_TEXT_LENGTH = 100;
     public const int MAX_MEDIUM_TEXT_LENGTH = 800;

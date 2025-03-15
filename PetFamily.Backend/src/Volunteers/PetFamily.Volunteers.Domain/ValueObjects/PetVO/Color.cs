@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Domain.ValueObjects.PetVO;
@@ -12,7 +13,7 @@ public record Color
 
     public static Result<Color, Error> Create(string color)
     {
-        if (string.IsNullOrWhiteSpace(color) || color.Length > SharedConstants.MAX_LOW_TEXT_LENGTH)
+        if (string.IsNullOrWhiteSpace(color) || color.Length > DomainConstants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("color");
 
         var validColor = new Color(color);
