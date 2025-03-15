@@ -31,6 +31,12 @@ public static class Errors
         {
             return Error.Conflict("logic.conflict", $"{message}");
         }
+        
+        public static Error Failure(string code, string? message)
+        {
+            return Error.Failure(code, $"{message}");
+        }
+        
 
         public static Error LengthIsInvalid(int lessThen, string? propertyName = null)
         {
