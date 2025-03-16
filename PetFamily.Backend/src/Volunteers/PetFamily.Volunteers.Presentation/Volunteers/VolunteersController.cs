@@ -46,6 +46,8 @@ public class VolunteersController : ApplicationController
         return Ok(result);
     }
     
+  
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(

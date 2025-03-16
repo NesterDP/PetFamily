@@ -27,6 +27,11 @@ public static class Errors
             return Error.NotFound("record.not.found", $"record {message} not found");
         }
         
+        public static Error ValueNotFound(string? message, bool wholeMessage)
+        {
+            return Error.NotFound("record.not.found", $"{message}");
+        }
+        
         public static Error Conflict(string? message)
         {
             return Error.Conflict("logic.conflict", $"{message}");
@@ -36,7 +41,13 @@ public static class Errors
         {
             return Error.Failure(code, $"{message}");
         }
-        
+
+        public static Error AlreadyExist(string? message)
+        {
+            var text = message ?? "record";
+            return Error.Validation("record.already_exist", $"{text} already exist");
+        }
+
 
         public static Error LengthIsInvalid(int lessThen, string? propertyName = null)
         {
