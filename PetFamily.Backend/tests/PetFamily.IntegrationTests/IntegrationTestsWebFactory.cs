@@ -69,6 +69,16 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         services.AddScoped<Species.Application.IReadDbContext, Species.Infrastructure.DbContexts.ReadDbContext>(_ =>
             new Species.Infrastructure.DbContexts.ReadDbContext(_dbContainer.GetConnectionString()));
+        
+        // Accounts
+        var accountsDbContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(PetFamily.Accounts.Infrastructure.AuthorizationDbContext));
+        
+        if (accountsDbContext is not null)
+            services.Remove(accountsDbContext);
+        
+        services.AddScoped<PetFamily.Accounts.Infrastructure.AuthorizationDbContext>(_ =>
+            new PetFamily.Accounts.Infrastructure.AuthorizationDbContext(_dbContainer.GetConnectionString()));
     }
 
     public async Task InitializeAsync()
@@ -84,6 +94,11 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         // Применяем миграции для SpeciesDbContext
         var speciesDbContext = scope.ServiceProvider.GetRequiredService<Species.Infrastructure.DbContexts.WriteDbContext>();
         await speciesDbContext.Database.MigrateAsync();
+        
+        // Применяем миграции для Accounts
+        var accountsDbContext = scope.ServiceProvider
+            .GetRequiredService<PetFamily.Accounts.Infrastructure.AuthorizationDbContext>();
+        await accountsDbContext.Database.MigrateAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();

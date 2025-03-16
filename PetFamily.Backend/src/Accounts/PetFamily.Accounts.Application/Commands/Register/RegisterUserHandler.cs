@@ -11,6 +11,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly ILogger<RegisterUserHandler> _logger;
+    private const string SUCCESS_MESSAGE = "Successfully registered";
 
     public RegisterUserHandler(
         UserManager<User> userManager,
@@ -34,7 +35,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         if (result.Succeeded)
         {
             _logger.LogInformation("Successfully created user with UserName = {0}", command.UserName);
-            return "Successfully registered";
+            return SUCCESS_MESSAGE;
         }
         
         var errors = result.Errors

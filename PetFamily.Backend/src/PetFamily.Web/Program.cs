@@ -63,6 +63,8 @@ app.UseExceptionMiddleware();
 
 app.UseSerilogRequestLogging();
 
+app.ApplyMigrations(app.Services);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
