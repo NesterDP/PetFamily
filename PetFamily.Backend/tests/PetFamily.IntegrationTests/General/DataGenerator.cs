@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -11,7 +13,7 @@ namespace PetFamily.IntegrationTests.General;
 
 public static class DataGenerator
 {
-    private static Volunteer CreateVolunteer(string suffix = "", int exp = 1)
+    public static Volunteer CreateVolunteer(string suffix = "", int exp = 1)
     {
         var volunteerId = VolunteerId.NewVolunteerId();
         var email = Email.Create($"test{suffix}@test.com").Value;
@@ -76,6 +78,29 @@ public static class DataGenerator
             photosList);
 
         return pet;
+    }
+
+    public static User CreateUser(string username, string email)
+    {
+        var user = new User
+        {
+            UserName = username,
+            Email = email,
+        };
+
+        return user;
+    }
+
+    public static async Task<IdentityResult> SeedUserAsync(
+        string username,
+        string email,
+        string password,
+        UserManager<User> userManager)
+    {
+        var user = CreateUser(username, email);
+        var result = await userManager.CreateAsync(user, password);
+
+        return result;
     }
 
     public static Species.Domain.Entities.Species CreateSpecies(string suffix = "")

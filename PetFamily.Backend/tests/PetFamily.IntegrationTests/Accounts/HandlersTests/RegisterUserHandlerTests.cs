@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.Register;
 using PetFamily.Core.Abstractions;
@@ -32,6 +33,12 @@ public class RegisterUserHandlerTests : AccountsTestsBase
         // assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().Be(SUCCESS_MESSAGE);
+
+        // Added user should be in database while not added shouldn't be
+        var existingUser = await UserManager.FindByEmailAsync(EMAIL);
+        var unexistingUser = await UserManager.FindByEmailAsync(EMAIL + EMAIL);
+        existingUser.Should().NotBeNull();
+        unexistingUser.Should().BeNull();
     }
     
     [Fact]

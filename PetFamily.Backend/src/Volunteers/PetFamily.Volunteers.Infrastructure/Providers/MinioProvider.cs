@@ -14,13 +14,13 @@ namespace PetFamily.Volunteers.Infrastructure.Providers;
 public class MinioProvider : IFilesProvider
 {
     private readonly IMinioClient _minioClient;
-    private readonly ILogger<MinioOptions> _logger;
+    private readonly ILogger<MinioProvider> _logger;
 
     private const int MAX_DEGREE_OF_PARALLELISM = 10;
 
     public MinioProvider(
         IMinioClient minioClient,
-        ILogger<MinioOptions> logger)
+        ILogger<MinioProvider> logger)
     {
         _minioClient = minioClient;
         _logger = logger;

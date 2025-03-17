@@ -28,9 +28,9 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         var user = new User
         {
             Email = command.Email,
-            UserName = command.UserName
+            UserName = command.UserName,
         };
-
+        
         var result = await _userManager.CreateAsync(user, command.Password);
         if (result.Succeeded)
         {
@@ -43,5 +43,4 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         return new ErrorList(errors);
 
     }
-    
 }

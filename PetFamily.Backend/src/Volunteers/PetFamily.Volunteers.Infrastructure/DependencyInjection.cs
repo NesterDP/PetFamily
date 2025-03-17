@@ -40,7 +40,7 @@ public static class DependencyInjection
     {
         services.Configure<MinioOptions>(
             configuration.GetSection(MinioOptions.MINIO));
-
+        
         services.AddMinio(options =>
         {
             var minioOptions = configuration.GetSection(MinioOptions.MINIO).Get<MinioOptions>()

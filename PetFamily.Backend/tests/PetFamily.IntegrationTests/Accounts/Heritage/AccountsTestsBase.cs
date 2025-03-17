@@ -1,5 +1,7 @@
 using AutoFixture;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application;
@@ -13,12 +15,14 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
     protected readonly AuthorizationDbContext AccountsDbContext;
     protected readonly IServiceScope Scope;
     protected readonly Fixture Fixture;
+    protected readonly UserManager<User> UserManager;
     protected readonly AccountsTestsWebFactory Factory;
 
     public AccountsTestsBase(AccountsTestsWebFactory factory)
     {
         Factory = factory;
         Scope = factory.Services.CreateScope();
+        UserManager = Scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         Fixture = new Fixture();
     }
 

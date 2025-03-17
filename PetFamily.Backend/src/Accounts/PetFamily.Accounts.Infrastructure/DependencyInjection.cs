@@ -20,10 +20,11 @@ public static class DependencyInjection
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
         
-        services.RegisterIdentity();
+        services.AddDbContext(configuration);
 
+        services.RegisterIdentity();
+        
         services
-            .AddDbContext(configuration)
             .ConfigureAuthentication(configuration)
             .AddAuthorization();
 
@@ -51,29 +52,27 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        
+        var jwtOptions = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
+                         ?? throw new ApplicationException("Missing JWT configuration");
+
         services
-            //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
             {
-                var jwtOption = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
-                                ?? throw new ApplicationException("Missing JWT configuration");
-                
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = jwtOption.Issuer,
-                    ValidAudience = jwtOption.Audience,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOption.Key)),
+                        Encoding.UTF8.GetBytes(jwtOptions.Key)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
