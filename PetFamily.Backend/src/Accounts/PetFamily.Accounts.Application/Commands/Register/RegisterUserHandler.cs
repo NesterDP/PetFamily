@@ -10,14 +10,18 @@ namespace PetFamily.Accounts.Application.Commands.Register;
 public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
 {
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly ILogger<RegisterUserHandler> _logger;
     private const string SUCCESS_MESSAGE = "Successfully registered";
+    private const string DEFAULT_ROLE = "Participant";
 
     public RegisterUserHandler(
         UserManager<User> userManager,
+        RoleManager<Role> roleManager,
         ILogger<RegisterUserHandler> logger)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
         _logger = logger;
     }
 
@@ -37,6 +41,8 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
             _logger.LogInformation("Successfully created user with UserName = {0}", command.UserName);
             return SUCCESS_MESSAGE;
         }
+
+        await _userManager.AddToRoleAsync(user, DEFAULT_ROLE);
         
         var errors = result.Errors
             .Select(e => Errors.General.Failure(e.Code, e.Description)).ToList();

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Core.Dto.Volunteer;
+using PetFamily.Core.Extensions;
+using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.Accounts.Infrastructure;
 
@@ -30,8 +33,42 @@ public class AuthorizationDbContext
         modelBuilder.Entity<User>()
             .ToTable("users");
         
+        modelBuilder.Entity<User>()
+            .Property(v => v.SocialNetworks)
+            .CustomListJsonCollectionConverter(
+                socialNetwork => new SocialNetworkDto(socialNetwork.Name, socialNetwork.Link),
+                dto => new SocialNetworkDto(dto.Link, dto.Name))
+            .HasColumnName("social_networks");
+        
         modelBuilder.Entity<Role>()
             .ToTable("roles");
+        
+        modelBuilder.Entity<Permission>()
+            .ToTable("permissions");
+        
+        modelBuilder.Entity<Permission>()
+            .HasIndex(p => p.Code)
+            .IsUnique();
+
+        modelBuilder.Entity<Permission>()
+            .Property(p => p.Description)
+            .HasMaxLength(DomainConstants.MAX_MEDIUM_TEXT_LENGTH);
+        
+        modelBuilder.Entity<RolePermission>()
+            .ToTable("role_permissions");
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Role)
+            .WithMany(r => r.RolePermissions)
+            .HasForeignKey(rp => rp.RoleId);
+        
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Permission)
+            .WithMany(p => p.RolePermissions)
+            .HasForeignKey(rp => rp.PermissionId);
+        
+        modelBuilder.Entity<RolePermission>()
+            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
         
         modelBuilder.Entity<IdentityUserClaim<Guid>>()
             .ToTable("user_claims");
@@ -47,6 +84,8 @@ public class AuthorizationDbContext
         
         modelBuilder.Entity<IdentityUserRole<Guid>>()
             .ToTable("user_roles");
+        
+        
         
         
         /*modelBuilder.ApplyConfigurationsFromAssembly(
