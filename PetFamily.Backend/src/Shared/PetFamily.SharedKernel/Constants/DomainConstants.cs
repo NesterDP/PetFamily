@@ -10,5 +10,5 @@ public static class DomainConstants
     public const int MAX_LOGISTIC_UNIT_LENGTH = 50;
     public const int MAX_EXTENSION_LENGTH = 10;
     public const int MAX_PATH_LENGTH = 30;
-    public const int MAX_FILE_SIZE_IN_BYTES = 5000000;
+    public const int MAX_FILE_SIZE_IN_BYTES = 6000000;
 }

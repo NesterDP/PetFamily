@@ -48,7 +48,6 @@ public class VolunteersController : ApplicationController
     
   
     //[Authorize(AuthenticationSchemes = "Bearer")]
-    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
         [FromServices] CreateVolunteerHandler handler,

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Domain.DataModels;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace PetFamily.Accounts.Infrastructure;
 
@@ -24,9 +25,9 @@ public class JwtTokenProvider : ITokenProvider
         
         var claims = new[]
         {
-            new Claim(CustomClaims.Sub, user.Id.ToString()),
-            new Claim(CustomClaims.Email, user.Email ?? ""),
-            
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim("volunteers.create", "volunteers.create")
         };
 
         var jwtToken = new JwtSecurityToken(
