@@ -1,22 +1,16 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.Register;
-using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Presentation.Requests;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Accounts.Presentation;
 
 public class AccountsController : ApplicationController
 {
-    [Permission("volunteers.create")]
+    [Permission(Permissions.Accounts.CREATE_VOLUNTEER)]
     //[Authorize(Policy = "volunteers.create")]
     [HttpPost("create")]
     public async Task<IActionResult> TestAdmin()

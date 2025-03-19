@@ -13,7 +13,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
     private readonly RoleManager<Role> _roleManager;
     private readonly ILogger<RegisterUserHandler> _logger;
     private const string SUCCESS_MESSAGE = "Successfully registered";
-    private const string DEFAULT_ROLE = "Participant";
+    //private const string DEFAULT_ROLE = "Participant";
 
     public RegisterUserHandler(
         UserManager<User> userManager,
@@ -42,7 +42,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
             return SUCCESS_MESSAGE;
         }
 
-        await _userManager.AddToRoleAsync(user, DEFAULT_ROLE);
+        //await _userManager.AddToRoleAsync(user, DEFAULT_ROLE);
         
         var errors = result.Errors
             .Select(e => Errors.General.Failure(e.Code, e.Description)).ToList();

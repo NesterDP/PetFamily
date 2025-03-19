@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace PetFamily.Accounts.Infrastructure;
+namespace PetFamily.Framework.Authorization;
 
 public class PermissionAttribute : AuthorizeAttribute,  IAuthorizationRequirement
 {

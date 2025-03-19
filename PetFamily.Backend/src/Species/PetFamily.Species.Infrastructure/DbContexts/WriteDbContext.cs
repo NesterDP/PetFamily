@@ -27,6 +27,8 @@ public class WriteDbContext: DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(WriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Write") ?? false);
+        
+        modelBuilder.HasDefaultSchema("species");
     }
 
     private ILoggerFactory CreateLoggerFactory() =>

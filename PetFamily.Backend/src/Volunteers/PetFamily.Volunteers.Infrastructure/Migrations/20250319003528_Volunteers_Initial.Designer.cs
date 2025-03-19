@@ -13,14 +13,15 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 namespace PetFamily.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250313151138_InitialVolunteers")]
-    partial class InitialVolunteers
+    [Migration("20250319003528_Volunteers_Initial")]
+    partial class Volunteers_Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("volunteers")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -215,7 +216,7 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
                     b.HasIndex("volunteer_id")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
-                    b.ToTable("pets", (string)null);
+                    b.ToTable("pets", "volunteers");
                 });
 
             modelBuilder.Entity("PetFamily.Volunteers.Domain.Entities.Volunteer", b =>
@@ -306,17 +307,19 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteers", "volunteers");
                 });
 
             modelBuilder.Entity("PetFamily.Volunteers.Domain.Entities.Pet", b =>
                 {
-                    b.HasOne("PetFamily.Volunteers.Domain.Entities.Volunteer", null)
+                    b.HasOne("PetFamily.Volunteers.Domain.Entities.Volunteer", "Volunteer")
                         .WithMany("AllOwnedPets")
                         .HasForeignKey("volunteer_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
+
+                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("PetFamily.Volunteers.Domain.Entities.Volunteer", b =>

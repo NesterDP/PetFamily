@@ -72,13 +72,13 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         
         // Accounts
         var accountsDbContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(PetFamily.Accounts.Infrastructure.AuthorizationDbContext));
+            s.ServiceType == typeof(PetFamily.Accounts.Infrastructure.AccountsDbContext));
         
         if (accountsDbContext is not null)
             services.Remove(accountsDbContext);
         
-        services.AddScoped<PetFamily.Accounts.Infrastructure.AuthorizationDbContext>(_ =>
-            new PetFamily.Accounts.Infrastructure.AuthorizationDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<PetFamily.Accounts.Infrastructure.AccountsDbContext>(_ =>
+            new PetFamily.Accounts.Infrastructure.AccountsDbContext(_dbContainer.GetConnectionString()));
     }
 
     public async Task InitializeAsync()
@@ -97,7 +97,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         
         // Применяем миграции для Accounts
         var accountsDbContext = scope.ServiceProvider
-            .GetRequiredService<PetFamily.Accounts.Infrastructure.AuthorizationDbContext>();
+            .GetRequiredService<PetFamily.Accounts.Infrastructure.AccountsDbContext>();
         await accountsDbContext.Database.MigrateAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
@@ -117,7 +117,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
             {
                 DbAdapter = DbAdapter.Postgres,
                 TablesToInclude = ["pets", "volunteers", "breeds", "species"]
-                //SchemasToInclude = ["pets", "volunteers", "breeds", "species"]
+                //SchemasToInclude = ["volunteers", "species", "accounts"]
             }
         );
     }

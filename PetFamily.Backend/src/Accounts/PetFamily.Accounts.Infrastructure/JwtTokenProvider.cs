@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Core.Options;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace PetFamily.Accounts.Infrastructure;

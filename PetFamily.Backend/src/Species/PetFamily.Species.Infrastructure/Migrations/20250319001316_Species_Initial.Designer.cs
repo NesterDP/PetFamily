@@ -13,14 +13,15 @@ using PetFamily.Species.Infrastructure.DbContexts;
 namespace PetFamily.Species.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250313151351_InitialSpecies")]
-    partial class InitialSpecies
+    [Migration("20250319001316_Species_Initial")]
+    partial class Species_Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("species")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -53,7 +54,7 @@ namespace PetFamily.Species.Infrastructure.Migrations
                     b.HasIndex("species_id")
                         .HasDatabaseName("ix_breeds_species_id");
 
-                    b.ToTable("breeds", (string)null);
+                    b.ToTable("breeds", "species");
                 });
 
             modelBuilder.Entity("PetFamily.Species.Domain.Entities.Species", b =>
@@ -76,7 +77,7 @@ namespace PetFamily.Species.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_species");
 
-                    b.ToTable("species", (string)null);
+                    b.ToTable("species", "species");
                 });
 
             modelBuilder.Entity("PetFamily.Species.Domain.Entities.Breed", b =>

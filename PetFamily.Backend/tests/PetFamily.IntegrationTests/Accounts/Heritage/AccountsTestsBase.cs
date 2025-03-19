@@ -12,7 +12,7 @@ namespace PetFamily.IntegrationTests.Accounts.Heritage;
 //public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
 public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncLifetime
 {
-    protected readonly AuthorizationDbContext AccountsDbContext;
+    protected readonly AccountsDbContext AccountsDbContext;
     protected readonly IServiceScope Scope;
     protected readonly Fixture Fixture;
     protected readonly UserManager<User> UserManager;

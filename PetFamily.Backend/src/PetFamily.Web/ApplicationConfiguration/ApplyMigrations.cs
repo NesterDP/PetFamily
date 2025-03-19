@@ -32,7 +32,7 @@ public static class MigrationsApplier
             serviceProvider);
 
         // Применяем миграции для AuthorizationDbContext из PetFamily.Accounts.Infrastructure
-        ApplyMigration<PetFamily.Accounts.Infrastructure.AuthorizationDbContext>(
+        ApplyMigration<PetFamily.Accounts.Infrastructure.AccountsDbContext>(
             serviceProvider);
     }
 }

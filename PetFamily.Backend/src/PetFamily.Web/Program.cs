@@ -1,7 +1,3 @@
-using System.Text;
-using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Presentation;
@@ -24,13 +20,9 @@ CultureConfigurator.Configure();
 
 LoggerConfigurator.Configure(builder);
 
-//builder.Services.AddSwaggerGen();
-SwaggerConfigurator.ConfigureSwagger(builder);
+builder.Services.ConfigureSwagger();
 
 builder.Services.AddSerilog();
-
-// настройка сервисов, связанных с авторизацией
-
 
 // настройка модулей
 builder.Services
@@ -53,25 +45,29 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(VolunteersController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);
 
+builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
 
 
 var app = builder.Build();
 
+app.ApplyMigrations(app.Services);
+
+var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+
+await accountsSeeder.SeedAsync();
+
 app.UseExceptionMiddleware();
 
 app.UseSerilogRequestLogging();
-
-app.ApplyMigrations(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    //await app.ApplyMigrations();
 }
 
 

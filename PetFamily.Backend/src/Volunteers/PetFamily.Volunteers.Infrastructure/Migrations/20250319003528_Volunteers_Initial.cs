@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetFamily.Volunteers.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialVolunteers : Migration
+    public partial class Volunteers_Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "volunteers");
+
             migrationBuilder.CreateTable(
                 name: "volunteers",
+                schema: "volunteers",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -34,6 +38,7 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "pets",
+                schema: "volunteers",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -66,6 +71,7 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "fk_pets_volunteers_volunteer_id",
                         column: x => x.volunteer_id,
+                        principalSchema: "volunteers",
                         principalTable: "volunteers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -73,6 +79,7 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_pets_volunteer_id",
+                schema: "volunteers",
                 table: "pets",
                 column: "volunteer_id");
         }
@@ -81,10 +88,12 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "pets");
+                name: "pets",
+                schema: "volunteers");
 
             migrationBuilder.DropTable(
-                name: "volunteers");
+                name: "volunteers",
+                schema: "volunteers");
         }
     }
 }

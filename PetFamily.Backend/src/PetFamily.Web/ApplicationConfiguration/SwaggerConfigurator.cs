@@ -4,9 +4,10 @@ namespace PetFamily.Web.ApplicationConfiguration;
 
 public static class SwaggerConfigurator
 {
-    public static void ConfigureSwagger(WebApplicationBuilder builder)
+    public static void ConfigureSwagger(this IServiceCollection services)
     {
-        builder.Services.AddSwaggerGen(c =>
+        //builder.Services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { 
                 Title = "My API", 

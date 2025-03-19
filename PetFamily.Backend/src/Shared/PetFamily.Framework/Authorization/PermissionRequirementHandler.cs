@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace PetFamily.Accounts.Infrastructure;
+namespace PetFamily.Framework.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
+    private readonly IServiceScopeFactory _scopeFactory;
+    public PermissionRequirementHandler(IServiceScopeFactory scopeFactory)
+    {
+        _scopeFactory = scopeFactory;
+    }
+
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
