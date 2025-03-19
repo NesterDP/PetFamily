@@ -4,10 +4,7 @@ using PetFamily.Volunteers.Application.Commands.Create;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 
-public record CreateVolunteerRequest(
-    CreateVolunteerDto CreateVolunteerDto,
-    IEnumerable<SocialNetworkDto> SocialNetworksDto,
-    IEnumerable<TransferDetailDto> TransferDetailsDto)
+public record CreateVolunteerRequest(CreateVolunteerDto CreateVolunteerDto)
 {
-    public CreateVolunteerCommand ToCommand() => new(CreateVolunteerDto, SocialNetworksDto, TransferDetailsDto);
+    public CreateVolunteerCommand ToCommand() => new(CreateVolunteerDto);
 }

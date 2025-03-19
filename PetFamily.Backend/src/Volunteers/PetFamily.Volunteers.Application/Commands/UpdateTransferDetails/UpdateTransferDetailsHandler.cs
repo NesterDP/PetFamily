@@ -52,7 +52,7 @@ public class UpdateTransferDetailsHandler : ICommandHandler<Guid, UpdateTransfer
             transferDetailsList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateTransferDetails(transferDetailsList);
+        // volunteerResult.Value.UpdateTransferDetails(transferDetailsList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

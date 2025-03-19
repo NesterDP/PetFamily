@@ -24,21 +24,7 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
     public async Task UpdateVolunteerMainInfo_success_should_update_all_but_socialNetworks_and_transferDetails()
     {
         // arrange
-        List<SocialNetwork> socialNetworks =
-        [
-            SocialNetwork.Create("vk", "vk.com").Value,
-            SocialNetwork.Create("mail", "mail.com").Value
-        ];
-        
-        List<TransferDetail> transferDetails =
-        [
-            TransferDetail.Create("mir", "for transfers within country").Value,
-            TransferDetail.Create("visa", "for transfers outside of country").Value
-        ];
-
         var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
-        volunteer.UpdateSocialNetworks(socialNetworks);
-        volunteer.UpdateTransferDetails(transferDetails);
         VolunteersWriteDbContext.SaveChangesAsync();
         
         const string firstName = "Alexandr";
@@ -75,18 +61,5 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         updatedVolunteer.Description.Value.Should().Be(description);
         updatedVolunteer.Experience.Value.Should().Be(experience);
         updatedVolunteer.Email.Value.Should().Be(email);
-        
-        // unchanged data shouldn't be affected
-        updatedVolunteer!.TransferDetailsList[0].Name.Should().Be(transferDetails[0].Name);
-        updatedVolunteer!.TransferDetailsList[0].Description.Should().Be(transferDetails[0].Description);
-        updatedVolunteer!.TransferDetailsList[1].Name.Should().Be(transferDetails[1].Name);
-        updatedVolunteer!.TransferDetailsList[1].Description.Should().Be(transferDetails[1].Description);
-        volunteer.TransferDetailsList.Count.Should().Be(2);
-        
-        updatedVolunteer!.SocialNetworksList[0].Name.Should().Be(socialNetworks[0].Name);
-        updatedVolunteer!.SocialNetworksList[0].Link.Should().Be(socialNetworks[0].Link);
-        updatedVolunteer!.SocialNetworksList[1].Name.Should().Be(socialNetworks[1].Name);
-        updatedVolunteer!.SocialNetworksList[1].Link.Should().Be(socialNetworks[1].Link);
-        updatedVolunteer.SocialNetworksList.Count.Should().Be(2);
     }
 }

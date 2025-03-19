@@ -254,8 +254,6 @@ public class PetTests
         var description = Description.Create("testDescription").Value;
         var experience = Experience.Create(1).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
-        var socialNetworksList = new List<SocialNetwork>();
-        var transferDetailsList = new List<TransferDetail>();
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -263,9 +261,7 @@ public class PetTests
             email,
             description,
             experience,
-            phoneNumber,
-            socialNetworksList,
-            transferDetailsList);
+            phoneNumber);
 
         return volunteer;
     }

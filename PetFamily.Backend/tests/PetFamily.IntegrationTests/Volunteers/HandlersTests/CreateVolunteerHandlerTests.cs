@@ -31,26 +31,14 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
         const int experience = 2;
         var fullName = new FullNameDto(firstName, lastName, surname);
         
-        List<SocialNetworkDto> socialNetworks =
-        [
-            new SocialNetworkDto("vk", "vk.com"),
-            new SocialNetworkDto("mail", "mail.com")
-        ];
-        
-        List<TransferDetailDto> transferDetails =
-        [
-            new TransferDetailDto("mir", "for transfers within country"),
-            new TransferDetailDto("visa", "for transfers outside of country")
-        ];
-
-        var volunteerCommandDto = new CreateVolunteerDto(
+        var createVolunteerDto = new CreateVolunteerDto(
             fullName,
             email,
             phoneNumber,
             description,
             experience);
         
-        var command = new CreateVolunteerCommand(volunteerCommandDto, socialNetworks, transferDetails);
+        var command = new CreateVolunteerCommand(createVolunteerDto);
 
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
@@ -68,18 +56,5 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
         volunteer.Description.Value.Should().Be(description);
         volunteer.Experience.Value.Should().Be(experience);
         volunteer.Email.Value.Should().Be(email);
-        
-        volunteer!.TransferDetailsList[0].Name.Should().Be(transferDetails[0].Name);
-        volunteer!.TransferDetailsList[0].Description.Should().Be(transferDetails[0].Description);
-        volunteer!.TransferDetailsList[1].Name.Should().Be(transferDetails[1].Name);
-        volunteer!.TransferDetailsList[1].Description.Should().Be(transferDetails[1].Description);
-        volunteer!.TransferDetailsList.Count.Should().Be(2);
-        
-        // all data is bounded correctly
-        volunteer!.SocialNetworksList[0].Name.Should().Be(socialNetworks[0].Name);
-        volunteer!.SocialNetworksList[0].Link.Should().Be(socialNetworks[0].Link);
-        volunteer!.SocialNetworksList[1].Name.Should().Be(socialNetworks[1].Name);
-        volunteer!.SocialNetworksList[1].Link.Should().Be(socialNetworks[1].Link);
-        volunteer.SocialNetworksList.Count.Should().Be(2);
     }
 }

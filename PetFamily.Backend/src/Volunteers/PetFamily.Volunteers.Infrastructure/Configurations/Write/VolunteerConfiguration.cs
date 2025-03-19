@@ -75,18 +75,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("phone_number");
         });
         
-        builder.Property(v => v.SocialNetworksList)
-            .CustomJsonCollectionConverter(
-                socialNetwork => new SocialNetworkDto(socialNetwork.Name, socialNetwork.Link),
-                dto => SocialNetwork.Create(dto.Link, dto.Name).Value)
-            .HasColumnName("social_networks");
-
-        builder.Property(v => v.TransferDetailsList)
-            .CustomJsonCollectionConverter(
-                transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
-                dto => TransferDetail.Create(dto.Name, dto.Description).Value)
-            .HasColumnName("transfer_details");
-
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne()
             .HasForeignKey("volunteer_id")

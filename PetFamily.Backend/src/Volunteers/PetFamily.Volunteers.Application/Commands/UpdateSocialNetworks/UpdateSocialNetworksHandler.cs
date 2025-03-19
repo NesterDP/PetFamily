@@ -51,7 +51,7 @@ public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNet
             socialNetworksList.Add(tempResult.Value);
         }
 
-        volunteerResult.Value.UpdateSocialNetworks(socialNetworksList);
+        // volunteerResult.Value.UpdateSocialNetworks(socialNetworksList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
