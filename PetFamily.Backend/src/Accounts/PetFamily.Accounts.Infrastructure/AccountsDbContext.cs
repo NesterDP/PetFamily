@@ -32,62 +32,8 @@ public class AccountsDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        modelBuilder.Entity<User>()
-            .ToTable("users");
-        
-        modelBuilder.Entity<Role>()
-            .ToTable("roles");
-        
-        modelBuilder.Entity<Permission>()
-            .ToTable("permissions");
-        
-        modelBuilder.Entity<RolePermission>()
-            .ToTable("role_permissions");
-        
-        modelBuilder.Entity<IdentityUserClaim<Guid>>()
-            .ToTable("user_claims");
-        
-        modelBuilder.Entity<IdentityUserToken<Guid>>()
-            .ToTable("user_tokens");
-        
-        modelBuilder.Entity<IdentityUserLogin<Guid>>()
-            .ToTable("user_logins");
-        
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>()
-            .ToTable("role_claims");
-        
-        modelBuilder.Entity<IdentityUserRole<Guid>>()
-            .ToTable("user_roles");
 
-        
-        modelBuilder.Entity<User>()
-            .Property(v => v.SocialNetworks)
-            .CustomListJsonCollectionConverter(
-                socialNetwork => new SocialNetworkDto(socialNetwork.Name, socialNetwork.Link),
-                dto => new SocialNetworkDto(dto.Link, dto.Name))
-            .HasColumnName("social_networks");
-        
-        modelBuilder.Entity<Permission>()
-            .HasIndex(p => p.Code)
-            .IsUnique();
-
-        modelBuilder.Entity<RolePermission>()
-            .HasOne(rp => rp.Role)
-            .WithMany(r => r.RolePermissions)
-            .HasForeignKey(rp => rp.RoleId);
-        
-        modelBuilder.Entity<RolePermission>()
-            .HasOne(rp => rp.Permission)
-            .WithMany(p => p.RolePermissions)
-            .HasForeignKey(rp => rp.PermissionId);
-        
-        modelBuilder.Entity<RolePermission>()
-            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
-        
-        /*modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(AuthorizationDbContext).Assembly,
-            type => type.FullName?.Contains("Configurations.Write") ?? false);*/
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly);
 
         modelBuilder.HasDefaultSchema("accounts");
     }
