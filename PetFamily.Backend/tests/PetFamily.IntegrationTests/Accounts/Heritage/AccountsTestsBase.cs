@@ -16,6 +16,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
     protected readonly IServiceScope Scope;
     protected readonly Fixture Fixture;
     protected readonly UserManager<User> UserManager;
+    protected readonly RoleManager<Role> RoleManager;
     protected readonly AccountsTestsWebFactory Factory;
 
     public AccountsTestsBase(AccountsTestsWebFactory factory)
@@ -23,6 +24,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
         Factory = factory;
         Scope = factory.Services.CreateScope();
         UserManager = Scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         Fixture = new Fixture();
     }
 

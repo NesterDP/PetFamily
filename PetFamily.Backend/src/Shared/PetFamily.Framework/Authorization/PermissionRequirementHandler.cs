@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Accounts.Contracts;
+using PetFamily.Accounts.Contracts.Requests;
+using PetFamily.Core;
 
 namespace PetFamily.Framework.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    public PermissionRequirementHandler(IServiceScopeFactory scopeFactory)
+    public PermissionRequirementHandler(
+        IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }
@@ -15,12 +19,26 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        var userPermission = context.User.Claims.FirstOrDefault(c => c.Type == permission.Code);
-        if (userPermission is null)
-            return;
+        using var scope = _scopeFactory.CreateScope();
+        var contract = scope.ServiceProvider.GetRequiredService<IGetUserPermissionCodesContract>();
+        
+        var userIdString = context.User.Claims
+            .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
 
-        if (userPermission.Value != permission.Code)
+        if (!Guid.TryParse(userIdString, out var userId))
+        {
+            context.Fail();
             return;
+        }
+        
+        var request = new GetUserPermissionCodesRequest(userId);
+        var permissionCodes = await contract.GetUserPermissionCodes(request);
+
+        if (!permissionCodes.Contains(permission.Code))
+        {
+            context.Fail();
+            return;
+        }
 
         context.Succeed(permission);
     }

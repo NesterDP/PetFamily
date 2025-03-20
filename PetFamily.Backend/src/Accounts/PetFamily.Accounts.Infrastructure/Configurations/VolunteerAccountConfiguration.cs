@@ -4,6 +4,7 @@ using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Core.Extensions;
+using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 
@@ -17,7 +18,7 @@ public class VolunteerAccountConfiguration : IEntityTypeConfiguration<VolunteerA
             .Property(v => v.TransferDetails)
             .CustomListJsonCollectionConverter(
                 transferDetail => new TransferDetailDto(transferDetail.Name, transferDetail.Description),
-                dto => new TransferDetailDto(dto.Name, dto.Description))
+                dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
         
         builder

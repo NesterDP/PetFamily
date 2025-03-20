@@ -1,5 +1,6 @@
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Web.Middlewares;
 using PetFamily.Species.Application;
@@ -13,8 +14,11 @@ using PetFamily.Volunteers.Presentation.Volunteers;
 using PetFamily.Web.ApplicationConfiguration;
 using Serilog;
 
+DotNetEnv.Env.Load("etc/.env");
 
 var builder = WebApplication.CreateBuilder(args);
+
+//var config = builder.Configuration;
 
 CultureConfigurator.Configure();
 

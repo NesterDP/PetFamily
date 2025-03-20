@@ -45,6 +45,21 @@
       "species.read",
       "breeds.read",
       "volunteers.gigaupdate"
+    ],
+    "Admin" : [
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete",
+      "pets.create",
+      "pets.read",
+      "pets.update",
+      "pets.delete",
+      "species.read",
+      "species.create",
+      "species.delete",
+      "breeds.read",
+      "breeds.create"
     ]
   }
 }

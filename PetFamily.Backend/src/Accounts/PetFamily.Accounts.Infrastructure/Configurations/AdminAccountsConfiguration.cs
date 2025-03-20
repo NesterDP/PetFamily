@@ -5,10 +5,10 @@ using PetFamily.Accounts.Domain.DataModels;
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 
 
-public class AdminProfileConfiguration : IEntityTypeConfiguration<AdminProfile>
+public class AdminAccountsConfiguration : IEntityTypeConfiguration<AdminAccount>
 {
-    public void Configure(EntityTypeBuilder<AdminProfile> builder)
+    public void Configure(EntityTypeBuilder<AdminAccount> builder)
     {
-        builder.ToTable("admin_profiles");
+        builder.ToTable("admin_accounts");
     }
 }

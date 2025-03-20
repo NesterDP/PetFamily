@@ -25,7 +25,7 @@ public class LoginUserHandlerTests : AccountsTestsBase
         var PASSWORD = "Passowrd121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
 
-        await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager);
+        await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
         var command = new LoginUserCommand(EMAIL, PASSWORD);
         
@@ -45,7 +45,7 @@ public class LoginUserHandlerTests : AccountsTestsBase
         var PASSWORD = "Passowrd121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
 
-        await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager);
+        await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
         var command = new LoginUserCommand(EMAIL, PASSWORD + PASSWORD);
         

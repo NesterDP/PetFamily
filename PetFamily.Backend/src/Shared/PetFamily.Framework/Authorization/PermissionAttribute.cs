@@ -12,16 +12,4 @@ public class PermissionAttribute : AuthorizeAttribute,  IAuthorizationRequiremen
     }
 }
 
-/*
-public class PermissionAttribute : AuthorizeAttribute, IAuthorizationRequirement
-{
-    public string Code { get; set; }
-    
-    public PermissionAttribute(string policyName) : base(policy: policyName)
-    {
-        Code = "Volunteer";
-    }
-}
-*/
-
 

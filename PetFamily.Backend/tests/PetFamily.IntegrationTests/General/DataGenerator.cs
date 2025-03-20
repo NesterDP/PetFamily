@@ -76,24 +76,26 @@ public static class DataGenerator
         return pet;
     }
 
-    public static User CreateUser(string username, string email)
+    public static User CreateUser(string username, string email, Role role)
     {
-        var user = new User
-        {
-            UserName = username,
-            Email = email,
-        };
+        var user = User.CreateParticipant(
+            username,
+            email,
+            FullName.Create("DefaultFirstName", "DefaultSecondName", null).Value,
+            role);
 
-        return user;
+        return user.Value;
     }
 
     public static async Task<IdentityResult> SeedUserAsync(
         string username,
         string email,
         string password,
-        UserManager<User> userManager)
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager)
     {
-        var user = CreateUser(username, email);
+        var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
+        var user = CreateUser(username, email, role!);
         var result = await userManager.CreateAsync(user, password);
 
         return result;

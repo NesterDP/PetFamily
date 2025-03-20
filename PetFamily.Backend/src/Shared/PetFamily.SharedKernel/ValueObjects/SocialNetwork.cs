@@ -1,10 +1,9 @@
 using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
-namespace PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
+namespace PetFamily.SharedKernel.ValueObjects;
 
 public class SocialNetwork
 {

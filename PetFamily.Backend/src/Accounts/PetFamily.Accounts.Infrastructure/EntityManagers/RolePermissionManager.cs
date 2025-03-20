@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Domain.DataModels;
 
-namespace PetFamily.Accounts.Infrastructure;
+namespace PetFamily.Accounts.Infrastructure.EntityManagers;
 
 public class RolePermissionManager
 {

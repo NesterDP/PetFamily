@@ -10,7 +10,7 @@ namespace PetFamily.Accounts.Presentation;
 
 public class AccountsController : ApplicationController
 {
-    [Permission(Permissions.Accounts.CREATE_VOLUNTEER)]
+    [Permission(Permissions.Volunteers.CREATE_VOLUNTEER)]
     //[Authorize(Policy = "volunteers.create")]
     [HttpPost("create")]
     public async Task<IActionResult> TestAdmin()

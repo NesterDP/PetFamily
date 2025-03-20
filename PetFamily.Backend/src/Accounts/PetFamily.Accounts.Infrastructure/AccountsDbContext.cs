@@ -16,6 +16,9 @@ public class AccountsDbContext
     
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<Permission> Permissions => Set<Permission>();
+    
+    public DbSet<AdminAccount> AdminAccounts => Set<AdminAccount>();
+    public DbSet<ParticipantAccount> ParticipantAccounts => Set<ParticipantAccount>();
 
     public AccountsDbContext(string connectionString)
     {

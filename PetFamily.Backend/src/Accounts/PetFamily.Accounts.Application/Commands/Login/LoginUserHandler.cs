@@ -40,7 +40,6 @@ public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
         _logger.LogInformation("User with email = {0} successfully logged in", user.Email);
 
         return token;
-
-
+        
     }
 }
