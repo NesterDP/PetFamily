@@ -46,7 +46,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder
             .HasMany(u => u.Roles)
-            .WithMany()
+            .WithMany(r => r.Users)
             .UsingEntity<IdentityUserRole<Guid>>();
 
         builder

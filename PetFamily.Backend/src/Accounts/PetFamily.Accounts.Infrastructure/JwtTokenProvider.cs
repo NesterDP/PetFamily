@@ -18,6 +18,7 @@ public class JwtTokenProvider : ITokenProvider
 {
     private readonly AccountsDbContext _dbContext;
     private readonly JwtOptions _jwtOptions;
+
     public JwtTokenProvider(IOptions<JwtOptions> options, AccountsDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -28,26 +29,19 @@ public class JwtTokenProvider : ITokenProvider
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        /*var roleClaims = user.Roles
-            .Select(r => new Claim(CustomClaims.Role, r.Name ?? ""));*/
-
-        //var roleClaims = roleManager.
         
-        // Запрос данных:
-        var user2 = _dbContext.Users
-            .Include(u => u.Roles)
+        _dbContext.Users
+            .Include(u => u.Roles) // surpass lazy loading
             .FirstOrDefault(u => u.Id == user.Id);
         
-        var roleClaims = user2.Roles
-        .Select(r => new Claim(CustomClaims.Role, r.Name))
-        .ToList();
+        var roleClaims = user.Roles
+            .Select(r => new Claim(CustomClaims.Role, r.Name))
+            .ToList();
 
-        
         var claims = new[]
         {
             new Claim(CustomClaims.Id, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim(CustomClaims.Email, user.Email ?? ""),
         };
 
         claims = claims.Concat(roleClaims).ToArray();
@@ -58,10 +52,9 @@ public class JwtTokenProvider : ITokenProvider
             expires: DateTime.UtcNow.AddMinutes(int.Parse(_jwtOptions.ExpiredMinutesTime)),
             signingCredentials: signingCredentials,
             claims: claims);
-        
-        var stringToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-        
-        return stringToken;
 
+        var stringToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+
+        return stringToken;
     }
 }
