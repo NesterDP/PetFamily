@@ -117,7 +117,7 @@ public class VolunteersController : ApplicationController
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }*/
 
-    [Permission("volunteers.UpdateTransferDetails")]
+    /*[Permission("volunteers.UpdateTransferDetails")]
     [HttpPut("{id:guid}/transfer-details")]
     public async Task<ActionResult<Guid>> UpdateTransferDetails(
         [FromServices] UpdateTransferDetailsHandler handler,
@@ -128,7 +128,7 @@ public class VolunteersController : ApplicationController
         var command = request.ToCommand(id);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
+    }*/
     
     [Permission("volunteers.ChangePetPosition")]
     [HttpPut("{id:guid}/pet/{petId:guid}/position")]
