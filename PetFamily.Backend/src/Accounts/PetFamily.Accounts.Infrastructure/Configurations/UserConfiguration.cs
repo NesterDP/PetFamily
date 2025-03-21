@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Core.Extensions;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 
@@ -39,7 +41,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
                 .HasColumnName("surname");
         });
-        
+
         builder.Property(u => u.Photo)
             .IsRequired(false)
             .HasColumnName("photo");

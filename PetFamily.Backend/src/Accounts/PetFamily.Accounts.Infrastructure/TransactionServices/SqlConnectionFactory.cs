@@ -4,7 +4,7 @@ using Npgsql;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Constants;
 
-namespace PetFamily.Accounts.Infrastructure;
+namespace PetFamily.Accounts.Infrastructure.TransactionServices;
 
 public class SqlConnectionFactory : ISqlConnectionFactory
 {

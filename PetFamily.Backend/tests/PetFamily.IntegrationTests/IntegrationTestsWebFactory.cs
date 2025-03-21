@@ -36,13 +36,9 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(ConfigureDefaultServices);
-        
-        var workingDirectory = Environment.CurrentDirectory;
-        var projectRootDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-        var configDataFromRoot = Path.Combine(projectRootDirectory, @"etc\.env");
-        DotNetEnv.Env.Load(configDataFromRoot);
+        LoadSettingFromFiles(builder);
     }
-
+    
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
         // Volunteers
@@ -107,6 +103,26 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
             new ReadDbContext(_dbContainer.GetConnectionString()));
+    }
+    
+    private static void LoadSettingFromFiles(IWebHostBuilder builder)
+    {
+        var workingDirectory = Environment.CurrentDirectory;
+        var projectRootDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+        var configPath = Path.Combine(projectRootDirectory, @"etc\testsettings.json");
+        // DotNetEnv.Env.Load(configPath);
+        
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddJsonFile(configPath);
+        });
+        
+        builder.ConfigureServices(services =>
+        {
+
+            var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+            services.Configure<AdminOptions>(configuration.GetSection("Admin"));
+        });
     }
 
     public async Task InitializeAsync()

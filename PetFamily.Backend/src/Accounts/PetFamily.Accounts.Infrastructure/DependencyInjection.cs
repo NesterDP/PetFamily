@@ -6,6 +6,7 @@ using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Accounts.Infrastructure.TransactionServices;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Options;
 using PetFamily.SharedKernel.Constants;
@@ -61,6 +62,9 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Accounts);
+        services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+        
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         return services;
     }

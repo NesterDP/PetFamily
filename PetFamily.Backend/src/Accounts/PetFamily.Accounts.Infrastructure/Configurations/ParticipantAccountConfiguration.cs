@@ -1,9 +1,8 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Dto.Pet;
-using PetFamily.Core.Extensions;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 

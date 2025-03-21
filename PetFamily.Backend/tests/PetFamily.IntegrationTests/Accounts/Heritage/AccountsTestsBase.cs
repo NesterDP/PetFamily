@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
@@ -25,6 +26,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
         Scope = factory.Services.CreateScope();
         UserManager = Scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+        AccountsDbContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         Fixture = new Fixture();
     }
 

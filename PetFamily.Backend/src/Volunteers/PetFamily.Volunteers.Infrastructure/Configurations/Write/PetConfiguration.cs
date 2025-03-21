@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Core;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
@@ -145,13 +146,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 transferDetail => new TransferDetailDto(transferDetail.Name, transferDetail.Description),
                 dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
-
-        /*builder.Property(p => p.PhotosList)
-            .HasConversion(
-                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<IReadOnlyList<Photo>>(json, JsonSerializerOptions.Default)!)
-            .HasColumnName("photos")
-            .HasColumnType("jsonb");*/
         
         builder.Property(p => p.PhotosList)
             .CustomJsonCollectionConverter(

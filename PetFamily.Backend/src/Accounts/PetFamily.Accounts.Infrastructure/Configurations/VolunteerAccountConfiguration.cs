@@ -4,6 +4,7 @@ using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Core.Extensions;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;

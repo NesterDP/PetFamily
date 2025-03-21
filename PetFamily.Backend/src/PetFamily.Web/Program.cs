@@ -14,7 +14,7 @@ using PetFamily.Volunteers.Presentation.Volunteers;
 using PetFamily.Web.ApplicationConfiguration;
 using Serilog;
 
-var result = DotNetEnv.Env.Load("etc/.env");
+DotNetEnv.Env.Load("etc/.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
