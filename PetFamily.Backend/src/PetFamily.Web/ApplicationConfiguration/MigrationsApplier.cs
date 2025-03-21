@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Accounts.Infrastructure.DbContexts;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -34,7 +35,7 @@ public static class MigrationsApplier
             serviceProvider);
 
         // Применяем миграции для AuthorizationDbContext из PetFamily.Accounts.Infrastructure
-        ApplyMigration<PetFamily.Accounts.Infrastructure.AccountsDbContext>(
+        ApplyMigration<AccountsDbContext>(
             serviceProvider);
     }
 }

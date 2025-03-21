@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain.DataModels;
-using PetFamily.Core.Dto.Volunteer;
-using PetFamily.Core.Extensions;
-using PetFamily.SharedKernel.Constants;
 
-namespace PetFamily.Accounts.Infrastructure;
+namespace PetFamily.Accounts.Infrastructure.DbContexts;
 
 public class AccountsDbContext
     : IdentityDbContext<User, Role, Guid>

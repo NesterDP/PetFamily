@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
+using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
 using PetFamily.Volunteers.Application;
@@ -54,13 +55,13 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     private void ReconfigureAccountsServices(IServiceCollection services)
     {
         var accountsDbContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(PetFamily.Accounts.Infrastructure.AccountsDbContext));
+            s.ServiceType == typeof(AccountsDbContext));
 
         if (accountsDbContext is not null)
             services.Remove(accountsDbContext);
 
-        services.AddScoped<PetFamily.Accounts.Infrastructure.AccountsDbContext>(_ =>
-            new PetFamily.Accounts.Infrastructure.AccountsDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<AccountsDbContext>(_ =>
+            new AccountsDbContext(_dbContainer.GetConnectionString()));
     }
 
     private void ReconfigureSpeciesServices(IServiceCollection services)
@@ -142,7 +143,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         // Применяем миграции для Accounts
         var accountsDbContext = scope.ServiceProvider
-            .GetRequiredService<PetFamily.Accounts.Infrastructure.AccountsDbContext>();
+            .GetRequiredService<AccountsDbContext>();
         await accountsDbContext.Database.MigrateAsync();
 
         // Сидируем аккаунты

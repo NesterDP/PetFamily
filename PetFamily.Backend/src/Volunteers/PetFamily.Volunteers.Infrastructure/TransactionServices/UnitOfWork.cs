@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 
-namespace PetFamily.Volunteers.Infrastructure;
+namespace PetFamily.Volunteers.Infrastructure.TransactionServices;
 
 public class UnitOfWork : IUnitOfWork
 {

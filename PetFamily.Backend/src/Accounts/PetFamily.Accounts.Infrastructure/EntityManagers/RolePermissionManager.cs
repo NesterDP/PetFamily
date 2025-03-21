@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Infrastructure.DbContexts;
 
 namespace PetFamily.Accounts.Infrastructure.EntityManagers;
 

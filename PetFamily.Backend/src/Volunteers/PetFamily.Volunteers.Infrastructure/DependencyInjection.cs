@@ -14,6 +14,7 @@ using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.Files;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
 using PetFamily.Volunteers.Infrastructure.Providers;
+using PetFamily.Volunteers.Infrastructure.TransactionServices;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 using MinioOptions = PetFamily.Volunteers.Infrastructure.Options.MinioOptions;
 

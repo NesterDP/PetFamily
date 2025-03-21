@@ -6,6 +6,7 @@ using PetFamily.SharedKernel.Structs;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure.DbContexts;
 using PetFamily.Species.Infrastructure.Repositories;
+using PetFamily.Species.Infrastructure.TransactionServices;
 
 namespace PetFamily.Species.Infrastructure;
 

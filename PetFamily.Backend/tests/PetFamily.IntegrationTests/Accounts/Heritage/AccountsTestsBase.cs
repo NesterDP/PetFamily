@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application;
