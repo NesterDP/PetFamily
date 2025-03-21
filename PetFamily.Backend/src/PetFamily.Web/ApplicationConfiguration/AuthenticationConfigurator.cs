@@ -8,9 +8,8 @@ namespace PetFamily.Web.ApplicationConfiguration;
 public static class AuthenticationConfigurator
 {
     public static IServiceCollection ConfigureAuthentication(
-        this IServiceCollection services)
+        this IServiceCollection services, IConfiguration configuration)
     {
-        var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
         
         var jwtOptions = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
                          ?? throw new ApplicationException("Missing JWT configuration");

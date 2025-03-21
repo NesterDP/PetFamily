@@ -1,23 +1,22 @@
 using System.Data.Common;
-using System.Net.Mime;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Npgsql;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
 using PetFamily.Volunteers.Application;
-using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
 using PetFamily.Web;
+using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
+using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
+using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 
 namespace PetFamily.IntegrationTests;
 
@@ -67,10 +66,10 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     private void ReconfigureSpeciesServices(IServiceCollection services)
     {
         var writeContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(Species.Infrastructure.DbContexts.WriteDbContext));
+            s.ServiceType == typeof(SpeciesWriteDbContext));
 
         var readContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(Species.Application.IReadDbContext));
+            s.ServiceType == typeof(SpeciesIReadDbContext));
 
         if (writeContext is not null)
             services.Remove(writeContext);
@@ -78,11 +77,11 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         if (readContext is not null)
             services.Remove(readContext);
 
-        services.AddScoped<Species.Infrastructure.DbContexts.WriteDbContext>(_ =>
-            new Species.Infrastructure.DbContexts.WriteDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<SpeciesWriteDbContext>(_ =>
+            new SpeciesWriteDbContext(_dbContainer.GetConnectionString()));
 
-        services.AddScoped<Species.Application.IReadDbContext, Species.Infrastructure.DbContexts.ReadDbContext>(_ =>
-            new Species.Infrastructure.DbContexts.ReadDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<SpeciesIReadDbContext, SpeciesReadDbContext>(_ =>
+            new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
     }
 
     private void ReconfigureVolunteersServices(IServiceCollection services)
@@ -138,7 +137,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         // Применяем миграции для SpeciesDbContext
         var speciesDbContext =
-            scope.ServiceProvider.GetRequiredService<Species.Infrastructure.DbContexts.WriteDbContext>();
+            scope.ServiceProvider.GetRequiredService<SpeciesWriteDbContext>();
         await speciesDbContext.Database.MigrateAsync();
 
         // Применяем миграции для Accounts

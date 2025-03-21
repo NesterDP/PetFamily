@@ -8,24 +8,23 @@ public static class MigrationsApplier
     public static void ApplyMigration<TDbContext>(IServiceProvider serviceProvider)
         where TDbContext : DbContext
     {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
+        using var scope = serviceProvider.CreateScope();
 
-            // Проверяем, есть ли pending миграции
-            var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
-            if (pendingMigrations.Any())
-            {
-                // Применяем миграции
-                dbContext.Database.Migrate();
-            }
+        var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
+
+        // Проверяем, есть ли pending миграции
+        var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
+        if (pendingMigrations.Any())
+        {
+            // Применяем миграции
+            dbContext.Database.Migrate();
         }
     }
-    
+
     public static void ApplyMigrations(this IApplicationBuilder builder)
     {
         var serviceProvider = builder.ApplicationServices;
-        
+
         // Применяем миграции для WriteDbContext из PetFamily.Volunteers.Infrastructure
         ApplyMigration<PetFamily.Volunteers.Infrastructure.DbContexts.WriteDbContext>(
             serviceProvider);

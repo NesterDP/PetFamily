@@ -49,11 +49,10 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(VolunteersController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);
 
-builder.Services.ConfigureAuthentication();
+builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
-
 
 var app = builder.Build();
 
