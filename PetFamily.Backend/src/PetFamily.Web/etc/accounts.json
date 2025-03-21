@@ -1,65 +1,97 @@
 {
   "Permissions": {
-    "Volunteers": [
-      "volunteers.create",
-      "volunteers.read",
-      "volunteers.update",
-      "volunteers.delete",
-      "volunteers.gigaupdate"
+    "users" : [
+      "users.UpdateSocialNetworks"
     ],
-    "Pets": [
-      "pets.create",
-      "pets.read",
-      "pets.update",
-      "pets.delete"
+    "Volunteers": [
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.Create",
+      "volunteers.Delete",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination"
     ],
     "Species": [
-      "species.read",
-      "species.create",
-      "species.delete"
-    ],
-    "Breeds": [
-      "breeds.read",
-      "breeds.create"
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
     ]
+
   },
   "Roles": {
-    "Volunteer": [
-      "volunteers.create",
-      "volunteers.read",
-      "volunteers.update",
-      "volunteers.delete",
-      "pets.create",
-      "pets.read",
-      "pets.update",
-      "pets.delete",
-      "species.read",
-      "species.create",
-      "species.delete",
-      "breeds.read",
-      "breeds.create"
-    ],
     "Participant": [
-      "volunteers.read",
-      "pets.read",
-      "species.read",
-      "breeds.read",
-      "volunteers.gigaupdate"
+      "users.UpdateSocialNetworks",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
+    ],
+    "Volunteer": [
+      "users.UpdateSocialNetworks",
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
     ],
     "Admin" : [
-      "volunteers.create",
-      "volunteers.read",
-      "volunteers.update",
-      "volunteers.delete",
-      "pets.create",
-      "pets.read",
-      "pets.update",
-      "pets.delete",
-      "species.read",
-      "species.create",
-      "species.delete",
-      "breeds.read",
-      "breeds.create"
+      "users.UpdateSocialNetworks",
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.Create",
+      "volunteers.Delete",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
     ]
   }
 }

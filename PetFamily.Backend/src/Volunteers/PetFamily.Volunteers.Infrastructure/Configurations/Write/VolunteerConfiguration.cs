@@ -39,7 +39,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("last_name");
             
             fnb.Property(pn => pn.Surname)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
                 .HasColumnName("surname");
         });

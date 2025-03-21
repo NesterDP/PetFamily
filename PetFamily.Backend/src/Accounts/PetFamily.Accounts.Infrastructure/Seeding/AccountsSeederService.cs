@@ -77,6 +77,12 @@ public class AccountsSeederService
             AdminFullName,
             adminRole);
         
+        /*var adminUser = User.CreateAdmin(
+           "admin",
+           "admin@admin.com",
+           AdminFullName,
+           adminRole);*/
+        
         if (adminUser.IsFailure)
             throw new ApplicationException("wasn't able to create admin instance");
         
@@ -85,16 +91,18 @@ public class AccountsSeederService
         try
         {
             var result = await _userManager.CreateAsync(adminUser.Value, _adminOptions.Password);
+            
+            //var result = await _userManager.CreateAsync(adminUser.Value, "AdminPassword121314s.");
 
             if (result.Succeeded)
             {
                 var adminAccount = new AdminAccount(adminUser.Value);
         
                 await _adminAccountManager.CreateAdminAccount(adminAccount);
+                
+                transaction.Commit();
+                _logger.LogInformation("Successfully seeded admin");
             }
-        
-            transaction.Commit();
-            _logger.LogInformation("Successfully seeded admin");
         }
         catch (Exception e)
         {

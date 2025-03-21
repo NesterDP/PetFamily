@@ -61,9 +61,6 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Accounts);
-        services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-        
-        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         return services;
     }

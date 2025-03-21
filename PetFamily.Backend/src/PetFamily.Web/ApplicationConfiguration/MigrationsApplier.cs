@@ -21,8 +21,10 @@ public static class MigrationsApplier
         }
     }
     
-    public static void ApplyMigrations(this IApplicationBuilder builder, IServiceProvider serviceProvider)
+    public static void ApplyMigrations(this IApplicationBuilder builder)
     {
+        var serviceProvider = builder.ApplicationServices;
+        
         // Применяем миграции для WriteDbContext из PetFamily.Volunteers.Infrastructure
         ApplyMigration<PetFamily.Volunteers.Infrastructure.DbContexts.WriteDbContext>(
             serviceProvider);

@@ -10,7 +10,7 @@ public class ParticipantAccount
     
     public List<FavoritePetDto> FavoritePets { get; set; } = [];
     
-    public Guid UserId { get; set; }
+    public Guid UserId { get; set; } // navigation
 
     public User User { get; set; } // navigation
     
@@ -18,6 +18,7 @@ public class ParticipantAccount
     public ParticipantAccount(User user)
     {
         Id = Guid.NewGuid();
+        UserId = user.Id;
         User = user;
     }
    

@@ -23,7 +23,7 @@ public class RegisterUserHandlerTests : AccountsTestsBase
         // arrange
         var EMAIL = "test@mail.com";
         var USERNAME = "testUserName";
-        var PASSWORD = "Passowrd121314s.";
+        var PASSWORD = "Password121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
         var command = new RegisterUserCommand(EMAIL, USERNAME, PASSWORD);
         
@@ -47,7 +47,7 @@ public class RegisterUserHandlerTests : AccountsTestsBase
         // arrange
         var EMAIL = "testmail.com";
         var USERNAME = "testUserName";
-        var PASSWORD = "Passowrd121314s.";
+        var PASSWORD = "Password121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
         var command = new RegisterUserCommand(EMAIL, USERNAME, PASSWORD);
         

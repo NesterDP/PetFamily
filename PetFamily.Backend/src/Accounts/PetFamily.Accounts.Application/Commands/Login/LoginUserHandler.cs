@@ -35,7 +35,7 @@ public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
         if (!passwordConfirmed)
             return Errors.General.ValueNotFound("No user with such login data", true).ToErrorList();
 
-        var token =  _tokenProvider.GenerateAccessToken(user);
+        var token =  await _tokenProvider.GenerateAccessToken(user);
         
         _logger.LogInformation("User with email = {0} successfully logged in", user.Email);
 

@@ -25,18 +25,17 @@ public class JwtTokenProvider : ITokenProvider
         _jwtOptions = options.Value;
     }
 
-    public string GenerateAccessToken(User user)
+    public async Task<string> GenerateAccessToken(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        
-        _dbContext.Users
+
+        var roleClaims = await _dbContext.Users
             .Include(u => u.Roles) // surpass lazy loading
-            .FirstOrDefault(u => u.Id == user.Id);
-        
-        var roleClaims = user.Roles
+            .Where(u => u.Id == user.Id)
+            .SelectMany(u => u.Roles)
             .Select(r => new Claim(CustomClaims.Role, r.Name))
-            .ToList();
+            .ToListAsync();
 
         var claims = new[]
         {

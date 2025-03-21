@@ -22,7 +22,7 @@ public class LoginUserHandlerTests : AccountsTestsBase
         // arrange
         var EMAIL = "test@mail.com";
         var USERNAME = "testUserName";
-        var PASSWORD = "Passowrd121314s.";
+        var PASSWORD = "Password121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
 
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
@@ -42,7 +42,7 @@ public class LoginUserHandlerTests : AccountsTestsBase
         // arrange
         var EMAIL = "test@mail.com";
         var USERNAME = "testUserName";
-        var PASSWORD = "Passowrd121314s.";
+        var PASSWORD = "Password121314s.";
         var SUCCESS_MESSAGE = "Successfully registered";
 
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);

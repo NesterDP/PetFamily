@@ -14,7 +14,7 @@ using PetFamily.Volunteers.Presentation.Volunteers;
 using PetFamily.Web.ApplicationConfiguration;
 using Serilog;
 
-DotNetEnv.Env.Load("etc/.env");
+var result = DotNetEnv.Env.Load("etc/.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,11 +57,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-app.ApplyMigrations(app.Services);
+app.ApplyMigrations();
 
-var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
-
-await accountsSeeder.SeedAsync();
+await app.SeedAsync();
 
 app.UseExceptionMiddleware();
 

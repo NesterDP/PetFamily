@@ -10,7 +10,7 @@ namespace PetFamily.Accounts.Domain.DataModels;
 public class User : IdentityUser<Guid>
 {
 
-    public List<Role> _roles = [];
+    private List<Role> _roles = [];
     
     public IReadOnlyList<Role>  Roles => _roles;
 
