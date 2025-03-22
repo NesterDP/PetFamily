@@ -2,6 +2,8 @@ using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
+using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
+using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 
 namespace PetFamily.IntegrationTests.SpeciesNS.Heritage;
 public class SpeciesTestsBase : IClassFixture<SpeciesTestsWebFactory>, IAsyncLifetime
@@ -20,8 +22,8 @@ public class SpeciesTestsBase : IClassFixture<SpeciesTestsWebFactory>, IAsyncLif
         Scope = factory.Services.CreateScope();
         VolunteersWriteDbContext = Scope.ServiceProvider.GetRequiredService<WriteDbContext>();
         VolunteersReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
-        SpeciesWriteDbContext = Scope.ServiceProvider.GetRequiredService<Species.Infrastructure.DbContexts.WriteDbContext>();
-        SpeciesReadDbContext = Scope.ServiceProvider.GetRequiredService<Species.Application.IReadDbContext>();
+        SpeciesWriteDbContext = Scope.ServiceProvider.GetRequiredService<SpeciesWriteDbContext>();
+        SpeciesReadDbContext = Scope.ServiceProvider.GetRequiredService<SpeciesIReadDbContext>();
         Fixture = new Fixture();
     }
     

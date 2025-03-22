@@ -21,9 +21,6 @@ public class VolunteerDto
     public string Description { get; set; } = string.Empty;
 
     public int Experience { get; set; } = default;
-    public SocialNetworkDto[] SocialNetworks { get; set; } = [];
-    
-    public TransferDetailDto[] TransferDetails { get; set; } = [];
     
     public PetDto[] Pets { get; set; } = [];
     

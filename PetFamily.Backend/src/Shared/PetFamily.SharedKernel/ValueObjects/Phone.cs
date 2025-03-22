@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.SharedKernel.ValueObjects;
@@ -12,7 +13,7 @@ public record Phone
 
     public static Result<Phone, Error> Create(string phone)
     {
-        if (string.IsNullOrWhiteSpace(phone) || phone.Length > SharedConstants.MAX_PHONE_LENGTH)
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length > DomainConstants.MAX_PHONE_LENGTH)
             return Errors.General.ValueIsInvalid("phone");
         
         const string pattern = @"^\d-\d-\d{3}-\d{2}-\d{2}-\d{2}$";

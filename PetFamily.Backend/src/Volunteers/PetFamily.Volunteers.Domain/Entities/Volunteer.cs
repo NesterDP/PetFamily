@@ -16,23 +16,7 @@ public class Volunteer : Entity<VolunteerId>
     public Experience Experience { get; private set; }
 
     public Phone PhoneNumber { get; private set; }
-
-    private List<SocialNetwork> _socialNetworks = [];
-
-    public IReadOnlyList<SocialNetwork> SocialNetworksList
-    {
-        get => _socialNetworks;
-        private set => _socialNetworks = value.ToList();
-    }
-
-    private List<TransferDetail> _transferDetails = [];
-
-    public IReadOnlyList<TransferDetail> TransferDetailsList
-    {
-        get => _transferDetails;
-        private set => _transferDetails = value.ToList();
-    }
-
+    
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
@@ -56,17 +40,13 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         Experience experience,
-        Phone phoneNumber,
-        IEnumerable<SocialNetwork> socialNetworks,
-        IEnumerable<TransferDetail> transferDetails) : base(id)
+        Phone phoneNumber) : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        SocialNetworksList = socialNetworks.ToList();
-        TransferDetailsList = transferDetails.ToList();
     }
 
     public static Result<Volunteer, Error> Create(
@@ -75,9 +55,7 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         Experience experience,
-        Phone phoneNumber,
-        IEnumerable<SocialNetwork> socialNetworks,
-        IEnumerable<TransferDetail> transferDetails)
+        Phone phoneNumber)
     {
         return new Volunteer(
             id,
@@ -85,9 +63,7 @@ public class Volunteer : Entity<VolunteerId>
             email,
             description,
             experience,
-            phoneNumber,
-            socialNetworks.ToList(),
-            transferDetails.ToList());
+            phoneNumber);
     }
 
     public void UpdateMainInfo(
@@ -103,17 +79,7 @@ public class Volunteer : Entity<VolunteerId>
         Experience = experience;
         PhoneNumber = phoneNumber;
     }
-
-    public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
-    {
-        SocialNetworksList = socialNetworks.ToList();
-    }
-
-    public void UpdateTransferDetails(IEnumerable<TransferDetail> transferDetails)
-    {
-        TransferDetailsList = transferDetails.ToList();
-    }
-
+    
     public void Delete()
     {
         if (_isDeleted == false)

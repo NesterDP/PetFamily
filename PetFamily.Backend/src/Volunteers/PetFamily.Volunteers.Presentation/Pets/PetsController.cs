@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPaginationDapper;
 using PetFamily.Volunteers.Application.Queries.GetPetById;
@@ -9,6 +10,7 @@ namespace PetFamily.Volunteers.Presentation.Pets;
 
 public class PetsController : ApplicationController
 {
+    [Permission("volunteers.GetFilteredPetsWithPagination")]
     [HttpGet]
     public async Task<ActionResult> GetAllPets(
         [FromQuery] GetFilteredPetsWithPaginationRequest request,
@@ -20,6 +22,7 @@ public class PetsController : ApplicationController
         return Ok(result);
     }
     
+    [Permission( "volunteers.GetPetById")]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,
@@ -31,6 +34,7 @@ public class PetsController : ApplicationController
         return Ok(result);
     }
     
+    [Permission("volunteers.GetFilteredPetsWithPaginationDapper")]
     [HttpGet("/dapper")]
     public async Task<ActionResult> GetAllPetsDapper(
         [FromQuery] GetFilteredPetsWithPaginationRequest request,

@@ -4,7 +4,4 @@ using PetFamily.Core.Dto.Volunteer;
 
 namespace PetFamily.Volunteers.Application.Commands.Create;
 
-public record CreateVolunteerCommand(
-    CreateVolunteerDto CreateVolunteerDto,
-    IEnumerable<SocialNetworkDto> SocialNetworksDto,
-    IEnumerable<TransferDetailDto> TransferDetailsDto) : ICommand;
+public record CreateVolunteerCommand(CreateVolunteerDto CreateVolunteerDto) : ICommand;

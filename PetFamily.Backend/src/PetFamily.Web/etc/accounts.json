@@ -1,0 +1,97 @@
+{
+  "Permissions": {
+    "users" : [
+      "users.UpdateSocialNetworks"
+    ],
+    "Volunteers": [
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.Create",
+      "volunteers.Delete",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination"
+    ],
+    "Species": [
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
+    ]
+
+  },
+  "Roles": {
+    "Participant": [
+      "users.UpdateSocialNetworks",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
+    ],
+    "Volunteer": [
+      "users.UpdateSocialNetworks",
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
+    ],
+    "Admin" : [
+      "users.UpdateSocialNetworks",
+      "volunteers.AddPet",
+      "volunteers.ChangePetPosition",
+      "volunteers.Create",
+      "volunteers.Delete",
+      "volunteers.DeletePet",
+      "volunteers.DeletePetPhotos",
+      "volunteers.UpdateMainInfo",
+      "volunteers.UpdatePetInfo",
+      "volunteers.UpdatePetMainPhoto",
+      "volunteers.UpdatePetStatus",
+      "volunteers.UpdateTransferDetails",
+      "volunteers.UploadPhotosToPet",
+      "volunteers.GetFilteredPetsWithPagination",
+      "volunteers.GetFilteredPetsWithPaginationDapper",
+      "volunteers.GetPetById",
+      "volunteers.GetVolunteerById",
+      "volunteers.GetVolunteersWithPagination",
+      "species.AddBreedToSpecies",
+      "species.Create",
+      "species.DeleteBreedById",
+      "species.DeleteSpeciesById",
+      "species.GetBreedsBySpeciesId",
+      "species.GetSpeciesWithPagination"
+    ]
+  }
+}

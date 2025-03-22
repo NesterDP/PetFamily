@@ -8,11 +8,13 @@ using Minio;
 using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
 using PetFamily.Core;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.Files;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
 using PetFamily.Volunteers.Infrastructure.Providers;
+using PetFamily.Volunteers.Infrastructure.TransactionServices;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 using MinioOptions = PetFamily.Volunteers.Infrastructure.Options.MinioOptions;
 
@@ -39,7 +41,7 @@ public static class DependencyInjection
     {
         services.Configure<MinioOptions>(
             configuration.GetSection(MinioOptions.MINIO));
-
+        
         services.AddMinio(options =>
         {
             var minioOptions = configuration.GetSection(MinioOptions.MINIO).Get<MinioOptions>()
@@ -79,7 +81,6 @@ public static class DependencyInjection
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Volunteers);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-        
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         return services;

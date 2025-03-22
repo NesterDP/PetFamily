@@ -2,6 +2,7 @@ using FluentValidation;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
@@ -22,7 +23,7 @@ public class UploadFileDtoValidator : AbstractValidator<UploadFileDto>
     {
         RuleFor(u => u.FileName).NotEmpty().WithError(Errors.General.ValueIsRequired());
         RuleFor(u => u.Content)
-            .Must(c => c.Length < SharedConstants.MAX_FILE_SIZE_IN_BYTES)
+            .Must(c => c.Length < DomainConstants.MAX_FILE_SIZE_IN_BYTES)
             .WithError(Errors.General.ValueIsInvalid("fileSize"));
     }
 }

@@ -55,19 +55,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
 
         var phoneNumberCreateResult = Phone.Create(command.CreateVolunteerDto.PhoneNumber);
 
-        List<SocialNetwork> socialNetworksList = [];
-        foreach (var socialNetwork in command.SocialNetworksDto)
-        {
-            var result = SocialNetwork.Create(socialNetwork.Name, socialNetwork.Link);
-            socialNetworksList.Add(result.Value);
-        }
-
-        List<TransferDetail> transferDetailsList = [];
-        foreach (var transferDetail in command.TransferDetailsDto)
-        {
-            var result = TransferDetail.Create(transferDetail.Name, transferDetail.Description);
-            transferDetailsList.Add(result.Value);
-        }
         
         var volunteer = Volunteer.Create(
             volunteerId,
@@ -75,9 +62,7 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
             emailCreateResult.Value,
             descriptionCreateResult.Value,
             experienceCreateResult.Value,
-            phoneNumberCreateResult.Value,
-            socialNetworksList,
-            transferDetailsList);
+            phoneNumberCreateResult.Value);
 
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

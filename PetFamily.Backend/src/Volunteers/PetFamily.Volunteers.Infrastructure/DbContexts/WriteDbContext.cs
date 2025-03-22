@@ -14,7 +14,6 @@ public class WriteDbContext: DbContext
     }
     
     public DbSet<Volunteer> Volunteers => Set<Volunteer>();
-    //public DbSet<Species> Species => Set<Species>();
     
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,6 +28,8 @@ public class WriteDbContext: DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(WriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Write") ?? false);
+        
+        modelBuilder.HasDefaultSchema("volunteers");
     }
 
     private ILoggerFactory CreateLoggerFactory() =>

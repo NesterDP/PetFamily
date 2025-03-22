@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Species.Application.Queries.GetBreedsBySpeciesId;
 
 namespace PetFamily.Species.Presentation.Breeds;
 
 public class BreedsController : ApplicationController
 {
+    [Permission("species.GetBreedsBySpeciesId")]
     [HttpGet("/species/{id:guid}")]
     public async Task<ActionResult> AllBreedsBySpeciesId(
         [FromRoute] Guid id,

@@ -22,23 +22,9 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     [Fact]
     public async Task GetVolunteerById_returns_info_about_volunteer()
     {
-        var PET_COUNT = 5;
         // arrange
-        List<TransferDetail> transferDetails =
-        [
-            TransferDetail.Create("mir", "for transfers within country").Value,
-            TransferDetail.Create("visa", "for transfers outside of country").Value
-        ];
-        
-        List<SocialNetwork> socialNetworks =
-        [
-            SocialNetwork.Create("vk.com", "my most used social network").Value,
-            SocialNetwork.Create("mail.ru", "my less used social network").Value
-        ];
-        
+        var PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
-        volunteer.UpdateSocialNetworks(socialNetworks);
-        volunteer.UpdateTransferDetails(transferDetails);
         await VolunteersWriteDbContext.SaveChangesAsync();
         var anotherVolunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         var query = new GetVolunteerByIdQuery(volunteer.Id);
@@ -57,16 +43,6 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
         result.Description.Should().Be(volunteer.Description.Value);
         result.Experience.Should().Be(volunteer.Experience.Value);
         result.IsDeleted.Should().Be(volunteer._isDeleted);
-        
-        result.SocialNetworks[0].Name.Should().Be(socialNetworks[0].Name);
-        result.SocialNetworks[0].Link.Should().Be(socialNetworks[0].Link);
-        result.SocialNetworks[1].Name.Should().Be(socialNetworks[1].Name);
-        result.SocialNetworks[1].Link.Should().Be(socialNetworks[1].Link);
-        
-        result.TransferDetails[0].Name.Should().Be(transferDetails[0].Name);
-        result.TransferDetails[0].Description.Should().Be(transferDetails[0].Description);
-        result.TransferDetails[1].Name.Should().Be(transferDetails[1].Name);
-        result.TransferDetails[1].Description.Should().Be(transferDetails[1].Description);
     }
     
     [Fact]

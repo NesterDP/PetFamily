@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Core;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Domain.Entities;
@@ -28,7 +30,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             nb.Property(n => n.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_NAME_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
                 .HasColumnName("name");
         });
 
@@ -36,7 +38,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             db.Property(d => d.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_HIGH_TEXT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_HIGH_TEXT_LENGTH)
                 .HasColumnName("description");
         });
 
@@ -55,7 +57,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             cb.Property(c => c.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_LOW_TEXT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("color");
         });
         
@@ -64,7 +66,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             hb.Property(h => h.Value)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_MEDIUM_TEXT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_MEDIUM_TEXT_LENGTH)
                 .HasColumnName("health_info");
         });
         
@@ -72,17 +74,17 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             ab.Property(a => a.City)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
                 .HasColumnName("city");
             
             ab.Property(a => a.House)
                 .IsRequired()
-                .HasMaxLength(SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
                 .HasColumnName("house");
             
             ab.Property(a => a.Apartment)
                 .IsRequired(false)
-                .HasMaxLength(SharedConstants.MAX_LOGISTIC_UNIT_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_LOGISTIC_UNIT_LENGTH)
                 .HasColumnName("apartment");
         });
         
@@ -104,7 +106,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             pb.Property(p => p.Value)
                 .IsRequired(true)
-                .HasMaxLength(SharedConstants.MAX_PHONE_LENGTH)
+                .HasMaxLength(DomainConstants.MAX_PHONE_LENGTH)
                 .HasColumnName("owner_phone");
         });
         
@@ -144,13 +146,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 transferDetail => new TransferDetailDto(transferDetail.Name, transferDetail.Description),
                 dto => TransferDetail.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
-
-        /*builder.Property(p => p.PhotosList)
-            .HasConversion(
-                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<IReadOnlyList<Photo>>(json, JsonSerializerOptions.Default)!)
-            .HasColumnName("photos")
-            .HasColumnType("jsonb");*/
         
         builder.Property(p => p.PhotosList)
             .CustomJsonCollectionConverter(

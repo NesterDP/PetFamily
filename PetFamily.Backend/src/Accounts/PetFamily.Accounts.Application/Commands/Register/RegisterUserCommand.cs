@@ -1,6 +1,5 @@
+using PetFamily.Core.Abstractions;
+
 namespace PetFamily.Accounts.Application.Commands.Register;
 
-public class RegisterUserCommand
-{
-    
-}
+public record RegisterUserCommand(string Email, string UserName, string Password) : ICommand;

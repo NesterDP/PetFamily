@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -11,7 +13,7 @@ namespace PetFamily.IntegrationTests.General;
 
 public static class DataGenerator
 {
-    private static Volunteer CreateVolunteer(string suffix = "", int exp = 1)
+    public static Volunteer CreateVolunteer(string suffix = "", int exp = 1)
     {
         var volunteerId = VolunteerId.NewVolunteerId();
         var email = Email.Create($"test{suffix}@test.com").Value;
@@ -20,8 +22,6 @@ public static class DataGenerator
         var description = Description.Create($"testDescription{suffix}").Value;
         var experience = Experience.Create(exp).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
-        var socialNetworksList = new List<SocialNetwork>();
-        var transferDetailsList = new List<TransferDetail>();
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -29,9 +29,7 @@ public static class DataGenerator
             email,
             description,
             experience,
-            phoneNumber,
-            socialNetworksList,
-            transferDetailsList);
+            phoneNumber);
 
         return volunteer;
     }
@@ -76,6 +74,31 @@ public static class DataGenerator
             photosList);
 
         return pet;
+    }
+
+    public static User CreateUser(string username, string email, Role role)
+    {
+        var user = User.CreateParticipant(
+            username,
+            email,
+            FullName.Create("DefaultFirstName", "DefaultSecondName", null).Value,
+            role);
+
+        return user.Value;
+    }
+
+    public static async Task<IdentityResult> SeedUserAsync(
+        string username,
+        string email,
+        string password,
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager)
+    {
+        var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
+        var user = CreateUser(username, email, role!);
+        var result = await userManager.CreateAsync(user, password);
+
+        return result;
     }
 
     public static Species.Domain.Entities.Species CreateSpecies(string suffix = "")
