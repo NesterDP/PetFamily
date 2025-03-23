@@ -16,6 +16,7 @@ public class AccountsDbContext
     public DbSet<AdminAccount> AdminAccounts => Set<AdminAccount>();
     public DbSet<ParticipantAccount> ParticipantAccounts => Set<ParticipantAccount>();
     public DbSet<VolunteerAccount> VolunteerAccounts => Set<VolunteerAccount>();
+    public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
 
     public AccountsDbContext(string connectionString)
     {

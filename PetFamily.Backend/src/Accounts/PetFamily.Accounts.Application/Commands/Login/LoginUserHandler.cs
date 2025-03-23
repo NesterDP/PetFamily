@@ -1,13 +1,15 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using PetFamily.Accounts.Application.Abstractions;
+using PetFamily.Accounts.Contracts.Responses;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Accounts.Application.Commands.Login;
 
-public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
+public class LoginUserHandler : ICommandHandler<LoginResponse, LoginUserCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly ILogger<LoginUserHandler> _logger;
@@ -23,7 +25,7 @@ public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
         _tokenProvider = tokenProvider;
     }
 
-    public async Task<Result<string, ErrorList>> HandleAsync(
+    public async Task<Result<LoginResponse, ErrorList>> HandleAsync(
         LoginUserCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -35,11 +37,12 @@ public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
         if (!passwordConfirmed)
             return Errors.General.ValueNotFound("No user with such login data", true).ToErrorList();
 
-        var token =  await _tokenProvider.GenerateAccessToken(user);
+        var accessToken =  await _tokenProvider.GenerateAccessToken(user, cancellationToken);
+        var refreshToken = await _tokenProvider.GenerateRefreshToken(user, accessToken.Jti, cancellationToken);
         
         _logger.LogInformation("User with email = {0} successfully logged in", user.Email);
 
-        return token;
+        return new LoginResponse(accessToken.AccessToken, refreshToken);
         
     }
 }
