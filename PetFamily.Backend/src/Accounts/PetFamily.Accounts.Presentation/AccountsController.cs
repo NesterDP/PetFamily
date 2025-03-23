@@ -35,8 +35,8 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
-        return result.ToResponse();
-        //return Ok(result.Value.AccessToken);
+        //return result.ToResponse();
+        return Ok(result.Value.AccessToken);
     }
     
     [HttpPost("refresh")]
@@ -51,8 +51,10 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
         
         HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
-        HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
-        return result.ToResponse();
-        //return Ok(result.Value.AccessToken);
+        //HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
+        //return result.ToResponse();
+        //return Ok();
+        return Ok(result.Value.AccessToken);
+      
     }
 }

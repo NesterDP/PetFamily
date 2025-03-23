@@ -87,7 +87,7 @@ public static class DataGenerator
         return user.Value;
     }
 
-    public static async Task<IdentityResult> SeedUserAsync(
+    public static async Task<User> SeedUserAsync(
         string username,
         string email,
         string password,
@@ -96,9 +96,9 @@ public static class DataGenerator
     {
         var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
         var user = CreateUser(username, email, role!);
-        var result = await userManager.CreateAsync(user, password);
+        await userManager.CreateAsync(user, password);
 
-        return result;
+        return user;
     }
 
     public static Species.Domain.Entities.Species CreateSpecies(string suffix = "")

@@ -52,7 +52,7 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         
         var userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti).Value;
         if (!Guid.TryParse(userJtiString, out var userJtiGuid))
-            return Errors.General.ValueNotFound("user id").ToErrorList();
+            return Errors.General.ValueNotFound("user jti").ToErrorList();
         
         if (oldRefreshSession.Value.Jti != userJtiGuid)
             return Errors.General.InvalidToken().ToErrorList();
