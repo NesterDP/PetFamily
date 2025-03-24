@@ -95,7 +95,7 @@ public class JwtTokenProvider : ITokenProvider
 
         if (validationResult.IsValid == false)
             return Errors.General.InvalidToken();
-
+        
         return validationResult.ClaimsIdentity.Claims.ToList();
 
     }
