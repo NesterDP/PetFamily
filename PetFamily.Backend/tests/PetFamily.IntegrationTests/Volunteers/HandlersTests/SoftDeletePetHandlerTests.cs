@@ -33,6 +33,6 @@ public class SoftDeletePetHandlerTests : VolunteerTestsBase
         result.Value.Should().NotBeEmpty();
 
         volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
-        volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value)!._isDeleted.Should().BeTrue();
+        volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value)!.IsDeleted.Should().BeTrue();
     }
 }

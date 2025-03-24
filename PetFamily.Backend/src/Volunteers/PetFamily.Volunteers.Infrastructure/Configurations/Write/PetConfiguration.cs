@@ -158,15 +158,20 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasDefaultValue(DateTime.MinValue)
             .HasColumnName("creation_date");
         
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("is_deleted");
-        
         builder.ComplexProperty(p => p.Position, snb =>
         {
             snb.Property(sn => sn.Value)
                 .IsRequired(true)
                 .HasColumnName("position");
         });
+        
+        builder.Property(p => p.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasColumnName("is_deleted");
+        
+        builder.Property(p => p.DeletionDate)
+            .IsRequired(false)
+            .HasColumnName("deletion_date");
     }
 }

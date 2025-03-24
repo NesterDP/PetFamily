@@ -73,7 +73,7 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
         result.HelpStatus.Should().Be(pet.HelpStatus.Value.ToString());
         result.CreationDate.Year.Should().Be(pet.CreationDate.Year);
         result.Position.Should().Be(pet.Position.Value);
-        result.IsDeleted.Should().Be(pet._isDeleted);
+        result.IsDeleted.Should().Be(pet.IsDeleted);
         
         result.TransferDetails[0].Name.Should().Be(transferDetails[0].Name);
         result.TransferDetails[0].Description.Should().Be(transferDetails[0].Description);

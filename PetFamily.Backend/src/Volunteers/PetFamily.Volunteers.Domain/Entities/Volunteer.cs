@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -7,9 +8,8 @@ using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class Volunteer : Entity<VolunteerId>
+public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
-    public bool _isDeleted { get; private set; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Description Description { get; private set; }
@@ -29,8 +29,8 @@ public class Volunteer : Entity<VolunteerId>
     public int PetsUnderMedicalTreatment() => AllOwnedPets
         .Count(p => p.HelpStatus.Value == PetStatus.UnderMedicalTreatment);
 
-    // ef
-    public Volunteer()
+    // ef core
+    private Volunteer(VolunteerId id) : base(id)
     {
     }
 
@@ -80,17 +80,6 @@ public class Volunteer : Entity<VolunteerId>
         PhoneNumber = phoneNumber;
     }
     
-    public void Delete()
-    {
-        if (_isDeleted == false)
-            _isDeleted = true;
-
-        foreach (var pet in _pets)
-        {
-            pet.Delete();
-        }
-    }
-
     public void UpdatePetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
@@ -161,19 +150,7 @@ public class Volunteer : Entity<VolunteerId>
 
         return UnitResult.Success<Error>();
     }
-
-
-    public void Restore()
-    {
-        if (_isDeleted)
-            _isDeleted = false;
-
-        foreach (var pet in _pets)
-        {
-            pet.Restore();
-        }
-    }
-
+    
     public Result<Pet, Error> GetPetById(PetId id)
     {
         var pet = _pets.FirstOrDefault(p => p.Id.Value == id.Value);
@@ -193,22 +170,7 @@ public class Volunteer : Entity<VolunteerId>
         _pets.Add(pet);
         return Result.Success<Error>();
     }
-
-    public void HardDeletePet(Pet pet)
-    {
-        _pets.Remove(pet);
-        foreach (var p in _pets.Where(p => p.Position.Value > pet.Position.Value))
-        {
-            var newPosition = (Position.Create(p.Position.Value - 1).Value);
-            p.SetPosition(newPosition);
-        }
-    }
-
-    public void SoftDeletePet(Pet pet)
-    {
-        pet.Delete();
-    }
-
+    
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
         var currentPosition = pet.Position;
@@ -273,5 +235,40 @@ public class Volunteer : Entity<VolunteerId>
             return lastPosition.Error;
 
         return lastPosition.Value;
+    }
+    
+    public override void Delete()
+    {
+        base.Delete();
+
+        foreach (var pet in _pets)
+        {
+            pet.Delete();
+        }
+    }
+
+    public override void Restore()
+    {
+        base.Restore();
+
+        foreach (var pet in _pets)
+        {
+            pet.Restore();
+        }
+    }
+
+    public void HardDeletePet(Pet pet)
+    {
+        _pets.Remove(pet);
+        foreach (var p in _pets.Where(p => p.Position.Value > pet.Position.Value))
+        {
+            var newPosition = (Position.Create(p.Position.Value - 1).Value);
+            p.SetPosition(newPosition);
+        }
+    }
+
+    public void SoftDeletePet(Pet pet)
+    {
+        pet.Delete();
     }
 }
