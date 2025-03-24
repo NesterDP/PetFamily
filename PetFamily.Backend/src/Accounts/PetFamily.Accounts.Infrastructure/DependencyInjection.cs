@@ -25,6 +25,7 @@ public static class DependencyInjection
 
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
+        services.Configure<RefreshSessionOptions>(configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
 
         services.RegisterIdentity();
 
@@ -49,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<RolePermissionManager>();
         services.AddScoped<AdminAccountManager>();
         services.AddScoped<IParticipantAccountManager, ParticipantAccountManager>();
+        services.AddScoped<IRefreshSessionManager, RefreshSessionManager>();
     }
 
     private static IServiceCollection AddDbContext(

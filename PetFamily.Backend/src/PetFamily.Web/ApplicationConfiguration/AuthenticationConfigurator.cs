@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Core.Options;
+using PetFamily.Framework;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -10,7 +11,6 @@ public static class AuthenticationConfigurator
     public static IServiceCollection ConfigureAuthentication(
         this IServiceCollection services, IConfiguration configuration)
     {
-        
         var jwtOptions = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
                          ?? throw new ApplicationException("Missing JWT configuration");
 
@@ -26,18 +26,7 @@ public static class AuthenticationConfigurator
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Key)),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero
-                };
+                options.TokenValidationParameters = TokenValidationParametersFactory.CreateWithLifeTime(jwtOptions);
             });
         return services;
     }

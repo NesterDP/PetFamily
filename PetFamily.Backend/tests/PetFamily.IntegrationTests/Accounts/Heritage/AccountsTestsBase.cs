@@ -1,6 +1,7 @@
 using AutoFixture;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.DbContexts;
@@ -20,6 +21,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
     protected readonly UserManager<User> UserManager;
     protected readonly RoleManager<Role> RoleManager;
     protected readonly AccountsTestsWebFactory Factory;
+    protected readonly ITokenProvider TokenProvider;
 
     public AccountsTestsBase(AccountsTestsWebFactory factory)
     {
@@ -28,6 +30,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
         UserManager = Scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         AccountsDbContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
+        TokenProvider = Scope.ServiceProvider.GetRequiredService<ITokenProvider>();
         Fixture = new Fixture();
     }
 

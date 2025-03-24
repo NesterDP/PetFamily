@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices.JavaScript;
+
 namespace PetFamily.SharedKernel.CustomErrors;
 
 public static class Errors
@@ -54,6 +56,16 @@ public static class Errors
             var text = propertyName ?? ""; 
             return Error.Validation("value.length.invalid",
                 $"{text} length is invalid. Maximum length is {lessThen}.");
+        }
+
+        public static Error ExpiredToken()
+        {
+            return Error.Validation("token.is.expired", "your token is expired");
+        }
+
+        public static Error InvalidToken()
+        {
+            return Error.Validation("token.is.invalid", "your token is invalid");
         }
     }
 }
