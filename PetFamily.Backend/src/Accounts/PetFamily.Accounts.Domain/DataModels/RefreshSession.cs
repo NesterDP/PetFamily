@@ -10,7 +10,7 @@ public class RefreshSession
 
     public Guid RefreshToken { get; init; }
     
-    public Guid Jti { get; init; } // identifier of access token, navigation
+    public Guid Jti { get; init; } // identifier of access token
 
     public DateTime ExpiresIn { get; init; }
 

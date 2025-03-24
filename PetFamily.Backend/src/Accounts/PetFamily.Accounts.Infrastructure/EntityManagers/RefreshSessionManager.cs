@@ -22,6 +22,7 @@ public class RefreshSessionManager : IRefreshSessionManager
     {
         var refreshSession = await _accountsDbContext.RefreshSessions
             .Include(rs => rs.User)
+            .ThenInclude(u => u.Roles)
             .FirstOrDefaultAsync(rs => rs.RefreshToken == refreshToken, cancellationToken);
         
         if (refreshSession is null)
