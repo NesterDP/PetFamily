@@ -271,4 +271,18 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
     {
         pet.Delete();
     }
+
+    public void DeleteExpiredPets(int lifetimeAfterDeletion)
+    {
+        var petsToDelete = _pets.Where(pet => 
+                pet.DeletionDate != null && 
+                DateTime.UtcNow >= pet.DeletionDate.Value.AddDays(lifetimeAfterDeletion))
+                //DateTime.UtcNow >= pet.DeletionDate.Value.AddMinutes(lifetimeAfterDeletion))
+            .ToList();
+
+        foreach (var pet in petsToDelete)
+        {
+            HardDeletePet(pet);
+        }
+    }
 }

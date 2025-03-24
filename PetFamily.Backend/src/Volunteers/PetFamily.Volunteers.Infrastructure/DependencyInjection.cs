@@ -8,12 +8,13 @@ using Minio;
 using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
 using PetFamily.Core;
+using PetFamily.Core.Options;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
-using PetFamily.Volunteers.Infrastructure.Files;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
 using PetFamily.Volunteers.Infrastructure.Providers;
+using PetFamily.Volunteers.Infrastructure.Services;
 using PetFamily.Volunteers.Infrastructure.TransactionServices;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 using MinioOptions = PetFamily.Volunteers.Infrastructure.Options.MinioOptions;
@@ -32,7 +33,7 @@ public static class DependencyInjection
             .AddTransactionManagement()
             .AddHostedServices()
             .AddMessageQueues()
-            .AddServices();
+            .AddServices(configuration);
         return services;
     }
     
@@ -90,6 +91,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddHostedService<FilesCleanerBackgroundService>();
+        services.AddHostedService<DeleteExpiredEntitiesBackgroundService>();
         return services;
     }
     
@@ -101,9 +103,14 @@ public static class DependencyInjection
     }
     
     private static IServiceCollection AddServices(
-        this IServiceCollection services)
+        this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
+        services.AddScoped<DeleteExpiredEntitiesService>();
+        
+        services.Configure<ExpiredEntitiesDeletionOptions>(
+            configuration.GetSection(ExpiredEntitiesDeletionOptions.EXPIRED_ENTITIES_DELETION));
+        
         return services;
     }
 }
