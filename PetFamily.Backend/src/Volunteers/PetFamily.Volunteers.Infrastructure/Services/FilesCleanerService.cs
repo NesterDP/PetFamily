@@ -5,16 +5,16 @@ using PetFamily.Core.Messaging;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 
-namespace PetFamily.Volunteers.Infrastructure.Files;
+namespace PetFamily.Volunteers.Infrastructure.Services;
 
 public class FilesCleanerService : IFilesCleanerService
 {
-    private readonly ILogger<FilesCleanerBackgroundService> _logger;
+    private readonly ILogger<FilesCleanerService> _logger;
     private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
     private readonly IFilesProvider _filesProvider;
 
     public FilesCleanerService(
-        ILogger<FilesCleanerBackgroundService> logger,
+        ILogger<FilesCleanerService> logger,
         IMessageQueue<IEnumerable<FileInfo>> messageQueue,
         IFilesProvider filesProvider)
     {

@@ -42,7 +42,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
         result.Email.Should().Be(volunteer.Email.Value);
         result.Description.Should().Be(volunteer.Description.Value);
         result.Experience.Should().Be(volunteer.Experience.Value);
-        result.IsDeleted.Should().Be(volunteer._isDeleted);
+        result.IsDeleted.Should().Be(volunteer.IsDeleted);
     }
     
     [Fact]

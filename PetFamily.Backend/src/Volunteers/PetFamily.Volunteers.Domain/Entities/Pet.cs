@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -6,9 +7,8 @@ using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public sealed class Pet : Entity<PetId>
+public sealed class Pet : SoftDeletableEntity<PetId>
 {
-    public bool _isDeleted { get; private set; }
     public Name Name { get; private set; }
     public Description Description { get; private set; }
     public PetClassification PetClassification { get; private set; }
@@ -43,7 +43,7 @@ public sealed class Pet : Entity<PetId>
     public Position Position { get; private set; }
     
 
-    //ef
+    // ef core
     private Pet(PetId id) : base(id) { }
 
     public Pet(
@@ -158,19 +158,7 @@ public sealed class Pet : Entity<PetId>
         updatedPhotosList.Add(mainPhoto.CreateCopy(true));
         _photos = updatedPhotosList;
     }
-
-    public void Delete()
-    {
-        if (_isDeleted == false)
-            _isDeleted = true;
-    }
-
-    public void Restore()
-    {
-        if (_isDeleted)
-            _isDeleted = false;
-    }
-
+    
     public void SetPosition(Position position) => Position = position;
 
     public UnitResult<Error> MoveForward()

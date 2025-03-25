@@ -83,8 +83,13 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.Navigation(s => s.AllOwnedPets).AutoInclude();
 
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
+        builder.Property(p => p.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false)
             .HasColumnName("is_deleted");
+        
+        builder.Property(p => p.DeletionDate)
+            .IsRequired(false)
+            .HasColumnName("deletion_date");
     }
 }
