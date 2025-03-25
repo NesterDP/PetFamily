@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.Accounts.Infrastructure.EntityManagers.ManagersOptions;
@@ -21,7 +22,7 @@ public class AccountsSeederService
     private readonly RoleManager<Role> _roleManager;
     private readonly PermissionManager _permissionManager;
     private readonly RolePermissionManager _rolePermissionManager;
-    private readonly AdminAccountManager _adminAccountManager;
+    private readonly IAccountManager _accountManager;
     private readonly ILogger<AccountsSeederService> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly AdminOptions _adminOptions;
@@ -31,7 +32,7 @@ public class AccountsSeederService
         RoleManager<Role> roleManager,
         PermissionManager permissionManager,
         RolePermissionManager rolePermissionManager,
-        AdminAccountManager adminAccountManager,
+        IAccountManager accountManager,
         IOptions<AdminOptions> adminOptions,
         ILogger<AccountsSeederService> logger,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
@@ -40,7 +41,7 @@ public class AccountsSeederService
         _roleManager = roleManager;
         _permissionManager = permissionManager;
         _rolePermissionManager = rolePermissionManager;
-        _adminAccountManager = adminAccountManager;
+        _accountManager = accountManager;
         _logger = logger;
         _unitOfWork = unitOfWork;
         _adminOptions = adminOptions.Value;
@@ -90,7 +91,7 @@ public class AccountsSeederService
             {
                 var adminAccount = new AdminAccount(adminUser.Value);
         
-                await _adminAccountManager.CreateAdminAccount(adminAccount);
+                await _accountManager.CreateAdminAccount(adminAccount);
                 
                 transaction.Commit();
                 _logger.LogInformation("Successfully seeded admin");

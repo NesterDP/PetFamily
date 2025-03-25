@@ -30,7 +30,7 @@ public static class DependencyInjection
             .AddSeeding()
             .AddTransactionManagement()
             .AddRepositories();
-        
+
         return services;
     }
 
@@ -43,10 +43,9 @@ public static class DependencyInjection
 
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
-        services.AddScoped<AdminAccountManager>();
-        services.AddScoped<IParticipantAccountManager, ParticipantAccountManager>();
+        services.AddScoped<IAccountManager, AccountManager>();
         services.AddScoped<IRefreshSessionManager, RefreshSessionManager>();
-        
+
         return services;
     }
 
@@ -58,25 +57,25 @@ public static class DependencyInjection
             new AccountsDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
         return services;
     }
-    
+
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Accounts);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-        
+
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddRepositories(
         this IServiceCollection services)
     {
         services.AddScoped<IAccountRepository, AccountRepository>();
         return services;
     }
-    
+
     private static IServiceCollection AddSeeding(
         this IServiceCollection services)
     {
@@ -84,17 +83,17 @@ public static class DependencyInjection
         services.AddScoped<AccountsSeederService>();
         return services;
     }
-    
+
     private static IServiceCollection AddConfigurations(
         this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
         services.Configure<RefreshSessionOptions>(configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddProviders(
         this IServiceCollection services)
     {
