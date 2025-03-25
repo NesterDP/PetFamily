@@ -16,7 +16,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
-    private readonly IParticipantAccountManager _participantAccountManager;
+    private readonly IAccountManager _accountManager;
     private readonly ILogger<RegisterUserHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -25,13 +25,13 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
     public RegisterUserHandler(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IParticipantAccountManager participantAccountManager,
+        IAccountManager accountManager,
         ILogger<RegisterUserHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _participantAccountManager = participantAccountManager;
+        _accountManager = accountManager;
         _logger = logger;
         _unitOfWork = unitOfWork;
 
@@ -63,7 +63,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
             {
                 var participantAccount = new ParticipantAccount(participant.Value);
         
-                await _participantAccountManager.CreateParticipantAccount(participantAccount);
+                await _accountManager.CreateParticipantAccount(participantAccount);
                 
                 transaction.Commit();
                 _logger.LogInformation("Successfully created participant with UserName = {0}", command.UserName);

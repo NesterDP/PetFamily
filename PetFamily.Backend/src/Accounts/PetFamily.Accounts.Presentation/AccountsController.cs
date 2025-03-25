@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.Register;
+using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Presentation.Requests;
 using PetFamily.Framework;
@@ -56,5 +57,16 @@ public class AccountsController : ApplicationController
         //return Ok();
         return Ok(result.Value.AccessToken);
       
+    }
+    
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetUserInfoById(
+        [FromRoute] Guid id,
+        [FromServices] GetUserInfoByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserInfoByIdQuery(id);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -92,13 +93,43 @@ public static class DataGenerator
         string email,
         string password,
         UserManager<User> userManager,
-        RoleManager<Role> roleManager)
+        RoleManager<Role> roleManager,
+        IAccountManager accountManager = null)
     {
         var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
         var user = CreateUser(username, email, role!);
         await userManager.CreateAsync(user, password);
-
+        
+        if (accountManager != null)
+            await AddAccountsToUser(user, accountManager);
+        
         return user;
+    }
+
+    public static async Task AddAccountsToUser(
+        User user,
+        IAccountManager accountManager)
+    {
+        foreach (var role in user.Roles)
+        {
+            if (role.Name == ParticipantAccount.PARTICIPANT)
+            {
+                var participantAccount = new ParticipantAccount(user);
+                await accountManager.CreateParticipantAccount(participantAccount);
+            }
+            
+            if (role.Name == VolunteerAccount.VOLUNTEER)
+            {
+                var volunteerAccount = new VolunteerAccount(user);
+                await accountManager.CreateVolunteerAccount(volunteerAccount);
+            }
+            
+            if (role.Name == AdminAccount.ADMIN)
+            {
+                var adminAccount = new AdminAccount(user);
+                await accountManager.CreateAdminAccount(adminAccount);
+            }
+        }
     }
 
     public static Species.Domain.Entities.Species CreateSpecies(string suffix = "")
@@ -140,7 +171,7 @@ public static class DataGenerator
         await dbContext.SaveChangesAsync();
         return volunteer;
     }
-    
+
     public static async Task<List<Volunteer>> SeedVolunteers(WriteDbContext dbContext, int count)
     {
         List<Volunteer> volunteers = [];
@@ -151,6 +182,7 @@ public static class DataGenerator
             await dbContext.SaveChangesAsync();
             volunteers.Add(volunteer);
         }
+
         return volunteers;
     }
 
