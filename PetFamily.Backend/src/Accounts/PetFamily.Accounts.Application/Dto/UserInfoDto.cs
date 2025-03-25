@@ -1,11 +1,12 @@
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Application.Dto;
 
 public class UserInfoDto
 {
-    public FullName FullName { get; set; } 
+    public FullNameDto FullName { get; set; } 
 
     public string Photo { get; set; } = string.Empty;
     
@@ -15,7 +16,7 @@ public class UserInfoDto
     
     public List<RoleDto> Roles { get; set; } = [];
 
-    public List<SocialNetwork> SocialNetworks { get; set; } = [];
+    public List<SocialNetworkDto> SocialNetworks { get; set; } = [];
 
     public ParticipantAccountDto? ParticipantAccount { get; set; }
     

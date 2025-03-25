@@ -2,6 +2,8 @@ using CSharpFunctionalExtensions;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Application.Dto;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Shared;
+using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Accounts.Application.Queries.GetUserById;
@@ -39,7 +41,8 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
         {
             volunteerAccountDto = new VolunteerAccountDto();
             volunteerAccountDto.Experience = result.Value.VolunteerAccount.Experience;
-            volunteerAccountDto.TransferDetails = result.Value.VolunteerAccount.TransferDetails;
+            volunteerAccountDto.TransferDetails = result.Value.VolunteerAccount.TransferDetails
+                .Select(t => new TransferDetailDto(t.Name, t.Description)).ToList();
             volunteerAccountDto.Certificates = result.Value.VolunteerAccount.Certificates;
         }
 
@@ -48,12 +51,16 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
 
         var userInfoDto = new UserInfoDto()
         {
-            FullName = result.Value.FullName,
+            FullName = new FullNameDto(
+                result.Value.FullName.FirstName,
+                result.Value.FullName.LastName,
+                result.Value.FullName.Surname),
             Photo = result.Value.Photo,
             Email = result.Value.Email,
             PhoneNumber = result.Value.PhoneNumber,
             Roles = result.Value.Roles.Select(r => new RoleDto(r.Name)).ToList(),
-            SocialNetworks = result.Value.SocialNetworks,
+            SocialNetworks = result.Value.SocialNetworks
+                .Select(s => new SocialNetworkDto(s.Name, s.Link)).ToList(),
             ParticipantAccount = participantAccountDto,
             VolunteerAccount = volunteerAccountDto,
             AdminAccount = adminAccountDto
