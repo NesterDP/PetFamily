@@ -7,6 +7,7 @@ using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.Accounts.Infrastructure.Providers;
+using PetFamily.Accounts.Infrastructure.Repositories;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Infrastructure.TransactionServices;
 using PetFamily.Core.Abstractions;
@@ -21,25 +22,19 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<ITokenProvider, JwtTokenProvider>();
-
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
-        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
-        services.Configure<RefreshSessionOptions>(configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
-
-        services.RegisterIdentity();
-
-        services.AddDbContext(configuration);
-
-        services.AddSingleton<AccountsSeeder>();
-        services.AddScoped<AccountsSeederService>();
-
-        services.AddTransactionManagement();
-
+        services
+            .AddProviders()
+            .AddConfigurations(configuration)
+            .RegisterIdentity()
+            .AddDbContexts(configuration)
+            .AddSeeding()
+            .AddTransactionManagement()
+            .AddRepositories();
+        
         return services;
     }
 
-    public static void RegisterIdentity(this IServiceCollection services)
+    private static IServiceCollection RegisterIdentity(this IServiceCollection services)
     {
         services
             .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
@@ -51,9 +46,11 @@ public static class DependencyInjection
         services.AddScoped<AdminAccountManager>();
         services.AddScoped<IParticipantAccountManager, ParticipantAccountManager>();
         services.AddScoped<IRefreshSessionManager, RefreshSessionManager>();
+        
+        return services;
     }
 
-    private static IServiceCollection AddDbContext(
+    private static IServiceCollection AddDbContexts(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -70,6 +67,38 @@ public static class DependencyInjection
         
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
+        return services;
+    }
+    
+    private static IServiceCollection AddRepositories(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        return services;
+    }
+    
+    private static IServiceCollection AddSeeding(
+        this IServiceCollection services)
+    {
+        services.AddSingleton<AccountsSeeder>();
+        services.AddScoped<AccountsSeederService>();
+        return services;
+    }
+    
+    private static IServiceCollection AddConfigurations(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
+        services.Configure<RefreshSessionOptions>(configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddProviders(
+        this IServiceCollection services)
+    {
+        services.AddTransient<ITokenProvider, JwtTokenProvider>();
         return services;
     }
 }
