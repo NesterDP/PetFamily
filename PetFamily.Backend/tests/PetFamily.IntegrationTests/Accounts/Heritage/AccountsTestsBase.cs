@@ -20,6 +20,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
     protected readonly Fixture Fixture;
     protected readonly UserManager<User> UserManager;
     protected readonly RoleManager<Role> RoleManager;
+    protected readonly IAccountManager AccountManager;
     protected readonly AccountsTestsWebFactory Factory;
     protected readonly ITokenProvider TokenProvider;
 
@@ -31,6 +32,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
         RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         AccountsDbContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         TokenProvider = Scope.ServiceProvider.GetRequiredService<ITokenProvider>();
+        AccountManager = Scope.ServiceProvider.GetRequiredService<IAccountManager>();
         Fixture = new Fixture();
     }
 
