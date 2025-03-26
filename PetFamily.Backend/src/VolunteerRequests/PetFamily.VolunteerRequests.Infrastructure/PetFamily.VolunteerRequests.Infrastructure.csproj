@@ -18,10 +18,6 @@
 
     <ItemGroup>
       <Folder Include="Configurations\Read\" />
-      <Folder Include="Configurations\Write\" />
-      <Folder Include="DbContexts\" />
-      <Folder Include="Repositories\" />
-      <Folder Include="TransactionServices\" />
     </ItemGroup>
 
 </Project>

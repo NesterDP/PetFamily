@@ -14,6 +14,8 @@ public class VolunteerRequest
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public RejectionComment? RejectionComment { get; private set; }
 
+    private VolunteerRequest() { } // ef core
+    
     public VolunteerRequest(UserId userId, VolunteerInfo volunteerInfo)
     {
         Id = VolunteerRequestId.NewVolunteerRequestId();
