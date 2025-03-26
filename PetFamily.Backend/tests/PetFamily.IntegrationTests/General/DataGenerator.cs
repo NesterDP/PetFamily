@@ -5,10 +5,14 @@ using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
+using PetFamily.VolunteerRequests.Domain.Entities;
+using PetFamily.VolunteerRequests.Domain.ValueObjects;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
+using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
+using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
 
 namespace PetFamily.IntegrationTests.General;
 
@@ -187,7 +191,7 @@ public static class DataGenerator
     }
 
     public static async Task<Species.Domain.Entities.Species> SeedSpecies(
-        Species.Infrastructure.DbContexts.WriteDbContext dbContext)
+        SpeciesWriteDbContext dbContext)
     {
         var species = CreateSpecies();
         dbContext.Species.Add(species);
@@ -197,7 +201,7 @@ public static class DataGenerator
     }
 
     public static async Task<Breed> SeedBreed(
-        Species.Infrastructure.DbContexts.WriteDbContext dbContext,
+        SpeciesWriteDbContext dbContext,
         Guid speciesId)
     {
         var species = await dbContext.Species.FirstOrDefaultAsync(s => s.Id == speciesId);
@@ -224,7 +228,7 @@ public static class DataGenerator
 
     public static async Task<Volunteer> SeedVolunteerWithPets(
         WriteDbContext dbContext,
-        Species.Infrastructure.DbContexts.WriteDbContext speciesDbContext,
+        SpeciesWriteDbContext speciesDbContext,
         int count)
     {
         var species = await SeedSpecies(speciesDbContext);
@@ -235,5 +239,18 @@ public static class DataGenerator
         await dbContext.SaveChangesAsync();
 
         return volunteer;
+    }
+
+    public static async Task<VolunteerRequest> SeedVolunteerRequest(VolunteerRequestsWriteDbContext dbContext)
+    {
+        var DEFAULT_TEXT = "default text";
+        var userId = UserId.NewUserId();
+        var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
+        var request = new VolunteerRequest(userId, volunteerInfo);
+        
+        await dbContext.VolunteerRequests.AddAsync(request);
+        await dbContext.SaveChangesAsync();
+        
+        return request;
     }
 }
