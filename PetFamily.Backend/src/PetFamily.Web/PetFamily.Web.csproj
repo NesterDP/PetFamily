@@ -39,6 +39,11 @@
       <ProjectReference Include="..\Species\PetFamily.Species.Domain\PetFamily.Species.Domain.csproj" />
       <ProjectReference Include="..\Species\PetFamily.Species.Infrastructure\PetFamily.Species.Infrastructure.csproj" />
       <ProjectReference Include="..\Species\PetFamily.Species.Presentation\PetFamily.Species.Presentation.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Application\PetFamily.VolunteerRequests.Application.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Contracts\PetFamily.VolunteerRequests.Contracts.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Domain\PetFamily.VolunteerRequests.Domain.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Infrastructure\PetFamily.VolunteerRequests.Infrastructure.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Presentation\PetFamily.VolunteerRequests.Presentation.csproj" />
       <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Application\PetFamily.Volunteers.Application.csproj" />
       <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Contracts\PetFamily.Volunteers.Contracts.csproj" />
       <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
