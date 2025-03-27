@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Discussions.Application.Abstractions;
+using PetFamily.Discussions.Domain.Entities;
 using PetFamily.Discussions.Infrastructure.DbContexts;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -15,34 +17,34 @@ public class DiscussionsRepository : IDiscussionsRepository
         _context = dbContext;
     }
 
-    /*public async Task<Guid> AddAsync(VolunteerRequest volunteerRequest, CancellationToken cancellationToken = default)
+    public async Task<Guid> AddAsync(Discussion discussion, CancellationToken cancellationToken = default)
     {
-        await _context.VolunteerRequests.AddAsync(volunteerRequest, cancellationToken);
-        return volunteerRequest.Id.Value;
+        await _context.Discussions.AddAsync(discussion, cancellationToken);
+        return discussion.Id.Value;
     }
 
-    public Guid Save(VolunteerRequest volunteerRequest, CancellationToken cancellationToken = default)
+    public Guid Save(Discussion discussion, CancellationToken cancellationToken = default)
     {
-        _context.VolunteerRequests.Attach(volunteerRequest);
-        return volunteerRequest.Id.Value;
+        _context.Discussions.Attach(discussion);
+        return discussion.Id.Value;
+    }
+    
+    public Guid Delete(Discussion discussion, CancellationToken cancellationToken = default)
+    {
+        _context.Discussions.Remove(discussion);
+        return discussion.Id.Value;
     }
 
-
-    public Guid Delete(VolunteerRequest volunteerRequest, CancellationToken cancellationToken = default)
-    {
-        _context.VolunteerRequests.Remove(volunteerRequest);
-        return volunteerRequest.Id.Value;
-    }
-
-    public async Task<Result<VolunteerRequest, Error>> GetByIdAsync(VolunteerRequestId id,
+    public async Task<Result<Discussion, Error>> GetByIdAsync(DiscussionId id,
         CancellationToken cancellationToken = default)
     {
-        var volunteerRequest = await _context.VolunteerRequests
+        var discussion = await _context.Discussions
+            .Include(d => d.Messages)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
-        if (volunteerRequest == null)
+        if (discussion == null)
             return Errors.General.ValueNotFound();
 
-        return volunteerRequest;
-    }*/
+        return discussion;
+    }
 }

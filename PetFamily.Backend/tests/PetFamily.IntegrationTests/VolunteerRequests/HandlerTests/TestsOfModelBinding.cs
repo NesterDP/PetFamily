@@ -37,10 +37,10 @@ public class TestsOfModelBinding : VolunteerRequestsTestsBase
         var REJECTION_TEXT = "rejection text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
-        
         var adminId = AdminId.NewAdminId();
         var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var request = new VolunteerRequest(userId, volunteerInfo);
+        request.SetOnReview(adminId);
         request.SetRevisionRequired(adminId, rejectionComment);
         
 
