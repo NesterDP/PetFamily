@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Discussions.Domain.Entities;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -13,6 +14,7 @@ using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
 using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
+using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 
 namespace PetFamily.IntegrationTests.General;
 
@@ -252,5 +254,20 @@ public static class DataGenerator
         await dbContext.SaveChangesAsync();
         
         return request;
+    }
+    
+    public static async Task<Discussion> SeedDiscussion(DiscussionsWriteDbContext dbContext, int userCount)
+    {
+        var users = new List<UserId>();
+        for (var i = 0; i < userCount; i++)
+            users.Add(UserId.NewUserId());
+        
+        var relationId = RelationId.NewRelationId();
+
+        var result = Discussion.Create(relationId, users);
+        await dbContext.AddAsync(result.Value);
+        await dbContext.SaveChangesAsync();
+        
+        return result.Value;
     }
 }

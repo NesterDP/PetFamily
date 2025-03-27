@@ -37,7 +37,7 @@ public class Discussion
         if (Status.Value == DiscussionStatusEnum.Closed)
             return Errors.General.Conflict("cannot add message to closed discussion");
 
-        if (UserIds.All(u => u != message.UserId))
+        if (!UserIds.Any(u => u == message.UserId))
         {
             return Errors.General.Conflict("user cannot add messages to discussions he doesn't belong to");
         }
