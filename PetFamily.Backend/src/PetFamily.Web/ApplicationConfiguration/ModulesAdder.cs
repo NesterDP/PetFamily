@@ -4,6 +4,9 @@ using PetFamily.Accounts.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
+using PetFamily.VolunteerRequests.Application;
+using PetFamily.VolunteerRequests.Infrastructure;
+using PetFamily.VolunteerRequests.Presentation;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure;
 using PetFamily.Volunteers.Presentation;
@@ -41,11 +44,24 @@ public static class ModulesAdder
         
         return services;
     }
+    
+    public static IServiceCollection AddVolunteerRequestsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddVolunteerRequestsInfrastructure(configuration)
+            .AddVolunteerRequestsApplication()
+            .AddVolunteerRequestsContracts();
+        
+        return services;
+    }
 
     public static void AddModules(this IServiceCollection services, IConfiguration configuration)
     {
         AddAccountsModule(services, configuration);
         AddVolunteersModule(services, configuration);
         AddSpeciesModule(services, configuration);
+        AddVolunteerRequestsModule(services, configuration);
     }
 }

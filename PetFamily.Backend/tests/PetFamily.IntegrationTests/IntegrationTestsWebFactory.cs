@@ -17,6 +17,7 @@ using PetFamily.Web;
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
 using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
+using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
 
 namespace PetFamily.IntegrationTests;
 
@@ -49,6 +50,21 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         // Accounts
         ReconfigureAccountsServices(services);
+        
+        // VolunteerRequests
+        ReconfigureVolunteerRequestsServices(services);
+    }
+    
+    private void ReconfigureVolunteerRequestsServices(IServiceCollection services)
+    {
+        var writeDbContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(VolunteerRequestsWriteDbContext));
+
+        if (writeDbContext is not null)
+            services.Remove(writeDbContext);
+
+        services.AddScoped<VolunteerRequestsWriteDbContext>(_ =>
+            new VolunteerRequestsWriteDbContext(_dbContainer.GetConnectionString()));
     }
 
     private void ReconfigureAccountsServices(IServiceCollection services)
@@ -144,6 +160,11 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         var accountsDbContext = scope.ServiceProvider
             .GetRequiredService<AccountsDbContext>();
         await accountsDbContext.Database.MigrateAsync();
+        
+        // Применияем миграции для VolunteerRequestsDbContext
+        var volunteerRequestsDbContext = scope.ServiceProvider
+            .GetRequiredService<VolunteerRequestsWriteDbContext>();
+        await volunteerRequestsDbContext.Database.MigrateAsync();
 
         // Сидируем аккаунты
         var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();

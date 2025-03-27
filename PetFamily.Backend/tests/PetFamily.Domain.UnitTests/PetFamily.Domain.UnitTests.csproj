@@ -26,6 +26,7 @@
       <ProjectReference Include="..\..\src\Shared\PetFamily.Core\PetFamily.Core.csproj" />
       <ProjectReference Include="..\..\src\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
       <ProjectReference Include="..\..\src\Species\PetFamily.Species.Domain\PetFamily.Species.Domain.csproj" />
+      <ProjectReference Include="..\..\src\VolunteerRequests\PetFamily.VolunteerRequests.Domain\PetFamily.VolunteerRequests.Domain.csproj" />
       <ProjectReference Include="..\..\src\Volunteers\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
     </ItemGroup>
 
