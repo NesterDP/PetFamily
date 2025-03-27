@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PetFamily.Discussions.Domain.Entities;
 
 namespace PetFamily.Discussions.Infrastructure.DbContexts;
 
@@ -11,6 +12,8 @@ public class WriteDbContext: DbContext
     {
         _connectionString = connectionString;
     }
+    
+    public DbSet<Discussion> Discussions => Set<Discussion>();
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

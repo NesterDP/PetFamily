@@ -11,7 +11,7 @@ public class Message
     public UserId UserId { get; private set; }
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public IsEdited IsEdited { get; private set; }
-
+    
     private Message() { } // ef core
 
     public Message(MessageText text, UserId userId)
