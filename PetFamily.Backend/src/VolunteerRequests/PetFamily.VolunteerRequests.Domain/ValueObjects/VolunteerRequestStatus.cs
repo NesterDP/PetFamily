@@ -30,8 +30,8 @@ public record VolunteerRequestStatus
 public enum VolunteerRequestStatusEnum
 {
     Submitted,
-    Rejected,
+    OnReview,
     RevisionRequired,
-    Approved,
-    OnReview
+    Rejected,
+    Approved
 }
