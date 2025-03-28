@@ -18,6 +18,7 @@ using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteD
 using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
+using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 
 namespace PetFamily.IntegrationTests;
 
@@ -39,7 +40,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         builder.ConfigureTestServices(ConfigureDefaultServices);
         LoadSettingFromFiles(builder);
     }
-    
+
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
         // Volunteers
@@ -50,11 +51,26 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         // Accounts
         ReconfigureAccountsServices(services);
-        
+
         // VolunteerRequests
         ReconfigureVolunteerRequestsServices(services);
+
+        // Discussions
+        ReconfigureDiscussionsServices(services);
     }
-    
+
+    private void ReconfigureDiscussionsServices(IServiceCollection services)
+    {
+        var writeDbContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(DiscussionsWriteDbContext));
+
+        if (writeDbContext is not null)
+            services.Remove(writeDbContext);
+
+        services.AddScoped<DiscussionsWriteDbContext>(_ =>
+            new DiscussionsWriteDbContext(_dbContainer.GetConnectionString()));
+    }
+
     private void ReconfigureVolunteerRequestsServices(IServiceCollection services)
     {
         var writeDbContext = services.SingleOrDefault(s =>
@@ -120,22 +136,18 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
             new ReadDbContext(_dbContainer.GetConnectionString()));
     }
-    
+
     private static void LoadSettingFromFiles(IWebHostBuilder builder)
     {
         var workingDirectory = Environment.CurrentDirectory;
         var projectRootDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
         var configPath = Path.Combine(projectRootDirectory, @"etc\testsettings.json");
         // DotNetEnv.Env.Load(configPath);
-        
-        builder.ConfigureAppConfiguration((context, config) =>
-        {
-            config.AddJsonFile(configPath);
-        });
-        
+
+        builder.ConfigureAppConfiguration((context, config) => { config.AddJsonFile(configPath); });
+
         builder.ConfigureServices(services =>
         {
-
             var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
             services.Configure<AdminOptions>(configuration.GetSection("Admin"));
         });
@@ -160,11 +172,16 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         var accountsDbContext = scope.ServiceProvider
             .GetRequiredService<AccountsDbContext>();
         await accountsDbContext.Database.MigrateAsync();
-        
-        // Применияем миграции для VolunteerRequestsDbContext
+
+        // Применяем миграции для VolunteerRequestsDbContext
         var volunteerRequestsDbContext = scope.ServiceProvider
             .GetRequiredService<VolunteerRequestsWriteDbContext>();
         await volunteerRequestsDbContext.Database.MigrateAsync();
+
+        // Применяем миграции для DiscussionsDbContext
+        var discussionsDbContext = scope.ServiceProvider
+            .GetRequiredService<DiscussionsWriteDbContext>();
+        await discussionsDbContext.Database.MigrateAsync();
 
         // Сидируем аккаунты
         var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();

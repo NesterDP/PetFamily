@@ -1,6 +1,9 @@
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Presentation;
+using PetFamily.Discussions.Application;
+using PetFamily.Discussions.Infrastructure;
+using PetFamily.Discussions.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
@@ -56,6 +59,18 @@ public static class ModulesAdder
         
         return services;
     }
+    
+    public static IServiceCollection AddDiscussionsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddDiscussionsInfrastructure(configuration)
+            .AddDiscussionsApplication()
+            .AddDiscussionsContracts();
+        
+        return services;
+    }
 
     public static void AddModules(this IServiceCollection services, IConfiguration configuration)
     {
@@ -63,5 +78,6 @@ public static class ModulesAdder
         AddVolunteersModule(services, configuration);
         AddSpeciesModule(services, configuration);
         AddVolunteerRequestsModule(services, configuration);
+        AddDiscussionsModule(services, configuration);
     }
 }

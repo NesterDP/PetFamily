@@ -17,6 +17,11 @@ public static class Errors
             var text = propertyName ?? "value";
             return Error.Validation("value.is.invalid", $" {text} is invalid");
         }
+        
+        public static Error ValueIsInvalid(string message, string propertyName)
+        {
+            return Error.Validation("value.is.invalid", $" {propertyName} is invalid, {message}");
+        }
 
         public static Error ValueNotFound(Guid? id = null)
         {

@@ -17,8 +17,8 @@ public class VolunteerRequestId : ValueObject, IComparable<VolunteerRequestId>
         yield return Value;
     }
     
-    public static implicit operator VolunteerRequestId(Guid VolunteerRequestId) => new (VolunteerRequestId);
-    public static implicit operator Guid(VolunteerRequestId VolunteerRequestId) => VolunteerRequestId.Value;
+    public static implicit operator VolunteerRequestId(Guid volunteerRequestId) => new (volunteerRequestId);
+    public static implicit operator Guid(VolunteerRequestId volunteerRequestId) => volunteerRequestId.Value;
 
     public int CompareTo(VolunteerRequestId? other)
     {

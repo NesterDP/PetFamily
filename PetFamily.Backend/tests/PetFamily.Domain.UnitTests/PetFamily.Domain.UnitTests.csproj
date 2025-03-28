@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Discussions\PetFamily.Discussions.Domain\PetFamily.Discussions.Domain.csproj" />
       <ProjectReference Include="..\..\src\Shared\PetFamily.Core\PetFamily.Core.csproj" />
       <ProjectReference Include="..\..\src\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
       <ProjectReference Include="..\..\src\Species\PetFamily.Species.Domain\PetFamily.Species.Domain.csproj" />

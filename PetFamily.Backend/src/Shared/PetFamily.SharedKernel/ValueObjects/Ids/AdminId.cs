@@ -17,8 +17,8 @@ public class AdminId : ValueObject, IComparable<AdminId>
         yield return Value;
     }
     
-    public static implicit operator AdminId(Guid AdminId) => new (AdminId);
-    public static implicit operator Guid(AdminId AdminId) => AdminId.Value;
+    public static implicit operator AdminId(Guid adminId) => new (adminId);
+    public static implicit operator Guid(AdminId adminId) => adminId.Value;
 
     public int CompareTo(AdminId? other)
     {
