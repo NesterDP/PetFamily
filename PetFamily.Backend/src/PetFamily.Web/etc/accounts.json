@@ -5,7 +5,8 @@
     ],
     "VolunteerRequests" : [
       "volunteerRequests.CreateRequest",
-      "volunteerRequests.TakeRequestOnReview"
+      "volunteerRequests.TakeRequestOnReview",
+      "volunteerRequests.RequireRevision"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -97,7 +98,8 @@
       "species.DeleteSpeciesById",
       "species.GetBreedsBySpeciesId",
       "species.GetSpeciesWithPagination",
-      "volunteerRequests.TakeRequestOnReview"
+      "volunteerRequests.TakeRequestOnReview",
+      "volunteerRequests.RequireRevision"
     ]
   }
 }

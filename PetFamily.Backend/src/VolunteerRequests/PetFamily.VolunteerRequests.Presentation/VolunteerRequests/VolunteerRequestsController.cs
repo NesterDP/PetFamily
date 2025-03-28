@@ -3,6 +3,7 @@ using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
+using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 
@@ -28,13 +29,26 @@ public class VolunteerRequestsController : ApplicationController
     }
 
     [Permission("volunteerRequests.TakeRequestOnReview")]
-    [HttpPost("{id:guid}")]
+    [HttpPut("{id:guid}/set-on-review")]
     public async Task<ActionResult<Guid>> TakeRequestOnReview(
         [FromRoute] Guid id,
         [FromServices] TakeRequestOnReviewHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new TakeRequestOnReviewCommand(id, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("volunteerRequests.RequireRevision")]
+    [HttpPut("{id:guid}/require-revision")]
+    public async Task<ActionResult<Guid>> RequireRevision(
+        [FromRoute] Guid id,
+        [FromBody] RequireRevisionRequest request,
+        [FromServices] RequireRevisionHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
