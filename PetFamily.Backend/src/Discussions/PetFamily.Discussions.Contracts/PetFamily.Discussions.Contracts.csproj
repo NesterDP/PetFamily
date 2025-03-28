@@ -11,8 +11,4 @@
       <ProjectReference Include="..\..\Shared\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Requests\" />
-    </ItemGroup>
-
 </Project>

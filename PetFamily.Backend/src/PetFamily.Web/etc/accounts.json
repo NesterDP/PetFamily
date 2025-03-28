@@ -4,7 +4,8 @@
       "users.UpdateSocialNetworks"
     ],
     "VolunteerRequests" : [
-      "volunteerRequests.CreateRequest"
+      "volunteerRequests.CreateRequest",
+      "volunteerRequests.TakeRequestOnReview"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -95,7 +96,8 @@
       "species.DeleteBreedById",
       "species.DeleteSpeciesById",
       "species.GetBreedsBySpeciesId",
-      "species.GetSpeciesWithPagination"
+      "species.GetSpeciesWithPagination",
+      "volunteerRequests.TakeRequestOnReview"
     ]
   }
 }
