@@ -41,7 +41,7 @@ public class VolunteerRequestsTests
         var request = new VolunteerRequest(userId, volunteerInfo);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -60,7 +60,7 @@ public class VolunteerRequestsTests
         request.SetOnReview(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -83,7 +83,7 @@ public class VolunteerRequestsTests
         request.SetRevisionRequired(adminId, rejectionComment);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -106,7 +106,7 @@ public class VolunteerRequestsTests
         request.SetRejected(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -126,7 +126,7 @@ public class VolunteerRequestsTests
         request.SetApproved(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();

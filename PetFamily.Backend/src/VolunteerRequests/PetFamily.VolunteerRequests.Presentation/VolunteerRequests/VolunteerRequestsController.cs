@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel.Constants;
+using PetFamily.VolunteerRequests.Application.Commands.AmendRequest;
 using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
@@ -46,6 +47,19 @@ public class VolunteerRequestsController : ApplicationController
         [FromRoute] Guid id,
         [FromBody] RequireRevisionRequest request,
         [FromServices] RequireRevisionHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("volunteerRequests.AmendRequest")]
+    [HttpPut("{id:guid}/amend-request")]
+    public async Task<ActionResult<Guid>> AmendRequest(
+        [FromRoute] Guid id,
+        [FromBody] AmendRequestRequest request,
+        [FromServices] AmendRequestHandler handler,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(id, GetUserId().Value);

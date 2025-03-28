@@ -16,9 +16,7 @@ public class VolunteerRequest
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public RejectionComment? RejectionComment { get; private set; }
 
-    private VolunteerRequest()
-    {
-    } // ef core
+    private VolunteerRequest() { } // ef core
 
     public VolunteerRequest(UserId userId, VolunteerInfo volunteerInfo)
     {
@@ -28,7 +26,7 @@ public class VolunteerRequest
         VolunteerInfo = volunteerInfo;
     }
 
-    public UnitResult<Error> SetSubmitted()
+    public UnitResult<Error> SetSubmitted(VolunteerInfo volunteerInfo)
     {
         // при создании заявки (через конструктор) её статус по умолчанию всегда submitted
         // а вот установить этот статус методом можно только тогда, когда её текущий статус - RevisionRequired
@@ -38,6 +36,7 @@ public class VolunteerRequest
         }
 
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
+        VolunteerInfo = volunteerInfo;
 
         return UnitResult.Success<Error>();
     }

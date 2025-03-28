@@ -6,7 +6,8 @@
     "VolunteerRequests" : [
       "volunteerRequests.CreateRequest",
       "volunteerRequests.TakeRequestOnReview",
-      "volunteerRequests.RequireRevision"
+      "volunteerRequests.RequireRevision",
+      "volunteerRequests.AmendRequest"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -47,7 +48,8 @@
       "volunteers.GetVolunteersWithPagination",
       "species.GetBreedsBySpeciesId",
       "species.GetSpeciesWithPagination",
-      "volunteerRequests.CreateRequest"
+      "volunteerRequests.CreateRequest",
+      "volunteerRequests.AmendRequest"
     ],
     "Volunteer": [
       "users.UpdateSocialNetworks",
