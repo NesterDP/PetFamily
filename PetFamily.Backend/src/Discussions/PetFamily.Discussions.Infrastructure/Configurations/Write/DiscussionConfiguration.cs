@@ -32,9 +32,7 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
         {
             sb.Property(s => s.Value)
                 .IsRequired()
-                .HasConversion(
-                    status => (int)status,
-                    status => (DiscussionStatusEnum)status)
+                .HasConversion<string>()
                 .HasColumnName("status");
         });
 

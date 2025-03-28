@@ -36,11 +36,25 @@ public class VolunteerRequestsRepository : IVolunteerRequestsRepository
         return volunteerRequest.Id.Value;
     }
 
-    public async Task<Result<VolunteerRequest, Error>> GetByIdAsync(VolunteerRequestId id,
+    public async Task<Result<VolunteerRequest, Error>> GetByIdAsync(
+        VolunteerRequestId id,
         CancellationToken cancellationToken = default)
     {
         var volunteerRequest = await _context.VolunteerRequests
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+
+        if (volunteerRequest == null)
+            return Errors.General.ValueNotFound();
+
+        return volunteerRequest;
+    }
+
+    public async Task<Result<VolunteerRequest, Error>> GetByUserIdAsync(
+        UserId userId,
+        CancellationToken cancellationToken = default)
+    {
+        var volunteerRequest = await _context.VolunteerRequests
+            .FirstOrDefaultAsync(v => v.UserId == userId, cancellationToken);
 
         if (volunteerRequest == null)
             return Errors.General.ValueNotFound();

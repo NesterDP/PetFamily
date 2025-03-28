@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Discussions.Domain.Entities;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -102,7 +103,7 @@ public static class DataGenerator
         RoleManager<Role> roleManager,
         IAccountManager accountManager = null)
     {
-        var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
+        var role = await roleManager.FindByNameAsync(DomainConstants.PARTICIPANT);
         var user = CreateUser(username, email, role!);
         await userManager.CreateAsync(user, password);
         
@@ -118,19 +119,19 @@ public static class DataGenerator
     {
         foreach (var role in user.Roles)
         {
-            if (role.Name == ParticipantAccount.PARTICIPANT)
+            if (role.Name == DomainConstants.PARTICIPANT)
             {
                 var participantAccount = new ParticipantAccount(user);
                 await accountManager.CreateParticipantAccount(participantAccount);
             }
             
-            if (role.Name == VolunteerAccount.VOLUNTEER)
+            if (role.Name == DomainConstants.VOLUNTEER)
             {
                 var volunteerAccount = new VolunteerAccount(user);
                 await accountManager.CreateVolunteerAccount(volunteerAccount);
             }
             
-            if (role.Name == AdminAccount.ADMIN)
+            if (role.Name == DomainConstants.ADMIN)
             {
                 var adminAccount = new AdminAccount(user);
                 await accountManager.CreateAdminAccount(adminAccount);

@@ -46,9 +46,7 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
         {
             sb.Property(s => s.Value)
                 .IsRequired()
-                .HasConversion(
-                    status => (int)status,
-                    status => (VolunteerRequestStatusEnum)status)
+                .HasConversion<string>()
                 .HasColumnName("status");
         });
 

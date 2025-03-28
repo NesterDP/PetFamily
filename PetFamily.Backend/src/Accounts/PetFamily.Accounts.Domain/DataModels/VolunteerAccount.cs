@@ -6,8 +6,6 @@ namespace PetFamily.Accounts.Domain.DataModels;
 
 public class VolunteerAccount
 {
-    public const string VOLUNTEER = "Volunteer";
-    
     public Guid Id { get; set; }
 
     public int Experience { get; set; } = 0;
