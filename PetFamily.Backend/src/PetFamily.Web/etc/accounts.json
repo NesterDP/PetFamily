@@ -10,7 +10,8 @@
       "volunteerRequests.AmendRequest",
       "volunteerRequests.ApproveRequest",
       "volunteerRequests.RejectRequest",
-      "volunteerRequests.GetUnhandledRequests"
+      "volunteerRequests.GetUnhandledRequests",
+      "volunteerRequests.GetHandledRequestsByAdminId"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -107,7 +108,8 @@
       "volunteerRequests.RequireRevision",
       "volunteerRequests.ApproveRequest",
       "volunteerRequests.RejectRequest",
-      "volunteerRequests.GetUnhandledRequests"
+      "volunteerRequests.GetUnhandledRequests",
+      "volunteerRequests.GetHandledRequestsByAdminId"
     ]
   }
 }

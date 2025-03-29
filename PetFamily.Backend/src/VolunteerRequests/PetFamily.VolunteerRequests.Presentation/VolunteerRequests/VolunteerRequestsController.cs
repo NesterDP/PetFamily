@@ -8,6 +8,7 @@ using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
+using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
 using PetFamily.VolunteerRequests.Application.Queries.GetUnhandledRequests;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 
@@ -102,6 +103,18 @@ public class VolunteerRequestsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+    
+    [Permission( "volunteerRequests.GetHandledRequestsByAdminId")]
+    [HttpGet("get-handled-requests")]
+    public async Task<ActionResult<Guid>> GetHandledRequestsByAdminId(
+        [FromQuery] GetHandledRequestsByAdminIdRequest request,
+        [FromServices] GetHandledRequestsByAdminIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(GetUserId().Value);
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
