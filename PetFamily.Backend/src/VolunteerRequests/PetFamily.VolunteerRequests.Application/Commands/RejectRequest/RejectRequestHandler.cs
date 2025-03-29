@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
+using PetFamily.Discussions.Contracts;
+using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -18,18 +20,21 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
     private readonly ILogger<RejectRequestHandler> _logger;
     private readonly IValidator<RejectRequestCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICloseDiscussionContract _discussionContract;
 
     public RejectRequestHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository,
         ILogger<RejectRequestHandler> logger,
         IValidator<RejectRequestCommand> validator,
         [FromKeyedServices(UnitOfWorkSelector.VolunteerRequests)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICloseDiscussionContract discussionContract)
     {
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _logger = logger;
         _validator = validator;
         _unitOfWork = unitOfWork;
+        _discussionContract = discussionContract;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -53,6 +58,11 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         var result = request.Value.SetRejected(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
+        
+        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id);
+        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
+        if (discussionResult.IsFailure)
+            return discussionResult.Error.ToErrorList();
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

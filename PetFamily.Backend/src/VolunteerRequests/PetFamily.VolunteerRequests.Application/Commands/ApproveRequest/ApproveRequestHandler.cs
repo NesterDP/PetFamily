@@ -6,6 +6,8 @@ using PetFamily.Accounts.Contracts;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
+using PetFamily.Discussions.Contracts;
+using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -20,7 +22,8 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
     private readonly ILogger<ApproveRequestHandler> _logger;
     private readonly IValidator<ApproveRequestCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ICreateVolunteerAccountContract _contract;
+    private readonly ICreateVolunteerAccountContract _accountContract;
+    private readonly ICloseDiscussionContract _discussionContract;
 
     public ApproveRequestHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository,
@@ -28,13 +31,15 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         IValidator<ApproveRequestCommand> validator,
         [FromKeyedServices(UnitOfWorkSelector.VolunteerRequests)]
         IUnitOfWork unitOfWork,
-        ICreateVolunteerAccountContract contract)
+        ICreateVolunteerAccountContract accountContract,
+        ICloseDiscussionContract discussionContract)
     {
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _logger = logger;
         _validator = validator;
         _unitOfWork = unitOfWork;
-        _contract = contract;
+        _accountContract = accountContract;
+        _discussionContract = discussionContract;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -60,9 +65,14 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
             return result.Error.ToErrorList();
 
         var createVolunteerAccountRequest = new CreateVolunteerAccountRequest(request.Value.UserId);
-        var accountResult = await _contract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
+        var accountResult = await _accountContract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
         if (accountResult.IsFailure)
             return accountResult.Error.ToErrorList();
+
+        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id);
+        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
+        if (discussionResult.IsFailure)
+            return discussionResult.Error.ToErrorList();
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
