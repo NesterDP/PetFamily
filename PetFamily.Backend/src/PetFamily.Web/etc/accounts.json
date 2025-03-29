@@ -11,7 +11,8 @@
       "volunteerRequests.ApproveRequest",
       "volunteerRequests.RejectRequest",
       "volunteerRequests.GetUnhandledRequests",
-      "volunteerRequests.GetHandledRequestsByAdminId"
+      "volunteerRequests.GetHandledRequestsByAdminId",
+      "volunteerRequests.GetRequestsByUserId"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -53,7 +54,8 @@
       "species.GetBreedsBySpeciesId",
       "species.GetSpeciesWithPagination",
       "volunteerRequests.CreateRequest",
-      "volunteerRequests.AmendRequest"
+      "volunteerRequests.AmendRequest",
+      "volunteerRequests.GetRequestsByUserId"
     ],
     "Volunteer": [
       "users.UpdateSocialNetworks",

@@ -20,12 +20,12 @@ public class GetHandledRequestsByAdminIdHandler
         GetHandledRequestsByAdminIdQuery query,
         CancellationToken cancellationToken)
     {
-        var volunteersQuery = _readDbContext.VolunteerRequests;
+        var volunteerRequestsQuery = _readDbContext.VolunteerRequests;
 
-        volunteersQuery = volunteersQuery.Where(v =>
+        volunteerRequestsQuery = volunteerRequestsQuery.Where(v =>
             v.AdminId == query.AdminId &&
             v.Status == query.Status);
 
-        return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
+        return await volunteerRequestsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }
 }

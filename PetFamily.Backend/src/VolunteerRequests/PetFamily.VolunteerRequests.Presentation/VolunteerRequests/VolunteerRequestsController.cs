@@ -9,6 +9,7 @@ using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
+using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForUser;
 using PetFamily.VolunteerRequests.Application.Queries.GetUnhandledRequests;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 
@@ -96,7 +97,7 @@ public class VolunteerRequestsController : ApplicationController
     }
 
     [Permission("volunteerRequests.GetUnhandledRequests")]
-    [HttpGet("get-unhandled-requests")]
+    [HttpGet("unhandled-requests")]
     public async Task<ActionResult<Guid>> GetUnhandledRequests(
         [FromQuery] GetUnhandledRequestsRequest request,
         [FromServices] GetUnhandledRequestsHandler handler,
@@ -106,12 +107,24 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-    
-    [Permission( "volunteerRequests.GetHandledRequestsByAdminId")]
-    [HttpGet("get-handled-requests")]
+
+    [Permission("volunteerRequests.GetHandledRequestsByAdminId")]
+    [HttpGet("handled-requests")]
     public async Task<ActionResult<Guid>> GetHandledRequestsByAdminId(
         [FromQuery] GetHandledRequestsByAdminIdRequest request,
         [FromServices] GetHandledRequestsByAdminIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(GetUserId().Value);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+
+    [Permission("volunteerRequests.GetRequestsByUserId")]
+    [HttpGet("requests-by-user")]
+    public async Task<ActionResult<Guid>> GetRequestsByUserId(
+        [FromQuery] GetRequestsByUserIdRequest request,
+        [FromServices] GetRequestsByUserIdHandler handler,
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery(GetUserId().Value);
