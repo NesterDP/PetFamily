@@ -8,7 +8,8 @@
       "volunteerRequests.TakeRequestOnReview",
       "volunteerRequests.RequireRevision",
       "volunteerRequests.AmendRequest",
-      "volunteerRequests.ApproveRequest"
+      "volunteerRequests.ApproveRequest",
+      "volunteerRequests.RejectRequest"
     ],
     "Volunteers": [
       "volunteers.AddPet",
@@ -103,7 +104,8 @@
       "species.GetSpeciesWithPagination",
       "volunteerRequests.TakeRequestOnReview",
       "volunteerRequests.RequireRevision",
-      "volunteerRequests.ApproveRequest"
+      "volunteerRequests.ApproveRequest",
+      "volunteerRequests.RejectRequest"
     ]
   }
 }

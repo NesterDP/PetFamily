@@ -15,7 +15,9 @@ public class VolunteerRequest
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public RejectionComment? RejectionComment { get; private set; }
-
+    
+    public DateTime? RejectedAt { get; private set; }
+    
     private VolunteerRequest() { } // ef core
 
     public VolunteerRequest(UserId userId, VolunteerInfo volunteerInfo)
@@ -80,6 +82,7 @@ public class VolunteerRequest
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Rejected).Value;
+        RejectedAt = DateTime.UtcNow;
 
         return UnitResult.Success<Error>();
     }

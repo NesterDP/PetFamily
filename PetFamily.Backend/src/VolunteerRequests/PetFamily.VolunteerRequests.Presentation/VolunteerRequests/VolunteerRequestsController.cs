@@ -5,6 +5,7 @@ using PetFamily.SharedKernel.Constants;
 using PetFamily.VolunteerRequests.Application.Commands.AmendRequest;
 using PetFamily.VolunteerRequests.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
+using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
@@ -76,6 +77,18 @@ public class VolunteerRequestsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new ApproveRequestCommand(id, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("volunteerRequests.RejectRequest")]
+    [HttpPut("{id:guid}/reject-request")]
+    public async Task<ActionResult<Guid>> RejectRequest(
+        [FromRoute] Guid id,
+        [FromServices] RejectRequestHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RejectRequestCommand(id, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
