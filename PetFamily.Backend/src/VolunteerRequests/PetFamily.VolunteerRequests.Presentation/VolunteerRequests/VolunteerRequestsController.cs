@@ -8,6 +8,7 @@ using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
+using PetFamily.VolunteerRequests.Application.Queries.GetUnhandledRequests;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 
 namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests;
@@ -42,7 +43,7 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteerRequests.RequireRevision")]
     [HttpPut("{id:guid}/require-revision")]
     public async Task<ActionResult<Guid>> RequireRevision(
@@ -55,7 +56,7 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteerRequests.AmendRequest")]
     [HttpPut("{id:guid}/amend-request")]
     public async Task<ActionResult<Guid>> AmendRequest(
@@ -68,7 +69,7 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteerRequests.ApproveRequest")]
     [HttpPut("{id:guid}/approve-request")]
     public async Task<ActionResult<Guid>> ApproveRequest(
@@ -80,7 +81,7 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteerRequests.RejectRequest")]
     [HttpPut("{id:guid}/reject-request")]
     public async Task<ActionResult<Guid>> RejectRequest(
@@ -91,5 +92,17 @@ public class VolunteerRequestsController : ApplicationController
         var command = new RejectRequestCommand(id, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+
+    [Permission("volunteerRequests.GetUnhandledRequests")]
+    [HttpGet("get-unhandled-requests")]
+    public async Task<ActionResult<Guid>> GetUnhandledRequests(
+        [FromQuery] GetUnhandledRequestsRequest request,
+        [FromServices] GetUnhandledRequestsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
     }
 }
