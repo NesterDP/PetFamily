@@ -4,7 +4,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 using PetFamily.VolunteerRequests.Application.Abstractions;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetHandledRequestsByAdminId;
 
 public class GetHandledRequestsByAdminIdHandler
     : IQueryHandler<PagedList<VolunteerRequestDto>, GetHandledRequestsByAdminIdQuery>

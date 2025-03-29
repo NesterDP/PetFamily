@@ -1,7 +1,6 @@
 using PetFamily.Core.Abstractions;
-using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsForUser;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsByUserId;
 
 public record GetRequestsByUserIdQuery : IQuery
 {

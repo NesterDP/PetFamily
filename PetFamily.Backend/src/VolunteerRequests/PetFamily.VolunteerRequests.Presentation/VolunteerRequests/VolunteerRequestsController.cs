@@ -8,8 +8,8 @@ using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Application.Commands.RequireRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
-using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
-using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForUser;
+using PetFamily.VolunteerRequests.Application.Queries.GetHandledRequestsByAdminId;
+using PetFamily.VolunteerRequests.Application.Queries.GetRequestsByUserId;
 using PetFamily.VolunteerRequests.Application.Queries.GetUnhandledRequests;
 using PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 

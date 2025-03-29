@@ -1,4 +1,4 @@
-using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForUser;
+using PetFamily.VolunteerRequests.Application.Queries.GetRequestsByUserId;
 
 namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 

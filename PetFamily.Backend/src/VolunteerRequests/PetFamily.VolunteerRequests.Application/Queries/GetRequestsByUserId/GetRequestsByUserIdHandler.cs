@@ -4,7 +4,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 using PetFamily.VolunteerRequests.Application.Abstractions;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsForUser;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsByUserId;
 
 public class GetRequestsByUserIdHandler
     : IQueryHandler<PagedList<VolunteerRequestDto>, GetRequestsByUserIdQuery>

@@ -1,4 +1,4 @@
-using PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
+using PetFamily.VolunteerRequests.Application.Queries.GetHandledRequestsByAdminId;
 
 namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 

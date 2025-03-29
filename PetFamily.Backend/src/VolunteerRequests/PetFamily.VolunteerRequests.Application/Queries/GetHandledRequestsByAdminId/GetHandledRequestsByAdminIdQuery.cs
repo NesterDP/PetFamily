@@ -1,7 +1,7 @@
 using PetFamily.Core.Abstractions;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetRequestsForAdmin;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetHandledRequestsByAdminId;
 
 public record GetHandledRequestsByAdminIdQuery : IQuery
 {
