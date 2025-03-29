@@ -95,6 +95,15 @@ public static class DataGenerator
         return user.Value;
     }
 
+    public static VolunteerRequest CreateVolunteerRequest(string testInfo = "test info")
+    {
+        var userId = UserId.NewUserId();
+        var volunteerInfo = VolunteerInfo.Create(testInfo).Value;
+        var request = new VolunteerRequest(userId, volunteerInfo);
+
+        return request;
+    }
+
     public static async Task<User> SeedUserAsync(
         string username,
         string email,
@@ -106,10 +115,10 @@ public static class DataGenerator
         var role = await roleManager.FindByNameAsync(DomainConstants.PARTICIPANT);
         var user = CreateUser(username, email, role!);
         await userManager.CreateAsync(user, password);
-        
+
         if (accountManager != null)
             await AddAccountsToUser(user, accountManager);
-        
+
         return user;
     }
 
@@ -124,13 +133,13 @@ public static class DataGenerator
                 var participantAccount = new ParticipantAccount(user);
                 await accountManager.CreateParticipantAccount(participantAccount);
             }
-            
+
             if (role.Name == DomainConstants.VOLUNTEER)
             {
                 var volunteerAccount = new VolunteerAccount(user);
                 await accountManager.CreateVolunteerAccount(volunteerAccount);
             }
-            
+
             if (role.Name == DomainConstants.ADMIN)
             {
                 var adminAccount = new AdminAccount(user);
@@ -244,31 +253,45 @@ public static class DataGenerator
         return volunteer;
     }
 
-    public static async Task<VolunteerRequest> SeedVolunteerRequest(VolunteerRequestsWriteDbContext dbContext)
+    public static async Task<VolunteerRequest> SeedVolunteerRequest(
+        VolunteerRequestsWriteDbContext dbContext, Guid? optionalId = null)
     {
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
+        
+        if (optionalId.HasValue)
+            userId = optionalId.Value;
+        
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
-        
+
         await dbContext.VolunteerRequests.AddAsync(request);
         await dbContext.SaveChangesAsync();
-        
+
         return request;
     }
-    
+
+    public static async Task<VolunteerRequest> SeedVolunteerRequest(
+        VolunteerRequestsWriteDbContext dbContext,
+        VolunteerRequest volunteerRequest)
+    {
+        dbContext.VolunteerRequests.Add(volunteerRequest);
+        await dbContext.SaveChangesAsync();
+        return volunteerRequest;
+    }
+
     public static async Task<Discussion> SeedDiscussion(DiscussionsWriteDbContext dbContext, int userCount)
     {
         var users = new List<UserId>();
         for (var i = 0; i < userCount; i++)
             users.Add(UserId.NewUserId());
-        
+
         var relationId = RelationId.NewRelationId();
 
         var result = Discussion.Create(relationId, users);
         await dbContext.AddAsync(result.Value);
         await dbContext.SaveChangesAsync();
-        
+
         return result.Value;
     }
 }

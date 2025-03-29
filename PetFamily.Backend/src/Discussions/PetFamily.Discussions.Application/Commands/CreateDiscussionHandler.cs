@@ -44,6 +44,10 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
 
         var userIds = command.UserIds.Select(UserId.Create).ToList();
 
+        var existedDiscussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
+        if (existedDiscussion.IsSuccess)
+            return existedDiscussion.Value.Id.Value;
+        
         var discussion = Discussion.Create(relationId, userIds);
         
         if (discussion.IsFailure)
