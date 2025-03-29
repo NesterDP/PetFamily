@@ -44,15 +44,12 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
 
         var userId = UserId.Create(command.UserId);
 
-        var existedRequest = await _volunteerRequestsRepository
-            .GetByUserIdAsync(userId, cancellationToken);
+        var existedRequests = await _volunteerRequestsRepository
+            .GetRequestsByUserIdAsync(userId, cancellationToken);
 
-        if (existedRequest.IsSuccess)
-        {
-           var handleResult = await HandleExistedRequest(existedRequest.Value, cancellationToken);
-           if (handleResult.IsFailure)
-               return handleResult.Error.ToErrorList();
-        }
+        var checkResult = CheckExistedRequests(existedRequests);
+        if (checkResult.IsFailure)
+            return checkResult.Error.ToErrorList();
 
         var volunteerInfo = VolunteerInfo.Create(command.VolunteerInfo).Value;
 
@@ -67,22 +64,31 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
         return volunteerRequest.Id.Value;
     }
 
-    private async Task<UnitResult<Error>> HandleExistedRequest(
-        VolunteerRequest request,
-        CancellationToken cancellationToken)
+    private UnitResult<Error> CheckExistedRequests(
+        List<VolunteerRequest> requests)
     {
-        if (request.Status.Value != VolunteerRequestStatusEnum.Rejected)
-            return Errors.General.AlreadyExist($"Volunteer request for user with Id = {request.UserId.Value}");
+        var forbiddenStatuses = new[]
+        {
+            VolunteerRequestStatusEnum.Submitted,
+            VolunteerRequestStatusEnum.OnReview,
+            VolunteerRequestStatusEnum.RevisionRequired
+        };
 
-        
-        if (DateTime.UtcNow <= request.RejectedAt!.Value.AddDays(BAN_DURATION_IN_DAYS))
-            return Errors.General
-                .Conflict($"user with ID = {request.UserId.Value} is not allowed to create requests yet");
-        
-        _volunteerRequestsRepository.Delete(request, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+        if (requests.Any(r => forbiddenStatuses.Contains(r.Status.Value)))
+            return Errors.General.AlreadyExist(
+                $"Active volunteer request for user with Id = {requests[0].UserId.Value}");
+
+
+        if (!requests.Any(r => r.RejectedAt.HasValue))
+        {
+            return UnitResult.Success<Error>();
+        }
+
+        var banEndDate = requests.Max(r => r.RejectedAt!.Value).AddDays(BAN_DURATION_IN_DAYS);
+        if (banEndDate > DateTime.UtcNow)
+            return Errors.General.Conflict(
+                $"User with Id = {requests[0].UserId.Value} isn't allowed to submit new requests until {banEndDate}");
+
         return UnitResult.Success<Error>();
     }
-    
 }

@@ -58,11 +58,11 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
             .IsRequired(false)
             .HasColumnName("rejected_at");
         
-        builder.Property(v => v.RejectionComment)
+        builder.Property(v => v.RevisionComment)
             .HasConversion(
-                rejectionComment => rejectionComment.Value,
-                value => RejectionComment.Create(value).Value)
+                revisionComment => revisionComment.Value,
+                value => RevisionComment.Create(value).Value)
             .IsRequired(false)
-            .HasColumnName("rejection_comment");
+            .HasColumnName("revision_comment");
     }
 }

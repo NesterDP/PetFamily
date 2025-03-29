@@ -15,6 +15,6 @@ public class RequireRevisionCommandValidator : AbstractValidator<RequireRevision
         RuleFor(c => c.AdminId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("AdminId"));
 
-        RuleFor(c => c.RejectionComment).MustBeValueObject(RejectionComment.Create);
+        RuleFor(c => c.RevisionComment).MustBeValueObject(RevisionComment.Create);
     }
 }

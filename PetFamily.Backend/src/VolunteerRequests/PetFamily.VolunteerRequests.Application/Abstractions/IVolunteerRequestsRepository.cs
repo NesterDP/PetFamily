@@ -18,7 +18,7 @@ public interface IVolunteerRequestsRepository
         VolunteerRequestId id,
         CancellationToken cancellationToken = default);
     
-    Task<Result<VolunteerRequest, Error>> GetByUserIdAsync(
+    Task<List<VolunteerRequest>> GetRequestsByUserIdAsync(
         UserId id,
         CancellationToken cancellationToken = default);
 }

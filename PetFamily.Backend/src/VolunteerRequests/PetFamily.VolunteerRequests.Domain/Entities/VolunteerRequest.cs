@@ -14,7 +14,7 @@ public class VolunteerRequest
     public VolunteerRequestStatus Status { get; private set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-    public RejectionComment? RejectionComment { get; private set; }
+    public RevisionComment? RevisionComment { get; private set; }
     
     public DateTime? RejectedAt { get; private set; }
     
@@ -57,7 +57,7 @@ public class VolunteerRequest
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> SetRevisionRequired(AdminId adminId, RejectionComment rejectionComment)
+    public UnitResult<Error> SetRevisionRequired(AdminId adminId, RevisionComment revisionComment)
     {
         // RevisionRequired можно установить только тогда, когда текущий статус заявки - OnReview
         if (Status.Value != VolunteerRequestStatusEnum.OnReview)
@@ -67,7 +67,7 @@ public class VolunteerRequest
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.RevisionRequired).Value;
-        RejectionComment = rejectionComment;
+        RevisionComment = revisionComment;
 
         return UnitResult.Success<Error>();
     }

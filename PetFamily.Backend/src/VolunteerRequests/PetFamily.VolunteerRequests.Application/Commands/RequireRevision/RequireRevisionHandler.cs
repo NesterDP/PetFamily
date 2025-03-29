@@ -46,7 +46,7 @@ public class RequireRevisionHandler : ICommandHandler<Guid, RequireRevisionComma
 
         var adminId = AdminId.Create(command.AdminId);
         
-        var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
+        var revisionComment = RevisionComment.Create(command.RevisionComment).Value;
 
         var request = await _volunteerRequestsRepository
             .GetByIdAsync(requestId, cancellationToken);
@@ -54,7 +54,7 @@ public class RequireRevisionHandler : ICommandHandler<Guid, RequireRevisionComma
         if (request.IsFailure)
             return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
 
-        var result = request.Value.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.Value.SetRevisionRequired(adminId, revisionComment);
         if (result.IsFailure)
             return result.Error.ToErrorList();
         

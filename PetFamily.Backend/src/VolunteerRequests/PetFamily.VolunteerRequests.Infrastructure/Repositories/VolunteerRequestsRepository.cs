@@ -49,15 +49,12 @@ public class VolunteerRequestsRepository : IVolunteerRequestsRepository
         return volunteerRequest;
     }
 
-    public async Task<Result<VolunteerRequest, Error>> GetByUserIdAsync(
+    public async Task<List<VolunteerRequest>> GetRequestsByUserIdAsync(
         UserId userId,
         CancellationToken cancellationToken = default)
     {
         var volunteerRequest = await _context.VolunteerRequests
-            .FirstOrDefaultAsync(v => v.UserId == userId, cancellationToken);
-
-        if (volunteerRequest == null)
-            return Errors.General.ValueNotFound();
+            .Where(v => v.UserId == userId).ToListAsync(cancellationToken);
 
         return volunteerRequest;
     }
