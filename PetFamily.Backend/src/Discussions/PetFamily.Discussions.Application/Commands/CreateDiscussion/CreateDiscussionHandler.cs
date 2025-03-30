@@ -48,7 +48,7 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
 
         var existedDiscussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (existedDiscussion.IsSuccess)
-            return existedDiscussion.Value.Id.Value;
+            return Errors.General.AlreadyExist("Discussion with such relationId already exists").ToErrorList();
         
         var discussion = Discussion.Create(relationId, userIds);
         
