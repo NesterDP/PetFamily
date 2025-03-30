@@ -4,8 +4,6 @@ namespace PetFamily.Accounts.Domain.DataModels;
 
 public class ParticipantAccount
 {
-    public const string PARTICIPANT = "Participant";
-    
     public Guid Id { get; set; }
     
     public List<FavoritePetDto> FavoritePets { get; set; } = [];

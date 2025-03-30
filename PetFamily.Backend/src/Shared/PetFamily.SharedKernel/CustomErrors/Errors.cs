@@ -48,14 +48,18 @@ public static class Errors
         {
             return Error.Failure(code, $"{message}");
         }
+        
+        public static Error Failure(string? message)
+        {
+            return Error.Failure("server.internal", $"{message}");
+        }
 
         public static Error AlreadyExist(string? message)
         {
             var text = message ?? "record";
-            return Error.Validation("record.already_exist", $"{text} already exist");
+            return Error.Validation("record.already.exist", $"{text} already exist");
         }
-
-
+        
         public static Error LengthIsInvalid(int lessThen, string? propertyName = null)
         {
             var text = propertyName ?? ""; 

@@ -14,11 +14,11 @@ public class VolunteerRequest
     public VolunteerRequestStatus Status { get; private set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-    public RejectionComment? RejectionComment { get; private set; }
-
-    private VolunteerRequest()
-    {
-    } // ef core
+    public RevisionComment? RevisionComment { get; private set; }
+    
+    public DateTime? RejectedAt { get; private set; }
+    
+    private VolunteerRequest() { } // ef core
 
     public VolunteerRequest(UserId userId, VolunteerInfo volunteerInfo)
     {
@@ -28,7 +28,7 @@ public class VolunteerRequest
         VolunteerInfo = volunteerInfo;
     }
 
-    public UnitResult<Error> SetSubmitted()
+    public UnitResult<Error> SetSubmitted(VolunteerInfo volunteerInfo)
     {
         // при создании заявки (через конструктор) её статус по умолчанию всегда submitted
         // а вот установить этот статус методом можно только тогда, когда её текущий статус - RevisionRequired
@@ -38,6 +38,7 @@ public class VolunteerRequest
         }
 
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
+        VolunteerInfo = volunteerInfo;
 
         return UnitResult.Success<Error>();
     }
@@ -56,7 +57,7 @@ public class VolunteerRequest
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> SetRevisionRequired(AdminId adminId, RejectionComment rejectionComment)
+    public UnitResult<Error> SetRevisionRequired(AdminId adminId, RevisionComment revisionComment)
     {
         // RevisionRequired можно установить только тогда, когда текущий статус заявки - OnReview
         if (Status.Value != VolunteerRequestStatusEnum.OnReview)
@@ -66,7 +67,7 @@ public class VolunteerRequest
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.RevisionRequired).Value;
-        RejectionComment = rejectionComment;
+        RevisionComment = revisionComment;
 
         return UnitResult.Success<Error>();
     }
@@ -81,6 +82,7 @@ public class VolunteerRequest
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Rejected).Value;
+        RejectedAt = DateTime.UtcNow;
 
         return UnitResult.Success<Error>();
     }

@@ -14,5 +14,11 @@ public interface IVolunteerRequestsRepository
     
     Guid Delete(VolunteerRequest volunteerRequest, CancellationToken cancellationToken = default);
     
-    Task<Result<VolunteerRequest, Error>> GetByIdAsync(VolunteerRequestId id, CancellationToken cancellationToken = default);
+    Task<Result<VolunteerRequest, Error>> GetByIdAsync(
+        VolunteerRequestId id,
+        CancellationToken cancellationToken = default);
+    
+    Task<List<VolunteerRequest>> GetRequestsByUserIdAsync(
+        UserId id,
+        CancellationToken cancellationToken = default);
 }

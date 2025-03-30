@@ -34,14 +34,14 @@ public class TestsOfModelBinding : VolunteerRequestsTestsBase
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
         
 
         // act
@@ -57,6 +57,6 @@ public class TestsOfModelBinding : VolunteerRequestsTestsBase
         result.Status.Value.Should().Be(VolunteerRequestStatusEnum.RevisionRequired);
         result.CreatedAt.Should().BeBefore(DateTime.UtcNow);
         result.CreatedAt.Should().BeAfter(DateTime.UtcNow.AddHours(-1));
-        result.RejectionComment.Value.Should().Be(rejectionComment.Value);
+        result.RevisionComment.Value.Should().Be(revisionComment.Value);
     }
 }

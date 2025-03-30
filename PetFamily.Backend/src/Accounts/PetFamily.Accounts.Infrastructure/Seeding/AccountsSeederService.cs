@@ -69,7 +69,7 @@ public class AccountsSeederService
     {
         var AdminFullName = FullName.Create("AdminFirstName", "AdminLastName", "AdminSurname").Value;
         
-        var adminRole = await _roleManager.FindByNameAsync(AdminAccount.ADMIN)
+        var adminRole = await _roleManager.FindByNameAsync(DomainConstants.ADMIN)
                         ?? throw new ApplicationException("Could not find admin role");
         
         var adminUser = User.CreateAdmin(

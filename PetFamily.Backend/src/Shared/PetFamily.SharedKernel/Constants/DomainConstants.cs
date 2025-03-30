@@ -11,4 +11,8 @@ public static class DomainConstants
     public const int MAX_EXTENSION_LENGTH = 10;
     public const int MAX_PATH_LENGTH = 30;
     public const int MAX_FILE_SIZE_IN_BYTES = 6000000;
+
+    public const string ADMIN = "Admin";
+    public const string VOLUNTEER = "Volunteer";
+    public const string PARTICIPANT = "Participant";
 }

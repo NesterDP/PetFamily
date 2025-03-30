@@ -1,0 +1,3 @@
+namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
+
+public record CreateVolunteerRequestRequest(string VolunteerInfo);

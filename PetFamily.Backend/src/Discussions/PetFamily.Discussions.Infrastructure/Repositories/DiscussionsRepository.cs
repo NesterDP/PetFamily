@@ -47,4 +47,18 @@ public class DiscussionsRepository : IDiscussionsRepository
 
         return discussion;
     }
+    
+    public async Task<Result<Discussion, Error>> GetByRelationIdAsync(
+        RelationId relationId,
+        CancellationToken cancellationToken = default)
+    {
+        var discussion = await _context.Discussions
+            .Include(d => d.Messages)
+            .FirstOrDefaultAsync(v => v.RelationId == relationId, cancellationToken);
+        
+        if (discussion == null)
+            return Errors.General.ValueNotFound();
+
+        return discussion;
+    }
 }

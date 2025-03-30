@@ -26,7 +26,7 @@ public class VolunteerRequestsTests
         result.Status.Value.Should().Be(VolunteerRequestStatusEnum.Submitted);
         result.CreatedAt.Should().BeBefore(DateTime.UtcNow);
         result.CreatedAt.Should().BeAfter(DateTime.UtcNow.AddHours(-1));
-        result.RejectionComment.Should().BeNull();
+        result.RevisionComment.Should().BeNull();
     }
 
     // set Submitted //////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ public class VolunteerRequestsTests
         var request = new VolunteerRequest(userId, volunteerInfo);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -60,7 +60,7 @@ public class VolunteerRequestsTests
         request.SetOnReview(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -71,24 +71,24 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         var adminId = AdminId.NewAdminId();
         
         
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         request.AdminId.Should().Be(adminId);
-        request.RejectionComment.Should().Be(rejectionComment);
+        request.RevisionComment.Should().Be(revisionComment);
         request.Status.Value.Should().Be(VolunteerRequestStatusEnum.Submitted);
     }
 
@@ -106,7 +106,7 @@ public class VolunteerRequestsTests
         request.SetRejected(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -126,7 +126,7 @@ public class VolunteerRequestsTests
         request.SetApproved(adminId);
 
         // Act
-        var result = request.SetSubmitted();
+        var result = request.SetSubmitted(volunteerInfo);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -158,7 +158,7 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
@@ -178,15 +178,15 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
 
         // Act
         var result = request.SetOnReview(adminId);
@@ -200,7 +200,7 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
@@ -221,7 +221,7 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
@@ -244,15 +244,15 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
 
         // Act
-        var result = request.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.SetRevisionRequired(adminId, revisionComment);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -263,22 +263,22 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
         
         // Act
-        var result = request.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.SetRevisionRequired(adminId, revisionComment);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         request.AdminId.Should().Be(adminId);
-        request.RejectionComment.Value.Should().Be(rejectionComment.Value);
+        request.RevisionComment.Value.Should().Be(revisionComment.Value);
         request.Status.Value.Should().Be(VolunteerRequestStatusEnum.RevisionRequired);
     }
 
@@ -287,18 +287,18 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
 
         // Act
-        var result = request.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.SetRevisionRequired(adminId, revisionComment);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -309,18 +309,18 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
 
         request.SetOnReview(adminId);
         request.SetRejected(adminId);
         
         // Act
-        var result = request.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.SetRevisionRequired(adminId, revisionComment);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -331,18 +331,18 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
         request.SetApproved(adminId);
 
         // Act
-        var result = request.SetRevisionRequired(adminId, rejectionComment);
+        var result = request.SetRevisionRequired(adminId, revisionComment);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -394,15 +394,15 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
 
         // Act
         var result = request.SetRejected(adminId);
@@ -496,15 +496,15 @@ public class VolunteerRequestsTests
     {
         // Arrange
         var DEFAULT_TEXT = "default text";
-        var REJECTION_TEXT = "rejection text";
+        var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
-        var rejectionComment = RejectionComment.Create(REJECTION_TEXT).Value;
+        var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
         request.SetOnReview(adminId);
-        request.SetRevisionRequired(adminId, rejectionComment);
+        request.SetRevisionRequired(adminId, revisionComment);
 
         // Act
         var result = request.SetApproved(adminId);

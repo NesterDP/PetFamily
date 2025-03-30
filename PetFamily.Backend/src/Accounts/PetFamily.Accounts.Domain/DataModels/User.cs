@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 
@@ -34,7 +35,7 @@ public class User : IdentityUser<Guid>
         FullName fullname,
         Role role)
     {
-        if (role.Name != DataModels.AdminAccount.ADMIN)
+        if (role.Name != DomainConstants.ADMIN)
             return Errors.General.ValueIsInvalid("role");
         
         var admin = new User()
@@ -54,7 +55,7 @@ public class User : IdentityUser<Guid>
         FullName fullname,
         Role role)
     {
-        if (role.Name != DataModels.ParticipantAccount.PARTICIPANT)
+        if (role.Name != DomainConstants.PARTICIPANT)
             return Errors.General.ValueIsInvalid("role");
         
         var participant = new User()

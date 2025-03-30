@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Discussions.Domain.Entities;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -94,6 +95,15 @@ public static class DataGenerator
         return user.Value;
     }
 
+    public static VolunteerRequest CreateVolunteerRequest(string testInfo = "test info")
+    {
+        var userId = UserId.NewUserId();
+        var volunteerInfo = VolunteerInfo.Create(testInfo).Value;
+        var request = new VolunteerRequest(userId, volunteerInfo);
+
+        return request;
+    }
+
     public static async Task<User> SeedUserAsync(
         string username,
         string email,
@@ -102,13 +112,13 @@ public static class DataGenerator
         RoleManager<Role> roleManager,
         IAccountManager accountManager = null)
     {
-        var role = await roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
+        var role = await roleManager.FindByNameAsync(DomainConstants.PARTICIPANT);
         var user = CreateUser(username, email, role!);
         await userManager.CreateAsync(user, password);
-        
+
         if (accountManager != null)
             await AddAccountsToUser(user, accountManager);
-        
+
         return user;
     }
 
@@ -118,19 +128,19 @@ public static class DataGenerator
     {
         foreach (var role in user.Roles)
         {
-            if (role.Name == ParticipantAccount.PARTICIPANT)
+            if (role.Name == DomainConstants.PARTICIPANT)
             {
                 var participantAccount = new ParticipantAccount(user);
                 await accountManager.CreateParticipantAccount(participantAccount);
             }
-            
-            if (role.Name == VolunteerAccount.VOLUNTEER)
+
+            if (role.Name == DomainConstants.VOLUNTEER)
             {
                 var volunteerAccount = new VolunteerAccount(user);
                 await accountManager.CreateVolunteerAccount(volunteerAccount);
             }
-            
-            if (role.Name == AdminAccount.ADMIN)
+
+            if (role.Name == DomainConstants.ADMIN)
             {
                 var adminAccount = new AdminAccount(user);
                 await accountManager.CreateAdminAccount(adminAccount);
@@ -243,31 +253,45 @@ public static class DataGenerator
         return volunteer;
     }
 
-    public static async Task<VolunteerRequest> SeedVolunteerRequest(VolunteerRequestsWriteDbContext dbContext)
+    public static async Task<VolunteerRequest> SeedVolunteerRequest(
+        VolunteerRequestsWriteDbContext dbContext, Guid? optionalId = null)
     {
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
+        
+        if (optionalId.HasValue)
+            userId = optionalId.Value;
+        
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(userId, volunteerInfo);
-        
+
         await dbContext.VolunteerRequests.AddAsync(request);
         await dbContext.SaveChangesAsync();
-        
+
         return request;
     }
-    
+
+    public static async Task<VolunteerRequest> SeedVolunteerRequest(
+        VolunteerRequestsWriteDbContext dbContext,
+        VolunteerRequest volunteerRequest)
+    {
+        dbContext.VolunteerRequests.Add(volunteerRequest);
+        await dbContext.SaveChangesAsync();
+        return volunteerRequest;
+    }
+
     public static async Task<Discussion> SeedDiscussion(DiscussionsWriteDbContext dbContext, int userCount)
     {
         var users = new List<UserId>();
         for (var i = 0; i < userCount; i++)
             users.Add(UserId.NewUserId());
-        
+
         var relationId = RelationId.NewRelationId();
 
         var result = Discussion.Create(relationId, users);
         await dbContext.AddAsync(result.Value);
         await dbContext.SaveChangesAsync();
-        
+
         return result.Value;
     }
 }

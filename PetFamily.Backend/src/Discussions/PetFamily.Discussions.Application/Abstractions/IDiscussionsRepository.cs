@@ -14,5 +14,11 @@ public interface IDiscussionsRepository
     
      Guid Delete(Discussion discussion, CancellationToken cancellationToken = default);
     
-     Task<Result<Discussion, Error>> GetByIdAsync(DiscussionId id, CancellationToken cancellationToken = default);
+     Task<Result<Discussion, Error>> GetByIdAsync(
+         DiscussionId id,
+         CancellationToken cancellationToken = default);
+     
+     Task<Result<Discussion, Error>> GetByRelationIdAsync(
+          RelationId relationId,
+          CancellationToken cancellationToken = default);
 }

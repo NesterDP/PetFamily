@@ -46,9 +46,7 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
         {
             sb.Property(s => s.Value)
                 .IsRequired()
-                .HasConversion(
-                    status => (int)status,
-                    status => (VolunteerRequestStatusEnum)status)
+                .HasConversion<string>()
                 .HasColumnName("status");
         });
 
@@ -56,11 +54,15 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
             .IsRequired()
             .HasColumnName("created_at");
         
-        builder.Property(v => v.RejectionComment)
-            .HasConversion(
-                rejectionComment => rejectionComment.Value,
-                value => RejectionComment.Create(value).Value)
+        builder.Property(v => v.RejectedAt)
             .IsRequired(false)
-            .HasColumnName("rejection_comment");
+            .HasColumnName("rejected_at");
+        
+        builder.Property(v => v.RevisionComment)
+            .HasConversion(
+                revisionComment => revisionComment.Value,
+                value => RevisionComment.Create(value).Value)
+            .IsRequired(false)
+            .HasColumnName("revision_comment");
     }
 }

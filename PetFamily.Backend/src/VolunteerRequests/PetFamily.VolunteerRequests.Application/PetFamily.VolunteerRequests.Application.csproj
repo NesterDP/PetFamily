@@ -7,12 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Accounts\PetFamily.Accounts.Contracts\PetFamily.Accounts.Contracts.csproj" />
+      <ProjectReference Include="..\..\Discussions\PetFamily.Discussions.Contracts\PetFamily.Discussions.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.VolunteerRequests.Domain\PetFamily.VolunteerRequests.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Commands\" />
-      <Folder Include="Queries\" />
     </ItemGroup>
 
 </Project>

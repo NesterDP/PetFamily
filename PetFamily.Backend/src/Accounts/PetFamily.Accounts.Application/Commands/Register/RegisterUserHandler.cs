@@ -6,6 +6,7 @@ using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Volunteer;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
@@ -42,7 +43,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         CancellationToken cancellationToken)
     {
         
-        var participantRole = await _roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT)
+        var participantRole = await _roleManager.FindByNameAsync(DomainConstants.PARTICIPANT)
                         ?? throw new ApplicationException("Could not find participant role");
 
         var participant = User.CreateParticipant(

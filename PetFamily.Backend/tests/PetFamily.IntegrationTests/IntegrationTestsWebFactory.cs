@@ -18,7 +18,10 @@ using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteD
 using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
+using VolunteerRequestsReadDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.ReadDbContext;
+using VolunteerRequestsIReadDbContext = PetFamily.VolunteerRequests.Application.Abstractions.IReadDbContext;
 using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
+
 
 namespace PetFamily.IntegrationTests;
 
@@ -75,12 +78,21 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         var writeDbContext = services.SingleOrDefault(s =>
             s.ServiceType == typeof(VolunteerRequestsWriteDbContext));
+        
+        var readDbContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(VolunteerRequestsIReadDbContext));
 
         if (writeDbContext is not null)
             services.Remove(writeDbContext);
 
+        if (readDbContext is not null)
+            services.Remove(readDbContext);
+        
         services.AddScoped<VolunteerRequestsWriteDbContext>(_ =>
             new VolunteerRequestsWriteDbContext(_dbContainer.GetConnectionString()));
+        
+        services.AddScoped<VolunteerRequestsIReadDbContext, VolunteerRequestsReadDbContext>(_ =>
+            new VolunteerRequestsReadDbContext(_dbContainer.GetConnectionString()));
     }
 
     private void ReconfigureAccountsServices(IServiceCollection services)
