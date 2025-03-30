@@ -15,12 +15,16 @@ using Respawn;
 using Testcontainers.PostgreSql;
 using PetFamily.Web;
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
-using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
+using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
+
 using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
-using VolunteerRequestsReadDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.ReadDbContext;
 using VolunteerRequestsIReadDbContext = PetFamily.VolunteerRequests.Application.Abstractions.IReadDbContext;
+using VolunteerRequestsReadDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.ReadDbContext;
+
 using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
+using DiscussionsIReadDbContext = PetFamily.Discussions.Application.Abstractions.IReadDbContext;
+using DiscussionsReadDbContext = PetFamily.Discussions.Infrastructure.DbContexts.ReadDbContext;
 
 
 namespace PetFamily.IntegrationTests;
@@ -66,12 +70,21 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         var writeDbContext = services.SingleOrDefault(s =>
             s.ServiceType == typeof(DiscussionsWriteDbContext));
+        
+        var readDbContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(DiscussionsIReadDbContext));
 
         if (writeDbContext is not null)
             services.Remove(writeDbContext);
+        
+        if (readDbContext is not null)
+            services.Remove(readDbContext);
 
         services.AddScoped<DiscussionsWriteDbContext>(_ =>
             new DiscussionsWriteDbContext(_dbContainer.GetConnectionString()));
+        
+        services.AddScoped<DiscussionsIReadDbContext, DiscussionsReadDbContext>(_ =>
+            new DiscussionsReadDbContext(_dbContainer.GetConnectionString()));
     }
 
     private void ReconfigureVolunteerRequestsServices(IServiceCollection services)

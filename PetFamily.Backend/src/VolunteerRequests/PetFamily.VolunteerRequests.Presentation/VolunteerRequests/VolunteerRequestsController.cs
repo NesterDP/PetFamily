@@ -17,6 +17,42 @@ namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests;
 
 public class VolunteerRequestsController : ApplicationController
 {
+    [Permission("volunteerRequests.GetUnhandledRequests")]
+    [HttpGet("unhandled-requests")]
+    public async Task<ActionResult<Guid>> GetUnhandledRequests(
+        [FromQuery] GetUnhandledRequestsRequest request,
+        [FromServices] GetUnhandledRequestsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+
+    [Permission("volunteerRequests.GetHandledRequestsByAdminId")]
+    [HttpGet("handled-requests")]
+    public async Task<ActionResult<Guid>> GetHandledRequestsByAdminId(
+        [FromQuery] GetHandledRequestsByAdminIdRequest request,
+        [FromServices] GetHandledRequestsByAdminIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(GetUserId().Value);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+
+    [Permission("volunteerRequests.GetRequestsByUserId")]
+    [HttpGet("requests-by-user")]
+    public async Task<ActionResult<Guid>> GetRequestsByUserId(
+        [FromQuery] GetRequestsByUserIdRequest request,
+        [FromServices] GetRequestsByUserIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(GetUserId().Value);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return Ok(result);
+    }
+    
     [Permission("volunteerRequests.CreateRequest")]
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateRequest(
@@ -94,41 +130,5 @@ public class VolunteerRequestsController : ApplicationController
         var command = new RejectRequestCommand(id, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
-
-    [Permission("volunteerRequests.GetUnhandledRequests")]
-    [HttpGet("unhandled-requests")]
-    public async Task<ActionResult<Guid>> GetUnhandledRequests(
-        [FromQuery] GetUnhandledRequestsRequest request,
-        [FromServices] GetUnhandledRequestsHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = request.ToQuery();
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
-    }
-
-    [Permission("volunteerRequests.GetHandledRequestsByAdminId")]
-    [HttpGet("handled-requests")]
-    public async Task<ActionResult<Guid>> GetHandledRequestsByAdminId(
-        [FromQuery] GetHandledRequestsByAdminIdRequest request,
-        [FromServices] GetHandledRequestsByAdminIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = request.ToQuery(GetUserId().Value);
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
-    }
-
-    [Permission("volunteerRequests.GetRequestsByUserId")]
-    [HttpGet("requests-by-user")]
-    public async Task<ActionResult<Guid>> GetRequestsByUserId(
-        [FromQuery] GetRequestsByUserIdRequest request,
-        [FromServices] GetRequestsByUserIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = request.ToQuery(GetUserId().Value);
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
     }
 }
