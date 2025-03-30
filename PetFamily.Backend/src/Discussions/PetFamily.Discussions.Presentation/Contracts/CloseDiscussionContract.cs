@@ -24,7 +24,7 @@ public class CloseDiscussionContract : ICloseDiscussionContract
         CloseDiscussionRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CloseDiscussionCommand(request.RelationId);
+        var command = new CloseDiscussionCommand(request.RelationId, request.UserId);
         var result = await _handler.HandleAsync(command, cancellationToken);
         return result;
     }

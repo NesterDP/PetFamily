@@ -19,7 +19,7 @@ public class DiscussionsController : ApplicationController
         [FromServices] CloseDiscussionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new CloseDiscussionCommand(relationId);
+        var command = new CloseDiscussionCommand(relationId, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
