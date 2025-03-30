@@ -2,7 +2,7 @@ using FluentValidation;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 
-namespace PetFamily.Discussions.Application.Commands;
+namespace PetFamily.Discussions.Application.Commands.CreateDiscussion;
 
 public class CreateDiscussionCommandValidator : AbstractValidator<CreateDiscussionCommand>
 {

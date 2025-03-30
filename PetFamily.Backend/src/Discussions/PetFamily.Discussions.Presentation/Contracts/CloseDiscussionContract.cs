@@ -1,7 +1,9 @@
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.Discussions.Application.Abstractions;
+using PetFamily.Discussions.Application.Commands.CloseDiscussion;
 using PetFamily.Discussions.Contracts;
 using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
@@ -11,31 +13,19 @@ namespace PetFamily.Discussions.Presentation.Contracts;
 
 public class CloseDiscussionContract : ICloseDiscussionContract
 {
-    private readonly IDiscussionsRepository _discussionsRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly CloseDiscussionHandler _handler;
 
     public CloseDiscussionContract(
-        IDiscussionsRepository discussionsRepository,
-        [FromKeyedServices(UnitOfWorkSelector.Discussions)]
-        IUnitOfWork unitOfWork)
+        [FromServices] CloseDiscussionHandler handler)
     {
-        _discussionsRepository = discussionsRepository;
-        _unitOfWork = unitOfWork;
+        _handler = handler;
     }
-
-    public async Task<Result<Guid, Error>> CloseDiscussion(
+    public async Task<Result<Guid, ErrorList>> CloseDiscussion(
         CloseDiscussionRequest request,
         CancellationToken cancellationToken)
     {
-        var discussion = await _discussionsRepository
-            .GetByRelationIdAsync(request.RelationId, cancellationToken);
-
-        if (discussion.IsFailure)
-            return discussion.Error;
-
-        discussion.Value.Close();
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return discussion.Value.Id.Value;
+        var command = new CloseDiscussionCommand(request.RelationId);
+        var result = await _handler.HandleAsync(command, cancellationToken);
+        return result;
     }
 }

@@ -3,7 +3,10 @@
     "Users" : [
       "users.UpdateSocialNetworks"
     ],
-    "VolunteerRequests" : [
+    "Discussions": [
+      "discussions.CloseDiscussion"
+    ],
+    "VolunteerRequests": [
       "volunteerRequests.CreateRequest",
       "volunteerRequests.TakeRequestOnReview",
       "volunteerRequests.RequireRevision",
@@ -111,7 +114,8 @@
       "volunteerRequests.ApproveRequest",
       "volunteerRequests.RejectRequest",
       "volunteerRequests.GetUnhandledRequests",
-      "volunteerRequests.GetHandledRequestsByAdminId"
+      "volunteerRequests.GetHandledRequestsByAdminId",
+      "discussions.CloseDiscussion"
     ]
   }
 }

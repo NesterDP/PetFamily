@@ -62,7 +62,7 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id);
         var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
         if (discussionResult.IsFailure)
-            return discussionResult.Error.ToErrorList();
+            return discussionResult.Error;
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

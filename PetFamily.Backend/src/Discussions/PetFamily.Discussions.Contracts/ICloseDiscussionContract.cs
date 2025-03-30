@@ -7,7 +7,7 @@ namespace PetFamily.Discussions.Contracts;
 
 public interface ICloseDiscussionContract
 {
-    public Task<Result<Guid, Error>> CloseDiscussion(
+    public Task<Result<Guid, ErrorList>> CloseDiscussion(
         CloseDiscussionRequest request,
         CancellationToken cancellationToken);
 }

@@ -5,24 +5,23 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.Discussions.Application.Abstractions;
-using PetFamily.Discussions.Domain.Entities;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
-namespace PetFamily.Discussions.Application.Commands;
+namespace PetFamily.Discussions.Application.Commands.CloseDiscussion;
 
-public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCommand>
+public class CloseDiscussionHandler : ICommandHandler<Guid, CloseDiscussionCommand>
 {
     private readonly IDiscussionsRepository _discussionsRepository;
-    private readonly ILogger<CreateDiscussionHandler> _logger;
-    private readonly IValidator<CreateDiscussionCommand> _validator;
+    private readonly ILogger<CloseDiscussionHandler> _logger;
+    private readonly IValidator<CloseDiscussionCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateDiscussionHandler(
+    public CloseDiscussionHandler(
         IDiscussionsRepository discussionsRepository,
-        ILogger<CreateDiscussionHandler> logger,
-        IValidator<CreateDiscussionCommand> validator,
+        ILogger<CloseDiscussionHandler> logger,
+        IValidator<CloseDiscussionCommand> validator,
         [FromKeyedServices(UnitOfWorkSelector.Discussions)]
         IUnitOfWork unitOfWork)
     {
@@ -33,7 +32,7 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
-        CreateDiscussionCommand command,
+        CloseDiscussionCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
@@ -41,23 +40,17 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
             return validationResult.ToErrorList();
 
         var relationId = RelationId.Create(command.RelationId);
+       
+        var discussion = await _discussionsRepository
+            .GetByRelationIdAsync(relationId, cancellationToken);
 
-        var userIds = command.UserIds.Select(UserId.Create).ToList();
-
-        var existedDiscussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
-        if (existedDiscussion.IsSuccess)
-            return existedDiscussion.Value.Id.Value;
-        
-        var discussion = Discussion.Create(relationId, userIds);
-        
         if (discussion.IsFailure)
             return discussion.Error.ToErrorList();
-        
-        await _discussionsRepository.AddAsync(discussion.Value, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Created discussion with Id = {id}", discussion.Value.Id.Value);
+        discussion.Value.Close();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        _logger.LogInformation($"Discussion with Id = {discussion.Value.Id} has been closed.");
 
         return discussion.Value.Id.Value;
     }
