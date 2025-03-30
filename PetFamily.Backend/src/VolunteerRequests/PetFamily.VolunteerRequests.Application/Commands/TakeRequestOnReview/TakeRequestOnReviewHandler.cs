@@ -58,11 +58,14 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
         if (result.IsFailure)
             return result.Error.ToErrorList();
 
-        List<Guid> userIds = [adminId, request.Value.UserId];
-        var contractRequest = new CreateDiscussionRequest(requestId, userIds);
-        var discussion = await _contract.CreateDiscussion(contractRequest, cancellationToken);
-        if (discussion.IsFailure)
-            return discussion.Error;
+        if (request.Value.RevisionComment == null)
+        {
+            List<Guid> userIds = [adminId, request.Value.UserId];
+            var contractRequest = new CreateDiscussionRequest(requestId, userIds);
+            var discussion = await _contract.CreateDiscussion(contractRequest, cancellationToken);
+            if (discussion.IsFailure)
+                return discussion.Error;
+        }
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
