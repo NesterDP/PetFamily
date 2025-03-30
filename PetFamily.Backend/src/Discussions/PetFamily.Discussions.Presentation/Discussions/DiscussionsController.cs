@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Discussions.Application.Commands.AddMessage;
 using PetFamily.Discussions.Application.Commands.CloseDiscussion;
+using PetFamily.Discussions.Application.Commands.EditMessage;
 using PetFamily.Discussions.Application.Commands.RemoveMessage;
 using PetFamily.Discussions.Application.Queries.GetDiscussion;
 using PetFamily.Discussions.Presentation.Discussions.Requests;
@@ -50,13 +51,27 @@ public class DiscussionsController : ApplicationController
     
     [Permission( "discussions.RemoveMessage")]
     [HttpDelete("{relationId:guid}/message/{messageId:guid}")]
-    public async Task<ActionResult<Guid>> AddMessage(
+    public async Task<ActionResult<Guid>> RemoveMessage(
         [FromRoute] Guid relationId,
         [FromRoute] Guid messageId,
         [FromServices] RemoveMessageHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new RemoveMessageCommand(relationId, messageId, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission( "discussions.EditMessage")]
+    [HttpPut("{relationId:guid}/message/{messageId:guid}")]
+    public async Task<ActionResult<Guid>> EditMessage(
+        [FromRoute] Guid relationId,
+        [FromRoute] Guid messageId,
+        [FromBody] EditMessageRequest request,
+        [FromServices] EditMessageHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(relationId, messageId, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
