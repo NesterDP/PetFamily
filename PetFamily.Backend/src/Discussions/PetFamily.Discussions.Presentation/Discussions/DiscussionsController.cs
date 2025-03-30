@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Discussions.Application.Commands.AddMessage;
 using PetFamily.Discussions.Application.Commands.CloseDiscussion;
 using PetFamily.Discussions.Application.Queries.GetDiscussion;
+using PetFamily.Discussions.Presentation.Discussions.Requests;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 
@@ -9,26 +11,39 @@ namespace PetFamily.Discussions.Presentation.Discussions;
 public class DiscussionsController : ApplicationController
 {
     [Permission("discussions.CloseDiscussion")]
-    [HttpPut("{id:guid}/close-discussion")]
+    [HttpPut("{relationId:guid}/close-discussion")]
     public async Task<ActionResult<Guid>> CloseDiscussion(
-        [FromRoute] Guid id,
+        [FromRoute] Guid relationId,
         [FromServices] CloseDiscussionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new CloseDiscussionCommand(id);
+        var command = new CloseDiscussionCommand(relationId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("discussions.GetDiscussion")]
-    [HttpGet("{id:guid}/discussion")]
+    [HttpGet("{relationId:guid}/discussion")]
     public async Task<ActionResult<Guid>> GetDiscussion(
-        [FromRoute] Guid id,
+        [FromRoute] Guid relationId,
         [FromServices] GetDiscussionHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetDiscussionQuery(id);
+        var query = new GetDiscussionQuery(relationId);
         var result = await handler.HandleAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission( "discussions.AddMessage")]
+    [HttpPost("{relationId:guid}/discussion")]
+    public async Task<ActionResult<Guid>> AddMessage(
+        [FromRoute] Guid relationId,
+        [FromBody] AddMessageRequest request,
+        [FromServices] AddMessageHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(relationId, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }

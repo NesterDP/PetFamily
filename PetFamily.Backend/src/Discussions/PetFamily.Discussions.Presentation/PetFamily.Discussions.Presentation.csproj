@@ -15,8 +15,4 @@
       <ProjectReference Include="..\PetFamily.Discussions.Domain\PetFamily.Discussions.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Discussions\Requests\" />
-    </ItemGroup>
-
 </Project>
