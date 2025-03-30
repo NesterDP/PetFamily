@@ -12,18 +12,6 @@ namespace PetFamily.Discussions.Presentation.Discussions;
 
 public class DiscussionsController : ApplicationController
 {
-    [Permission("discussions.CloseDiscussion")]
-    [HttpPut("{relationId:guid}")]
-    public async Task<ActionResult<Guid>> CloseDiscussion(
-        [FromRoute] Guid relationId,
-        [FromServices] CloseDiscussionHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new CloseDiscussionCommand(relationId, GetUserId().Value);
-        var result = await handler.HandleAsync(command, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
-    
     [Permission("discussions.GetDiscussion")]
     [HttpGet("{relationId:guid}")]
     public async Task<ActionResult<Guid>> GetDiscussion(
@@ -49,15 +37,14 @@ public class DiscussionsController : ApplicationController
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
-    [Permission( "discussions.RemoveMessage")]
-    [HttpDelete("{relationId:guid}/message/{messageId:guid}")]
-    public async Task<ActionResult<Guid>> RemoveMessage(
+    [Permission("discussions.CloseDiscussion")]
+    [HttpPut("{relationId:guid}")]
+    public async Task<ActionResult<Guid>> CloseDiscussion(
         [FromRoute] Guid relationId,
-        [FromRoute] Guid messageId,
-        [FromServices] RemoveMessageHandler handler,
+        [FromServices] CloseDiscussionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveMessageCommand(relationId, messageId, GetUserId().Value);
+        var command = new CloseDiscussionCommand(relationId, GetUserId().Value);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -75,4 +62,18 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
+    
+    [Permission( "discussions.RemoveMessage")]
+    [HttpDelete("{relationId:guid}/message/{messageId:guid}")]
+    public async Task<ActionResult<Guid>> RemoveMessage(
+        [FromRoute] Guid relationId,
+        [FromRoute] Guid messageId,
+        [FromServices] RemoveMessageHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveMessageCommand(relationId, messageId, GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
 }

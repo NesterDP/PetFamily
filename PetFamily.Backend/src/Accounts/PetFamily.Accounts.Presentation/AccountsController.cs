@@ -13,6 +13,17 @@ namespace PetFamily.Accounts.Presentation;
 
 public class AccountsController : ApplicationController
 {
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetUserInfoById(
+        [FromRoute] Guid id,
+        [FromServices] GetUserInfoByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserInfoByIdQuery(id);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
     [HttpPost("registration")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
@@ -57,16 +68,5 @@ public class AccountsController : ApplicationController
         //return Ok();
         return Ok(result.Value.AccessToken);
       
-    }
-    
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetUserInfoById(
-        [FromRoute] Guid id,
-        [FromServices] GetUserInfoByIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var query = new GetUserInfoByIdQuery(id);
-        var result = await handler.HandleAsync(query, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }
