@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Discussions.Domain.Entities;
+using PetFamily.Discussions.Domain.ValueObjects;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -102,6 +103,18 @@ public static class DataGenerator
         var request = new VolunteerRequest(userId, volunteerInfo);
 
         return request;
+    }
+
+    public static Message CreateMessage(Guid? userId = null, string? text = null)
+    {
+        userId ??= UserId.NewUserId();
+
+        text ??= "Test text";
+
+        var messageText = MessageText.Create(text).Value;
+        var message = new Message(messageText, userId);
+        
+        return message;
     }
 
     public static async Task<User> SeedUserAsync(
