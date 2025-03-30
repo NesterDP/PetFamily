@@ -6,7 +6,8 @@
     "Discussions": [
       "discussions.CloseDiscussion",
       "discussions.GetDiscussion",
-      "discussions.AddMessage"
+      "discussions.AddMessage",
+      "discussions.RemoveMessage"
     ],
     "VolunteerRequests": [
       "volunteerRequests.CreateRequest",
@@ -62,7 +63,8 @@
       "volunteerRequests.AmendRequest",
       "volunteerRequests.GetRequestsByUserId",
       "discussions.GetDiscussion",
-      "discussions.AddMessage"
+      "discussions.AddMessage",
+      "discussions.RemoveMessage"
     ],
     "Volunteer": [
       "users.UpdateSocialNetworks",
@@ -88,7 +90,8 @@
       "species.GetBreedsBySpeciesId",
       "species.GetSpeciesWithPagination",
       "discussions.GetDiscussion",
-      "discussions.AddMessage"
+      "discussions.AddMessage",
+      "discussions.RemoveMessage"
     ],
     "Admin" : [
       "users.UpdateSocialNetworks",
@@ -123,7 +126,8 @@
       "volunteerRequests.GetHandledRequestsByAdminId",
       "discussions.CloseDiscussion",
       "discussions.GetDiscussion",
-      "discussions.AddMessage"
+      "discussions.AddMessage",
+      "discussions.RemoveMessage"
     ]
   }
 }
