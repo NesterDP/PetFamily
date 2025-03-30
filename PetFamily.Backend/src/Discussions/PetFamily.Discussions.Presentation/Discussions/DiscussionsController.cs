@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Discussions.Application.Commands.CloseDiscussion;
+using PetFamily.Discussions.Application.Queries.GetDiscussion;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 
@@ -16,6 +17,18 @@ public class DiscussionsController : ApplicationController
     {
         var command = new CloseDiscussionCommand(id);
         var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("discussions.GetDiscussion")]
+    [HttpGet("{id:guid}/discussion")]
+    public async Task<ActionResult<Guid>> GetDiscussion(
+        [FromRoute] Guid id,
+        [FromServices] GetDiscussionHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetDiscussionQuery(id);
+        var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }
