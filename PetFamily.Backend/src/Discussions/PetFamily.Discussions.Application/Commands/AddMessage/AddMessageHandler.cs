@@ -6,23 +6,23 @@ using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.Discussions.Application.Abstractions;
 using PetFamily.Discussions.Domain.Entities;
+using PetFamily.Discussions.Domain.ValueObjects;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
-namespace PetFamily.Discussions.Application.Commands;
-
-public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCommand>
+namespace PetFamily.Discussions.Application.Commands.AddMessage;
+public class AddMessageHandler : ICommandHandler<Guid, AddMessageCommand>
 {
     private readonly IDiscussionsRepository _discussionsRepository;
-    private readonly ILogger<CreateDiscussionHandler> _logger;
-    private readonly IValidator<CreateDiscussionCommand> _validator;
+    private readonly ILogger<AddMessageHandler> _logger;
+    private readonly IValidator<AddMessageCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateDiscussionHandler(
+    public AddMessageHandler(
         IDiscussionsRepository discussionsRepository,
-        ILogger<CreateDiscussionHandler> logger,
-        IValidator<CreateDiscussionCommand> validator,
+        ILogger<AddMessageHandler> logger,
+        IValidator<AddMessageCommand> validator,
         [FromKeyedServices(UnitOfWorkSelector.Discussions)]
         IUnitOfWork unitOfWork)
     {
@@ -33,7 +33,7 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
-        CreateDiscussionCommand command,
+        AddMessageCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
@@ -42,22 +42,27 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
 
         var relationId = RelationId.Create(command.RelationId);
 
-        var userIds = command.UserIds.Select(UserId.Create).ToList();
+        var userId = UserId.Create(command.UserId);
 
-        var existedDiscussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
-        if (existedDiscussion.IsSuccess)
-            return Errors.General.AlreadyExist("Discussion with such relationId already exists").ToErrorList();
+        var messageText = MessageText.Create(command.MessageText).Value;
         
-        var discussion = Discussion.Create(relationId, userIds);
-        
+        var message = new Message(messageText, userId);
+
+        var discussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (discussion.IsFailure)
-            return discussion.Error.ToErrorList();
+            return Errors.General.ValueNotFound(relationId).ToErrorList();
         
-        await _discussionsRepository.AddAsync(discussion.Value, cancellationToken);
+        var result = discussion.Value.AddMessage(message);
+        
+        if (result.IsFailure)
+            return result.Error.ToErrorList();
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
-            "Created discussion with Id = {id}", discussion.Value.Id.Value);
+            "User with Id = {ID1} added message to discussion with relationId = {ID2}",
+            userId.Value,
+            discussion.Value.RelationId.Value);
 
         return discussion.Value.Id.Value;
     }

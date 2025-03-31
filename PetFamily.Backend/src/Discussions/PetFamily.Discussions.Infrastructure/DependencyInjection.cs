@@ -10,7 +10,6 @@ using PetFamily.SharedKernel.Structs;
 
 namespace PetFamily.Discussions.Infrastructure;
 
-
 public static class DependencyInjection
 {
     public static IServiceCollection AddDiscussionsInfrastructure(
@@ -22,27 +21,30 @@ public static class DependencyInjection
             .AddRepositories();
         return services;
     }
-    
+
     private static IServiceCollection AddDbContexts(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddScoped<WriteDbContext>(_ =>
             new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
-        
+
+        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
+            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+
         return services;
     }
-    
+
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Discussions);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddRepositories(
         this IServiceCollection services)
     {

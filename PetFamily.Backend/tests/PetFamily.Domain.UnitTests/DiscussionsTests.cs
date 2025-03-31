@@ -207,7 +207,7 @@ public class DiscussionsTests
         discussion.AddMessage(message1);
         
         // Act
-        discussion.Close();
+        discussion.Close(discussion.UserIds[0]);
 
         // Assert
         discussion.Status.Value.Should().Be(DiscussionStatusEnum.Closed);

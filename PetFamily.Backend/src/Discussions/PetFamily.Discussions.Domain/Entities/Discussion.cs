@@ -78,8 +78,15 @@ public class Discussion
         return UnitResult.Success<Error>();
     }
 
-    public void Close()
+    public UnitResult<Error> Close(UserId userId)
     {
+        if (!UserIds.Any(u => u == userId))
+        {
+            return Errors.General.Conflict("user cannot add messages to discussions he doesn't belong to");
+        }
+        
         Status = DiscussionStatus.Create(DiscussionStatusEnum.Closed).Value;
+        
+        return UnitResult.Success<Error>();
     }
 }

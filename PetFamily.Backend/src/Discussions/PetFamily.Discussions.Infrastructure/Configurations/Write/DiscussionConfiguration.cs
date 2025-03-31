@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.Discussions.Domain.Entities;
 using PetFamily.Discussions.Domain.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
@@ -36,21 +38,29 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
                 .HasColumnName("status");
         });
 
-        builder.HasMany(v => v.Messages)
+        builder.HasMany(d => d.Messages)
             .WithOne()
             .HasForeignKey("discussion_id")
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(s => s.Messages).AutoInclude();
-        
-        builder.OwnsMany(
+        builder.Navigation(d => d.Messages).AutoInclude();
+
+        /*builder.OwnsMany(
             d => d.UserIds,
             userIdBuilder =>
             {
                 userIdBuilder.ToTable("discussion_users");
                 userIdBuilder.WithOwner().HasForeignKey("discussion_id");
                 userIdBuilder.Property(u => u.Value).HasColumnName("user_id");
-            });
+            });*/
+
+        builder.Property(d => d.UserIds)
+            .CustomListJsonCollectionConverter(
+                value => value.Value,
+                dto => UserId.Create(dto))
+            .IsRequired()
+            .HasColumnName("user_ids")
+            .HasColumnType("jsonb");
     }
 }
