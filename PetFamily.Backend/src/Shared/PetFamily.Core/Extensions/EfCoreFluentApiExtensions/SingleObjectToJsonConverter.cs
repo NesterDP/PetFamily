@@ -13,9 +13,9 @@ public static class SingleObjectToJsonConverter
         Func<TDto, TValueObject> toValueObjectSelector)
     {
         return builder.HasConversion(
-                valueObjects => SerializeObjectToJson(valueObjects, toDtoSelector),
-                json => DeserializeObjectFromJson(json, toValueObjectSelector),
-                CreateValueObjectComparer<TValueObject>())
+                valueObject => SerializeObjectToJson(valueObject, toDtoSelector),
+                json => DeserializeObjectFromJson(json, toValueObjectSelector))
+                //CreateValueObjectComparer<TValueObject>())
             .HasColumnType("jsonb");
     }
 
@@ -40,8 +40,7 @@ public static class SingleObjectToJsonConverter
         return new ValueComparer<T>(
             (c1, c2) => Serialize(c1) == Serialize(c2),
             c => Serialize(c).GetHashCode(), 
-            c => Deserialize<T>(Serialize(c)) 
-        );
+            c => c);
     }
     
     private static string Serialize<T>(T value)
