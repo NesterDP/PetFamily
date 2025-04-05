@@ -5,10 +5,10 @@ namespace PetFamily.Web.ApplicationConfiguration;
 
 public static class LoggerConfigurator
 {
-    public static void Configure(WebApplicationBuilder builder)
+    public static void Configure(IConfiguration configuration)
     {
         Log.Logger = new LoggerConfiguration()
-            .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq")
+            .WriteTo.Seq(configuration.GetConnectionString("Seq")
                          ?? throw new ArgumentNullException("Seq"))
             .WriteTo.Console()
             .Enrich.WithMachineName()
