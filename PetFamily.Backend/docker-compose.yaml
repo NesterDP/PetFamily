@@ -1,9 +1,9 @@
 ﻿services:
   web:
     container_name: main_application
-    # build:
-    #  context: .
-    #  dockerfile: src/PetFamily.Web/Dockerfile
+    build:
+      context: .
+      dockerfile: src/PetFamily.Web/Dockerfile
     image: nesterdp/pet-family-backend:1.0
     restart: always
     environment:
