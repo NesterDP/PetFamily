@@ -1,7 +1,7 @@
 {
   "Permissions": {
-    "Users" : [
-      "users.UpdateSocialNetworks"
+    "Accounts" : [
+      "accounts.GetUserInfoById"
     ],
     "Discussions": [
       "discussions.CloseDiscussion",
@@ -52,7 +52,6 @@
   },
   "Roles": {
     "Participant": [
-      "users.UpdateSocialNetworks",
       "volunteers.GetFilteredPetsWithPagination",
       "volunteers.GetFilteredPetsWithPaginationDapper",
       "volunteers.GetPetById",
@@ -66,10 +65,10 @@
       "discussions.GetDiscussion",
       "discussions.AddMessage",
       "discussions.RemoveMessage",
-      "discussions.EditMessage"
+      "discussions.EditMessage",
+      "accounts.GetUserInfoById"
     ],
     "Volunteer": [
-      "users.UpdateSocialNetworks",
       "volunteers.AddPet",
       "volunteers.ChangePetPosition",
       "volunteers.DeletePet",
@@ -94,10 +93,10 @@
       "discussions.GetDiscussion",
       "discussions.AddMessage",
       "discussions.RemoveMessage",
-      "discussions.EditMessage"
+      "discussions.EditMessage",
+      "accounts.GetUserInfoById"
     ],
     "Admin" : [
-      "users.UpdateSocialNetworks",
       "volunteers.AddPet",
       "volunteers.ChangePetPosition",
       "volunteers.Create",
@@ -131,7 +130,8 @@
       "discussions.GetDiscussion",
       "discussions.AddMessage",
       "discussions.RemoveMessage",
-      "discussions.EditMessage"
+      "discussions.EditMessage",
+      "accounts.GetUserInfoById"
     ]
   }
 }

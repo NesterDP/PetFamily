@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 CultureConfigurator.Configure();
 
-LoggerConfigurator.Configure(builder);
+LoggerConfigurator.Configure(builder.Configuration);
 
 builder.Services.ConfigureSwagger();
 

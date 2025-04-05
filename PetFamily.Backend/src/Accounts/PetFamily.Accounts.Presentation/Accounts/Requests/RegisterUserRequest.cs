@@ -1,6 +1,6 @@
 using PetFamily.Accounts.Application.Commands.Register;
 
-namespace PetFamily.Accounts.Presentation.Requests;
+namespace PetFamily.Accounts.Presentation.Accounts.Requests;
 
 public record RegisterUserRequest(string Email, string UserName, string Password)
 {
