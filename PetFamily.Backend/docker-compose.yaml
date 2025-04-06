@@ -4,7 +4,7 @@
     build:
       context: .
       dockerfile: src/PetFamily.Web/Dockerfile
-    image: nesterdp/pet-family-backend:1.0
+    #image: nesterdp/pet-family-backend:1.0
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
