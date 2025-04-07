@@ -1,26 +1,25 @@
-using Amazon.S3;
+using FileService.ApplicationConfiguration;
 using FileService.Endpoints;
+using FileService.Middlewares;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services.AddEndpointsApiExplorer();
+CultureConfigurator.Configure();
+LoggerConfigurator.Configure(builder.Configuration);
 builder.Services.AddSwaggerGen();
+builder.Services.AddSerilog();
+
+builder.Services.ConfigureS3Storage(builder.Configuration);
 
 builder.Services.AddEndpoints();
-builder.Services.AddSingleton<IAmazonS3>(_ =>
-{
-    var config = new AmazonS3Config
-    {
-        ServiceURL = "http://localhost:9000",
-        ForcePathStyle = true,
-        UseHttp = true
-    };
-
-    return new AmazonS3Client("minioadmin", "minioadmin", config);
-});
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+
+app.UseExceptionMiddleware();
+
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
