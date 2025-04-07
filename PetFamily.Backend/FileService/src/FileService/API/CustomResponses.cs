@@ -5,14 +5,14 @@ namespace FileService.API;
 
 public static class CustomResponses
 {
-    public static IResult EnvelopedOk(object? value)
+    public static IResult Ok(object? value)
     {
         var envelope = Envelope.Ok(value);
         
         return Results.Ok(envelope);
     }
     
-    public static IResult EnvelopedErrors(ErrorList errorList)
+    public static IResult Errors(ErrorList errorList)
     {
         var envelope = Envelope.Error(errorList);
         

@@ -15,6 +15,8 @@ builder.Services.ConfigureS3Storage(builder.Configuration);
 builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 app.UseExceptionMiddleware();
@@ -26,6 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapEndpoints();
 
