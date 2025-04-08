@@ -9,7 +9,9 @@
 
     <ItemGroup>
         <PackageReference Include="AWSSDK.S3" Version="3.7.405.9" />
+        <PackageReference Include="CSharpFunctionalExtensions" Version="3.5.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
@@ -21,11 +23,6 @@
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Infrastructure\Providers\" />
-      <Folder Include="Infrastructure\Repositories\" />
     </ItemGroup>
 
 </Project>

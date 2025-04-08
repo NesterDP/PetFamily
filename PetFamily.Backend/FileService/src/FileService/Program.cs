@@ -1,6 +1,9 @@
 using FileService.ApplicationConfiguration;
 using FileService.Endpoints;
+using FileService.Infrastructure.MongoDataAccess;
+using FileService.Infrastructure.Repositories;
 using FileService.Middlewares;
+using MongoDB.Driver;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,10 +14,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSerilog();
 
 builder.Services.ConfigureS3Storage(builder.Configuration);
+builder.Services.ConfigureMongoDb(builder.Configuration);
+builder.Services.AddScoped<FileMongoDbContext>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddCors();
 
 var app = builder.Build();
