@@ -1,4 +1,4 @@
-namespace FileService.Shared.Models;
+namespace FileService.Core.Models;
 
 public class PagedList<T>
 {

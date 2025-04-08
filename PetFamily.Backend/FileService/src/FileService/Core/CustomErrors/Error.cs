@@ -1,4 +1,4 @@
-namespace FileService.Shared.CustomErrors;
+namespace FileService.Core.CustomErrors;
 
 public record Error
 {

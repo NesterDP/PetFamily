@@ -1,5 +1,5 @@
 using Amazon.S3;
-using FileService.Options;
+using FileService.Infrastructure.Options;
 
 namespace FileService.ApplicationConfiguration;
 

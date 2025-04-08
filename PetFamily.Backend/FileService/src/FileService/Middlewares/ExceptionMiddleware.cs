@@ -1,5 +1,5 @@
-using FileService.Shared.CustomErrors;
-using FileService.Shared.Models;
+using FileService.Core.CustomErrors;
+using FileService.Core.Models;
 
 namespace FileService.Middlewares;
 

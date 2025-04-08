@@ -1,4 +1,4 @@
-namespace FileService.Options;
+namespace FileService.Infrastructure.Options;
 
 public class MinioOptions
 {

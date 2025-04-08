@@ -1,6 +1,6 @@
-using FileService.Shared.CustomErrors;
+using FileService.Core.CustomErrors;
 
-namespace FileService.Shared.Models;
+namespace FileService.Core.Models;
 
 public record Envelope
 {
