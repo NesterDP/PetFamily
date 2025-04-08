@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FileService.Core;
 using FileService.Core.CustomErrors;
+using FileService.Core.Models;
 using FileService.Infrastructure.MongoDataAccess;
 using MongoDB.Driver;
 

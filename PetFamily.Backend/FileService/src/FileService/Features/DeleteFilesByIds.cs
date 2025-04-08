@@ -1,10 +1,7 @@
 using FileService.API;
-using FileService.Core;
-using FileService.Endpoints;
+using FileService.API.Endpoints;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
-using FileService.Jobs;
-using Hangfire;
 
 namespace FileService.Features;
 

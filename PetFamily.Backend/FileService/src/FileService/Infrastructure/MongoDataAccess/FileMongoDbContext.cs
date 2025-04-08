@@ -1,4 +1,4 @@
-using FileService.Core;
+using FileService.Core.Models;
 using MongoDB.Driver;
 
 namespace FileService.Infrastructure.MongoDataAccess;

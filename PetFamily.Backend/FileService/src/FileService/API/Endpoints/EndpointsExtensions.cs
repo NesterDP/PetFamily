@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace FileService.Endpoints;
+namespace FileService.API.Endpoints;
 
 public static class EndpointsExtensions
 {

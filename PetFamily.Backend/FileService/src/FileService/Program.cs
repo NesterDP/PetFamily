@@ -1,8 +1,5 @@
+using FileService.API.Endpoints;
 using FileService.ApplicationConfiguration;
-using FileService.Endpoints;
-using FileService.Infrastructure.MongoDataAccess;
-using FileService.Infrastructure.Providers;
-using FileService.Infrastructure.Repositories;
 using FileService.Middlewares;
 using Hangfire;
 using Serilog;

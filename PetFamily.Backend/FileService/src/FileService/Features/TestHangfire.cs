@@ -1,6 +1,5 @@
-using CSharpFunctionalExtensions;
 using FileService.API;
-using FileService.Endpoints;
+using FileService.API.Endpoints;
 using FileService.Jobs;
 using Hangfire;
 using IResult = Microsoft.AspNetCore.Http.IResult;

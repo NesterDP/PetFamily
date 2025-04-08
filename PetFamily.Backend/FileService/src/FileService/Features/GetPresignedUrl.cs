@@ -1,5 +1,5 @@
 using FileService.API;
-using FileService.Endpoints;
+using FileService.API.Endpoints;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 

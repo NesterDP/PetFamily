@@ -1,6 +1,5 @@
-using Amazon.S3.Model;
 using FileService.API;
-using FileService.Endpoints;
+using FileService.API.Endpoints;
 using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;

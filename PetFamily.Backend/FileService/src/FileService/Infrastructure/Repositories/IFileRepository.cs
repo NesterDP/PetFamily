@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
-using FileService.Core;
 using FileService.Core.CustomErrors;
+using FileService.Core.Models;
 
 namespace FileService.Infrastructure.Repositories;
 
