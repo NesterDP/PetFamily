@@ -1,10 +1,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.S3.Transfer;
 using FileService.API;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Repositories;
+using FileService.Jobs;
+using Hangfire;
 
 namespace FileService.Features;
 
@@ -31,6 +32,9 @@ public static class CompleteMultipartUpload
         CancellationToken cancellationToken = default)
     {
         var fileId = Guid.NewGuid();
+
+        var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+            j.Execute(fileId, key), TimeSpan.FromSeconds(5));
 
         var completeRequest = new CompleteMultipartUploadRequest()
         {
@@ -62,6 +66,8 @@ public static class CompleteMultipartUpload
         };
 
         await fileRepository.Add(fileData, cancellationToken);
+
+        BackgroundJob.Delete(jobId);
 
         return CustomResponses.Ok(new
         {

@@ -3,7 +3,7 @@ using FileService.Endpoints;
 using FileService.Infrastructure.MongoDataAccess;
 using FileService.Infrastructure.Repositories;
 using FileService.Middlewares;
-using MongoDB.Driver;
+using Hangfire;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +22,8 @@ builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
 
+builder.Services.ConfigureHangfire(builder.Configuration);
+
 var app = builder.Build();
 
 app.UseExceptionMiddleware();
@@ -33,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHangfireDashboard();
 
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
