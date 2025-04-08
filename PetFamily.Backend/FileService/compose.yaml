@@ -1,0 +1,13 @@
+﻿services:
+  fileservice:
+    container_name: fileservice
+    #image: fileservice
+    build:
+      context: .
+      dockerfile: src/FileService/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - "8090:8080"
+    
