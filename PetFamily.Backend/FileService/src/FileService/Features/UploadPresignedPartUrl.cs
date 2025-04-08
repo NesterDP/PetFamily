@@ -13,21 +13,20 @@ public static class UploadPresignedPartUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/presigned-part", Handler);
+            app.MapPost("files/{key}/presigned-part", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
-        Guid key,
+        string key,
         UploadPresignedPartUrlRequest request,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken = default)
     {
-
         var presignedRequest = new GetPreSignedUrlRequest
         {
             BucketName = "bucket",
-            Key = $"videos/{key}",
+            Key = key,
             Verb = HttpVerb.PUT,
             Expires = DateTime.UtcNow.AddHours(24),
             Protocol = Protocol.HTTP,

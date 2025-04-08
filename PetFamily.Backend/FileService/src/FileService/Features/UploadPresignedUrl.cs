@@ -1,7 +1,9 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FileService.API;
+using FileService.Core;
 using FileService.Endpoints;
+using FileService.Infrastructure.Repositories;
 
 namespace FileService.Features;
 
@@ -9,8 +11,7 @@ public static class UploadPresignedUrl
 {
     private record UploadPresignedUrlRequest(
         string FileName,
-        string ContentType,
-        long Size);
+        string ContentType);
 
     public sealed class Endpoint : IEndpoint
     {
@@ -23,14 +24,17 @@ public static class UploadPresignedUrl
     private static async Task<IResult> Handler(
         UploadPresignedUrlRequest request,
         IAmazonS3 s3Client,
+        IFileRepository fileRepository,
         CancellationToken cancellationToken = default)
     {
-        var key = Guid.NewGuid();
+        var fileId = Guid.NewGuid();
+        
+        var key = $"{request.ContentType}/{Guid.NewGuid()}";
 
         var presignedRequest = new GetPreSignedUrlRequest
         {
             BucketName = "bucket",
-            Key = $"videos/{key}",
+            Key = key,
             Verb = HttpVerb.PUT,
             Expires = DateTime.UtcNow.AddHours(24),
             ContentType = request.ContentType,
@@ -42,6 +46,25 @@ public static class UploadPresignedUrl
         };
 
         var presignedUrl = await s3Client.GetPreSignedURLAsync(presignedRequest);
+        
+        var metaDataRequest = new GetObjectMetadataRequest()
+        {
+            BucketName = "bucket",
+            Key = key
+        };
+
+        var metadata = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken);
+        
+        var fileData = new FileData
+        {
+            Id = fileId,
+            StoragePath = key,
+            Size = metadata.Headers.ContentLength,
+            ContentType = metadata.Headers.ContentType,
+            UploadDate = DateTime.UtcNow
+        };
+
+        await fileRepository.Add(fileData, cancellationToken);
 
         return CustomResponses.Ok(new
         {
