@@ -44,15 +44,14 @@ public static class GetPresignedUrl
             providerResponse.Value,
             fileData => fileData.StoragePath,
             providerData => providerData.Key,
-            (file, provider) => new ExtendedFileInfo(
-                file.Id,
-                provider.Key,
-                provider.Url,
-                file.UploadDate,
-                file.Size,
-                file.ContentType
-            )
-        ).ToList();
+            (fileData, providerData) => new ExtendedFileInfo(
+                fileData.Id,
+                providerData.Key,
+                providerData.Url,
+                fileData.UploadDate,
+                fileData.Size,
+                fileData.ContentType))
+            .ToList();
 
         return CustomResponses.Ok(response);
     }
