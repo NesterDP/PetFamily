@@ -21,9 +21,19 @@ public class FileRepository : IFileRepository
         return fileData.Id;
     }
 
-    public async Task<IReadOnlyCollection<FileData>> Get(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<FileData>, Error>> Get(
+        IEnumerable<Guid> fileIds,
+        CancellationToken cancellationToken)
     {
-        return await _dbContext.Files.Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);
+        var filesData = await _dbContext.Files
+            .Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);
+
+        if (filesData.Count != fileIds.Count())
+            return Errors.General.ValueNotFound("Some of the provided IDs do not exist in the database", true);
+
+        return filesData;
+
+
     }
 
     public async Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)

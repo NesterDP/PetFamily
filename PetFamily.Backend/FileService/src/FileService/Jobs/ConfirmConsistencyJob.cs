@@ -25,7 +25,7 @@ public class ConfirmConsistencyJob
     {
         _logger.LogInformation("Start ConfirmConsistencyJob with {fileId} and {key}", fileId, key);
 
-        throw new Exception("buuug!");
+        throw new Exception("bug!");
 
         await Task.Delay(3000);
         

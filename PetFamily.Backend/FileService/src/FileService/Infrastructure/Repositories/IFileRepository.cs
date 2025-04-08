@@ -7,6 +7,8 @@ namespace FileService.Infrastructure.Repositories;
 public interface IFileRepository
 {
     Task<Result<Guid, Error>> Add(FileData fileData, CancellationToken cancellationToken);
-    Task<IReadOnlyCollection<FileData>> Get(IEnumerable<Guid> fileIds, CancellationToken cancellationToken);
+    Task<Result<IReadOnlyCollection<FileData>, Error>> Get(
+        IEnumerable<Guid> fileIds,
+        CancellationToken cancellationToken);
     Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken);
 }

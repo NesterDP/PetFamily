@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using FileService.API;
 using FileService.Core;
 using FileService.Endpoints;
+using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
 using Hangfire;
@@ -11,50 +12,32 @@ namespace FileService.Features;
 
 public static class CompleteMultipartUpload
 {
-    private record PartETagInfo(int PartNumber, string ETag);
+    public record PartETagInfo(int PartNumber, string ETag);
 
-    private record CompleteMultipartRequest(string UploadId, List<PartETagInfo> Parts);
-
+    public record CompleteMultipartRequest(string UploadId, List<PartETagInfo> Parts);
 
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key}/complete-multipart", Handler);
+            app.MapPost("files/complete-multipart", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
         string key,
         CompleteMultipartRequest request,
-        IAmazonS3 s3Client,
+        IFileProvider fileProvider,
         IFileRepository fileRepository,
         CancellationToken cancellationToken = default)
     {
         var fileId = Guid.NewGuid();
 
+        // TODO: replace with job that actually deletes file from s3 storage
         var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
             j.Execute(fileId, key), TimeSpan.FromSeconds(5));
 
-        var completeRequest = new CompleteMultipartUploadRequest()
-        {
-            BucketName = "bucket",
-            Key = key,
-            UploadId = request.UploadId,
-            PartETags = request.Parts.Select(p => new PartETag(p.PartNumber, p.ETag)).ToList()
-        };
-
-        var response = await s3Client.CompleteMultipartUploadAsync(
-            completeRequest,
-            cancellationToken);
-
-        var metaDataRequest = new GetObjectMetadataRequest()
-        {
-            BucketName = "bucket",
-            Key = key
-        };
-
-        var metadata = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken);
+        var metadata = await fileProvider.GenerateCompeteMultipartUploadData(request, key, cancellationToken);
 
         var fileData = new FileData
         {
@@ -69,10 +52,6 @@ public static class CompleteMultipartUpload
 
         BackgroundJob.Delete(jobId);
 
-        return CustomResponses.Ok(new
-        {
-            key,
-            location = response.Location
-        });
+        return CustomResponses.Ok(key);
     }
 }

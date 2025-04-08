@@ -1,17 +1,21 @@
-using Amazon.S3;
-using Amazon.S3.Model;
 using FileService.API;
 using FileService.Core;
 using FileService.Endpoints;
+using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
+using FileService.Jobs;
+using Hangfire;
 
 namespace FileService.Features;
 
 public static class UploadPresignedUrl
 {
-    private record UploadPresignedUrlRequest(
+    public record UploadPresignedUrlRequest(
         string FileName,
-        string ContentType);
+        string ContentType,
+        long Size);
+    
+    public record UploadResponse(string Key, string Url);
 
     public sealed class Endpoint : IEndpoint
     {
@@ -23,53 +27,27 @@ public static class UploadPresignedUrl
 
     private static async Task<IResult> Handler(
         UploadPresignedUrlRequest request,
-        IAmazonS3 s3Client,
+        IFileProvider fileProvider,
         IFileRepository fileRepository,
         CancellationToken cancellationToken = default)
     {
+        var response = await fileProvider.GenerateUploadUrl(request);
+        
         var fileId = Guid.NewGuid();
-        
-        var key = $"{request.ContentType}/{Guid.NewGuid()}";
 
-        var presignedRequest = new GetPreSignedUrlRequest
-        {
-            BucketName = "bucket",
-            Key = key,
-            Verb = HttpVerb.PUT,
-            Expires = DateTime.UtcNow.AddHours(24),
-            ContentType = request.ContentType,
-            Protocol = Protocol.HTTP,
-            Metadata =
-            {
-                ["file-name"] = request.FileName
-            }
-        };
-
-        var presignedUrl = await s3Client.GetPreSignedURLAsync(presignedRequest);
-        
-        var metaDataRequest = new GetObjectMetadataRequest()
-        {
-            BucketName = "bucket",
-            Key = key
-        };
-
-        var metadata = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken);
-        
         var fileData = new FileData
         {
             Id = fileId,
-            StoragePath = key,
-            Size = metadata.Headers.ContentLength,
-            ContentType = metadata.Headers.ContentType,
+            StoragePath = response.Key,
+            Size = request.Size,
+            ContentType = request.ContentType,
             UploadDate = DateTime.UtcNow
         };
 
         await fileRepository.Add(fileData, cancellationToken);
-
-        return CustomResponses.Ok(new
-        {
-            key,
-            url = presignedUrl
-        });
+        
+        // TODO: place job that checks if file was actually uploaded in s3 storage, if not - delete record from mongoDB
+        
+        return CustomResponses.Ok(response);
     }
 }

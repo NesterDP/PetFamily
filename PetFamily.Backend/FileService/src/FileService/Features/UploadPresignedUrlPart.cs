@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Amazon.S3.Model;
 using FileService.API;
 using FileService.Endpoints;
@@ -5,26 +6,26 @@ using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;
 
-public static class StartMultipartUpload
+public static class UploadPresignedUrlPart
 {
-    public record StartMultipartUploadRequest(string FileName, string ContentType);
-    
-    public record StartMultipartUploadResponse(string Key, string UploadId);
+    public record UploadPresignedUrlPartRequest(string UploadId, int PartNumber);
 
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/multipart", Handler);
+            app.MapPost("files/presigned-part", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
-        StartMultipartUploadRequest request,
+        string key,
+        UploadPresignedUrlPartRequest request,
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
-        var response = await fileProvider.GenerateStartingMultipartUploadData(request, cancellationToken);
+
+        var response = await fileProvider.GenerateUploadUrlPart(request, key);
 
         return CustomResponses.Ok(response);
     }
