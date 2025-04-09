@@ -30,12 +30,13 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
             TransferDetail.Create("visa", "for transfers outside of country").Value
         ];
         
-        const string MAIN_PHOTO = "new_photo_2.jpg";
         List<Photo> photos =
         [
-            new Photo(FilePath.Create("new_photo_1.jpg").Value),
-            new Photo(FilePath.Create(MAIN_PHOTO).Value, true)
+            Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
+            Photo.Create(Guid.NewGuid(), true, Photo.AllowedTypes.First()).Value,
         ];
+        
+        var MAIN_PHOTO = photos[1].Id;
 
         var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -81,9 +82,9 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
         result.TransferDetails[1].Description.Should().Be(transferDetails[1].Description);
 
         // main photo should be the first one
-        result.Photos[0].PathToStorage.Should().Be(MAIN_PHOTO);
+        result.Photos[0].Id.Should().Be(MAIN_PHOTO);
         result.Photos[0].Main.Should().Be(true);
-        result.Photos[1].PathToStorage.Should().Be(photos[0].PathToStorage.Path);
+        result.Photos[1].Id.Should().Be(photos[0].Id);
         result.Photos[1].Main.Should().Be(photos[0].Main);
     }
     

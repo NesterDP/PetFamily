@@ -219,32 +219,6 @@ public class PetTests
         fifthPet.Position.Value.Should().Be(4);
     }
 
-    [Fact]
-    public void LittleTest()
-    {
-        List<Photo> photos = new List<Photo>();
-        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "1").Value));
-        photos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "2").Value));
-
-        List<Photo> otherPhotos = new List<Photo>();
-        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "3").Value));
-        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "4").Value));
-        otherPhotos.Add(new Photo(FilePath.Create(Guid.NewGuid(), "5").Value));
-
-        photos.AddRange(otherPhotos);
-        photos.Count.Should().Be(5);
-        foreach (var photo in photos)
-        {
-            Console.WriteLine(photo.PathToStorage.Path);
-        }
-
-        var first_guid = PetId.NewPetId();
-        var second_guid = PetId.Create(first_guid.Value);
-        //second_guid = PetId.NewPetId();
-        Console.WriteLine(first_guid == second_guid);
-        first_guid.Should().BeEquivalentTo(second_guid);
-    }
-
     private static Volunteer CreateVolunteer()
     {
         var volunteerId = VolunteerId.NewVolunteerId();
