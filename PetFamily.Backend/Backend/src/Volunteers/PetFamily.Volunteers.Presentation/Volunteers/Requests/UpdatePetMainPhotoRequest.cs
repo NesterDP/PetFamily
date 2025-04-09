@@ -2,8 +2,8 @@ using PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 
-public record UpdatePetMainPhotoRequest(string MainPhotoPath)
+public record UpdatePetMainPhotoRequest(Guid MainPhotoId)
 {
     public UpdatePetMainPhotoCommand ToCommand(Guid volunteerId, Guid petId) =>
-    new (volunteerId, petId, MainPhotoPath);
+    new (volunteerId, petId, MainPhotoId);
 }

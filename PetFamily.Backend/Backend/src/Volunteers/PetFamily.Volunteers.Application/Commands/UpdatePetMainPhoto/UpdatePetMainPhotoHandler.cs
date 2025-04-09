@@ -7,7 +7,6 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 
@@ -44,7 +43,7 @@ public class UpdatePetMainPhotoHandler : ICommandHandler<Guid, UpdatePetMainPhot
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
 
-        var updateResult = volunteerResult.Value.UpdatePetMainPhoto(command.PetId, command.MainPhotoPath);
+        var updateResult = volunteerResult.Value.UpdatePetMainPhoto(command.PetId, command.MainPhotoId);
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrorList();
         
