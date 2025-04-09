@@ -15,4 +15,8 @@ public static class DomainConstants
     public const string ADMIN = "Admin";
     public const string VOLUNTEER = "Volunteer";
     public const string PARTICIPANT = "Participant";
+
+    public const string PNG = "image/png";
+    public const string JPG = "image/jpg";
+    public const string WEBP = "image/webp";
 }

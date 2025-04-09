@@ -17,7 +17,7 @@ public class User : IdentityUser<Guid>
 
     private User() { } // ef core
     
-    public string Photo { get; set; }
+    public Avatar Avatar { get; set; }
     
     public FullName FullName { get; set; } 
     

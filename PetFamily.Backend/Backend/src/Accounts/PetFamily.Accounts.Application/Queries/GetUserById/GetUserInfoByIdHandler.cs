@@ -36,7 +36,7 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
             participantAccountDto = new ParticipantAccountDto();
             participantAccountDto.FavoritePets = result.Value.ParticipantAccount!.FavoritePets;
         }
-        
+
         if (result.Value.VolunteerAccount != null)
         {
             volunteerAccountDto = new VolunteerAccountDto();
@@ -45,9 +45,16 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
                 .Select(t => new TransferDetailDto(t.Name, t.Description)).ToList();
             volunteerAccountDto.Certificates = result.Value.VolunteerAccount.Certificates;
         }
-
+        
         if (result.Value.AdminAccount != null)
             adminAccountDto = new AdminAccountDto();
+        
+        
+        var avatar = new AvatarDto();
+        if (result.Value.Avatar.Id is not null)
+        {
+            // TODO: здесь должен быть запрос к FileService на получение URL по Id файла
+        }
 
         var userInfoDto = new UserInfoDto()
         {
@@ -55,7 +62,7 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
                 result.Value.FullName.FirstName,
                 result.Value.FullName.LastName,
                 result.Value.FullName.Surname),
-            Photo = result.Value.Photo,
+            Avatar = avatar,
             Email = result.Value.Email,
             PhoneNumber = result.Value.PhoneNumber,
             Roles = result.Value.Roles.Select(r => new RoleDto(r.Name)).ToList(),
