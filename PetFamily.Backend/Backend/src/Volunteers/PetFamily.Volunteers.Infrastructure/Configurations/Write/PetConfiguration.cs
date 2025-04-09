@@ -149,8 +149,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.Property(p => p.PhotosList)
             .CustomJsonCollectionConverter(
-                photo => new PhotoDto(photo.PathToStorage.Path, photo.Main),
-                dto => new Photo(FilePath.Create(dto.PathToStorage).Value, dto.Main))
+                photo => new PhotoDto(photo.Id.Value, photo.Main),
+                dto => Photo.Create(FileId.Create(dto.Id), dto.Main, Photo.AllowedTypes.First()).Value)
             .HasColumnName("photos");
         
         builder.Property(p => p.CreationDate)

@@ -152,7 +152,7 @@ public sealed class Pet : SoftDeletableEntity<PetId>
         var updatedPhotosList = new List<Photo>();
         foreach (var photo in _photos)
         {
-            if (photo.PathToStorage.Path != mainPhoto.PathToStorage.Path)
+            if (photo.Id != mainPhoto.Id)
                 updatedPhotosList.Add(photo.CreateCopy(false));
         }
         updatedPhotosList.Add(mainPhoto.CreateCopy(true));
