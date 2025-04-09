@@ -96,6 +96,8 @@ public class GetFilteredPetsWithPaginationDapperHandler : IQueryHandler<
         {
             pet.Photos = pet.Photos.OrderByDescending(p => p.Main).ToArray();
         }
+        
+        // TODO: здесь должен быть вызов FileService, который создаст URL для всех фото питомца
 
         return new PagedList<PetDto>()
         {
