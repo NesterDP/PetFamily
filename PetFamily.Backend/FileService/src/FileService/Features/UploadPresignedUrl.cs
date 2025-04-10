@@ -55,10 +55,10 @@ public static class UploadPresignedUrl
     {
         var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
                 j.Execute(fileId, key, cancellationToken),
-            TimeSpan.FromHours(1));
+            TimeSpan.FromHours(24));
 
         BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
                 j.Execute(fileId, key, clearJobId, cancellationToken),
-            TimeSpan.FromHours(1));
+            TimeSpan.FromSeconds(60));
     }
 }
