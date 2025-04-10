@@ -13,7 +13,9 @@ namespace FileService.Infrastructure.Providers;
 
 public interface IFileProvider
 {
-    Task<UploadResponse> GenerateUploadUrl(UploadPresignedUrlRequest request);
+    public Task ConfirmExistence(string key);
+    
+    public Task<UploadResponse> GenerateUploadUrl(UploadPresignedUrlRequest request);
 
     public Task<Result<List<ProviderGetResponse>, Error>> GenerateGetUrls(
         List<string> keys,

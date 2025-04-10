@@ -33,8 +33,6 @@ public class FileRepository : IFileRepository
             return Errors.General.ValueNotFound("Some of the provided IDs do not exist in the database", true);
 
         return filesData;
-
-
     }
 
     public async Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
@@ -46,6 +44,18 @@ public class FileRepository : IFileRepository
             return Errors.General.Failure("failed to delete files from MongoDB");
 
         return Result.Success<Error>();
+    }
+    
+    public async Task<Result<FileData, Error>> GetByKey(
+        string key,
+        CancellationToken cancellationToken)
+    {
+        var filesData = await _dbContext.Files
+            .Find(f => f.StoragePath == key).FirstOrDefaultAsync(cancellationToken);
 
+        if (filesData is null)
+            return Errors.General.ValueNotFound("fileData with such storagePath doesn't exist in database", true);
+
+        return filesData;
     }
 }
