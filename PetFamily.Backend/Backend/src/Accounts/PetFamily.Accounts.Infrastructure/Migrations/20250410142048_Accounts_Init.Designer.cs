@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.DbContexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20250330171520_Accounts_Init")]
+    [Migration("20250410142048_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />
@@ -368,10 +368,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("text")
-                        .HasColumnName("photo");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
@@ -568,6 +564,31 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.User", b =>
+                {
+                    b.OwnsOne("PetFamily.SharedKernel.ValueObjects.Avatar", "Avatar", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<Guid?>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("avatar_id");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("users", "accounts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_users_users_id");
+                        });
+
+                    b.Navigation("Avatar")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.VolunteerAccount", b =>

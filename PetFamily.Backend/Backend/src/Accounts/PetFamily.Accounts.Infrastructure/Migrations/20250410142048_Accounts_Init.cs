@@ -49,7 +49,7 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    photo = table.Column<string>(type: "text", nullable: true),
+                    avatar_id = table.Column<Guid>(type: "uuid", nullable: true),
                     social_networks = table.Column<string>(type: "jsonb", nullable: false),
                     first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
