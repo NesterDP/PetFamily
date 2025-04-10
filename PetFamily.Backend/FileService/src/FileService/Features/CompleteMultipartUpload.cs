@@ -31,9 +31,7 @@ public static class CompleteMultipartUpload
     {
         var fileId = Guid.NewGuid();
 
-        // TODO: replace with job that actually deletes file from s3 storage
-        var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
-            j.Execute(fileId, key), TimeSpan.FromSeconds(5));
+        var (clearJobId, consistencyJobId) = CreateJobs(key, fileId, cancellationToken);
 
         var metadata = await fileProvider.GenerateCompeteMultipartUploadData(request, key, cancellationToken);
 
@@ -47,9 +45,26 @@ public static class CompleteMultipartUpload
         };
 
         await fileRepository.Add(fileData, cancellationToken);
-
-        BackgroundJob.Delete(jobId);
-
+        
+        BackgroundJob.Delete(consistencyJobId);
+        BackgroundJob.Delete(clearJobId);
+        
         return CustomResponses.Ok(key);
+    }
+
+    private static (string clearJobId, string consistencyJobId) CreateJobs(
+        string key,
+        Guid fileId,
+        CancellationToken cancellationToken)
+    {
+        var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
+                j.Execute(fileId, key, cancellationToken), 
+            TimeSpan.FromHours(24));
+
+        var consistencyJobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+                j.Execute(fileId, key, clearJobId, cancellationToken),
+            TimeSpan.FromSeconds(60));
+        
+        return (clearJobId, consistencyJobId);
     }
 }

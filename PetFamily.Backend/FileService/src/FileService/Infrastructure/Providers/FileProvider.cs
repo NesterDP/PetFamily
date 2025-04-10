@@ -27,6 +27,17 @@ public class FileProvider : IFileProvider
         _logger = logger;
     }
 
+    public async Task ConfirmExistence(string key)
+    {
+        var request = new GetObjectMetadataRequest
+        {
+            BucketName = BUCKET_NAME,
+            Key = key,
+        };
+        
+        await _s3Client.GetObjectMetadataAsync(request);
+    }
+
     public async Task<UploadResponse> GenerateUploadUrl(UploadPresignedUrlRequest request)
     {
         var key = $"{request.ContentType}/{Guid.NewGuid()}";
@@ -119,18 +130,19 @@ public class FileProvider : IFileProvider
 
         return metadata;
     }
-    
+
     public async Task<List<string>> DeleteFiles(
         List<string> keys,
         CancellationToken cancellationToken)
     {
         var request = new DeleteObjectsRequest();
         request.BucketName = BUCKET_NAME;
-        
+
         foreach (var key in keys)
         {
             request.AddKey(key);
         }
+
         await _s3Client.DeleteObjectsAsync(request, cancellationToken);
 
         return keys;

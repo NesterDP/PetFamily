@@ -3,6 +3,8 @@ using FileService.API.Endpoints;
 using FileService.Core.Models;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
+using FileService.Jobs;
+using Hangfire;
 
 namespace FileService.Features;
 
@@ -12,7 +14,7 @@ public static class UploadPresignedUrl
         string FileName,
         string ContentType,
         long Size);
-    
+
     public record UploadResponse(string Key, string Url);
 
     public sealed class Endpoint : IEndpoint
@@ -30,8 +32,10 @@ public static class UploadPresignedUrl
         CancellationToken cancellationToken = default)
     {
         var response = await fileProvider.GenerateUploadUrl(request);
-        
+
         var fileId = Guid.NewGuid();
+        
+        CreateJobs(fileId, response.Key, cancellationToken);
 
         var fileData = new FileData
         {
@@ -41,11 +45,20 @@ public static class UploadPresignedUrl
             ContentType = request.ContentType,
             UploadDate = DateTime.UtcNow
         };
-
+        
         await fileRepository.Add(fileData, cancellationToken);
-        
-        // TODO: place job that checks if file was actually uploaded in s3 storage, if not - delete record from mongoDB
-        
+
         return CustomResponses.Ok(response);
+    }
+
+    private static void CreateJobs(Guid fileId, string key, CancellationToken cancellationToken)
+    {
+        var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
+                j.Execute(fileId, key, cancellationToken),
+            TimeSpan.FromHours(24));
+
+        BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+                j.Execute(fileId, key, clearJobId, cancellationToken),
+            TimeSpan.FromSeconds(60));
     }
 }
