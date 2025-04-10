@@ -5,6 +5,7 @@ using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
+using Xunit.Sdk;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -24,8 +25,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var PETS_COUNT = 16;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        var volunteer2 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer2 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -44,8 +47,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var PETS_COUNT = 16;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        var volunteer2 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer2 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE, volunteer1.Id);
         var volunteer1PetsHash = volunteer1.AllOwnedPets.Select(p => p.Id.Value).ToHashSet();
 
@@ -65,19 +70,23 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         // arrange
         List<Photo> photos1 =
         [
-            new Photo(FilePath.Create("new_photo_1.jpg").Value),
-            new Photo(FilePath.Create("new_photo_2.jpg").Value, true)
+            Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
+            Photo.Create(Guid.NewGuid(), true, Photo.AllowedTypes.First()).Value,
         ];
+
         List<Photo> photos2 =
         [
-            new Photo(FilePath.Create("new_photo_1.jpg").Value, true),
-            new Photo(FilePath.Create("new_photo_2.jpg").Value)
+            Photo.Create(Guid.NewGuid(), true, Photo.AllowedTypes.First()).Value,
+            Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value
         ];
+
         var PETS_COUNT = 16;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        var volunteer2 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        var volunteer2 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         volunteer1.AllOwnedPets[2].UpdatePhotos(photos1);
         volunteer2.AllOwnedPets[4].UpdatePhotos(photos2);
 
@@ -103,7 +112,8 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var PETS_COUNT = 3;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
         volunteer1.AllOwnedPets[1].UpdateName(Name.Create("clap").Value);
         volunteer1.AllOwnedPets[2].UpdateName(Name.Create("angel").Value);
@@ -130,7 +140,8 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var PETS_COUNT = 3;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
         volunteer1.AllOwnedPets[1].UpdateName(Name.Create("clap").Value);
         volunteer1.AllOwnedPets[2].UpdateName(Name.Create("angel").Value);
@@ -157,7 +168,8 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var PETS_COUNT = 3;
         var PAGE_SIZE = 16;
         var PAGE = 1;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].Delete();
         volunteer1.AllOwnedPets[1].Delete();
         volunteer1.AllOwnedPets[2].UpdateName(Name.Create("angel").Value);
@@ -185,8 +197,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var MAX_AGE = 5;
         var MAX_WEIGHT = 30;
         var MAX_HEIGHT = 30;
-        var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
-        var volunteer2 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+        var volunteer1 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+        var volunteer2 =
+            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
 
         var pet = volunteer1.AllOwnedPets[0];
         pet.UpdateName(Name.Create("chip").Value);

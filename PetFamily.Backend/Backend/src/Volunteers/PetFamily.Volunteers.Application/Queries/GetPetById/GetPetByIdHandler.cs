@@ -23,6 +23,8 @@ public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
         if (result != null)
             result.Photos = result.Photos.OrderByDescending(p => p.Main).ToArray();
         
+        // TODO: здесь должен быть вызов FileService, который создаст URL для всех фото питомца
+        
         return result;
     }
 }

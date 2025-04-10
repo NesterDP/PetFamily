@@ -6,6 +6,7 @@ using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
@@ -23,27 +24,22 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
     public async Task DeletePhotos_success_should_remove_selected_photos_from_database()
     {
         // arrange
-        List<FilePath> photosForDeletion =
-        [
-            FilePath.Create("photo1").Value,
-            FilePath.Create("photo3").Value
-        ];
-        Factory.SetupSuccessFileServiceMock(photosForDeletion);
-        List<string> petPhotos = ["photo1", "photo2", "photo3"];
-        var PET_COUNT = 5;
+        // TODO: здесь должен будет быть обновленный Mock для взаимодействия с FileService
+        // Factory.SetupSuccessFileServiceMock(photosForDeletion);
         
+        List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
+        List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
+        
+        var PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
-        pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
-        pet.UpdateMainPhoto(pet.PhotosList[1]); // "photo2" is main one
+        pet.UpdatePhotos(petPhotosIds.Select(p => Photo.Create(FileId.Create(p), Photo.AllowedTypes.First()).Value));
+        pet.UpdateMainPhoto(pet.PhotosList[1]); // "[1]" is main one
         await VolunteersWriteDbContext.SaveChangesAsync();
         
         // expected result
-        var resultList = petPhotos.Except(photosForDeletion.Select(p => p.Path)).ToList();
-        var command = Fixture.DeletePetPhotosCommand(
-            volunteer.Id,
-            pet.Id,
-            photosForDeletion.Select(d => d.Path).ToList());
+        var resultList = petPhotosIds.Except(photosForDeletion).ToList();
+        var command = new DeletePetPhotosCommand(volunteer.Id, pet.Id, photosForDeletion);
         
         // act
         var result = await _sut.HandleAsync(command);
@@ -59,30 +55,32 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         pet.PhotosList.Count.Should().Be(resultList.Count);
         
         // position independent content equality
-        resultList.All(photoName => pet.PhotosList.Any(photo => photo.PathToStorage.Path == photoName)).Should().BeTrue();
+        resultList.All(photoId => pet.PhotosList.Any(photo => photo.Id == photoId)).Should().BeTrue();
         
         // main photo shouldn't be affected
-        pet.PhotosList.Any(photo => photo.PathToStorage.Path == petPhotos[1] && photo.Main == true).Should().BeTrue();
+        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main == true).Should().BeTrue();
     }
     
     [Fact]
     public async Task DeletePhotos_failure_should_remove_selected_photos_from_database_while_returning_error()
     {
         // arrange
-        Factory.SetupFailureFileServiceMock();
+        // TODO: здесь должен будет быть обновленный Mock для взаимодействия с FileService
+        // Factory.SetupFailureFileServiceMock();
+        
         var PET_COUNT = 5;
-        List<string> petPhotos = ["photo1", "photo2", "photo3"];
-        List<string> photosForDeletion = ["photo1", "photo3"];
+        List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
+        List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
         
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
-        pet.UpdatePhotos(petPhotos.Select(p => new Photo(FilePath.Create(p).Value)));
+        pet.UpdatePhotos(petPhotosIds.Select(p => Photo.Create(FileId.Create(p), Photo.AllowedTypes.First()).Value));
         pet.UpdateMainPhoto(pet.PhotosList[1]); // "photo2" is main one
         await VolunteersWriteDbContext.SaveChangesAsync();
         
         // expected result
-        var resultList = petPhotos.Except(photosForDeletion).ToList();
-        var command = Fixture.DeletePetPhotosCommand(volunteer.Id, pet.Id, photosForDeletion);
+        var resultList = petPhotosIds.Except(photosForDeletion).ToList();
+        var command = new DeletePetPhotosCommand(volunteer.Id, pet.Id, photosForDeletion);
         
         // act
         var result = await _sut.HandleAsync(command);
@@ -97,9 +95,9 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         pet.PhotosList.Count.Should().Be(resultList.Count);
         
         // position independent equality
-        resultList.All(photoName => pet.PhotosList.Any(photo => photo.PathToStorage.Path == photoName)).Should().BeTrue();
+        resultList.All(photoId => pet.PhotosList.Any(photo => photo.Id == photoId)).Should().BeTrue();
         
         // main photo shouldn't be affected
-        pet.PhotosList.Any(photo => photo.PathToStorage.Path == petPhotos[1] && photo.Main == true).Should().BeTrue();
+        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main == true).Should().BeTrue();
     }
 }

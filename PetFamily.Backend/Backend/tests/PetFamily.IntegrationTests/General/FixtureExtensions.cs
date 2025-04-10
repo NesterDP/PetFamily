@@ -40,17 +40,4 @@ public static class FixtureExtensions
             .With(c => c.PetId, petId)
             .Create();
     }
-    
-    public static DeletePetPhotosCommand DeletePetPhotosCommand(
-        this Fixture fixture,
-        Guid volunteerId,
-        Guid petId,
-        List<string> photosForDeletion)
-    {
-        return fixture.Build<DeletePetPhotosCommand>()
-            .With(c => c.VolunteerId, volunteerId)
-            .With(c => c.PetId, petId)
-            .With(c => c.PhotosNames, photosForDeletion)
-            .Create();
-    }
 }

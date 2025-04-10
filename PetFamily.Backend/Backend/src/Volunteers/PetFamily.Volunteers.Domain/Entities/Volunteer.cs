@@ -87,13 +87,13 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
             chosenPet.UpdatePhotos(photos);
     }
 
-    public UnitResult<Error> UpdatePetMainPhoto(PetId petId, string path)
+    public UnitResult<Error> UpdatePetMainPhoto(PetId petId, Guid id)
     {
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
         if (chosenPet == null)
             return Errors.General.ValueNotFound(petId);
 
-        var photo = chosenPet.PhotosList.FirstOrDefault(p => p.PathToStorage.Path == path);
+        var photo = chosenPet.PhotosList.FirstOrDefault(p => p.Id == id);
         if (photo == null)
             return Errors.General.ValueNotFound();
         
