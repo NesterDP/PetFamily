@@ -37,10 +37,13 @@ public class FileRepository : IFileRepository
 
     public async Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
     {
+        var existedCount = await _dbContext.Files.CountDocumentsAsync(f =>
+            fileIds.Contains(f.Id), cancellationToken: cancellationToken);
+        
         var deleteResult = await _dbContext.Files
             .DeleteManyAsync(f => fileIds.Contains(f.Id), cancellationToken: cancellationToken);
 
-        if (deleteResult.DeletedCount != fileIds.Count())
+        if (deleteResult.DeletedCount != existedCount)
             return Errors.General.Failure("failed to delete files from MongoDB");
 
         return Result.Success<Error>();
