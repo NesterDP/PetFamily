@@ -6,17 +6,17 @@ namespace FileService.Jobs;
 
 public class ConfirmConsistencyJob
 {
-    private readonly IFileRepository _fileRepository;
-    private readonly IFileProvider _fileProvider;
+    private readonly IFilesRepository _filesRepository;
+    private readonly IFilesProvider _filesProvider;
     private readonly ILogger<ConfirmConsistencyJob> _logger;
 
     public ConfirmConsistencyJob(
-        IFileRepository fileRepository,
-        IFileProvider fileProvider,
+        IFilesRepository filesRepository,
+        IFilesProvider filesProvider,
         ILogger<ConfirmConsistencyJob> logger)
     {
-        _fileRepository = fileRepository;
-        _fileProvider = fileProvider;
+        _filesRepository = filesRepository;
+        _filesProvider = filesProvider;
         _logger = logger;
     }
 
@@ -29,9 +29,9 @@ public class ConfirmConsistencyJob
     {
         _logger.LogInformation("Start ConfirmConsistencyJob with FileId = {fileId} and Key = {key}", fileId, key);
 
-        await _fileProvider.ConfirmExistence(key);
+        await _filesProvider.ConfirmExistence(key);
 
-        var result = await _fileRepository.Get([fileId], cancellationToken);
+        var result = await _filesRepository.Get([fileId], cancellationToken);
         if (result.IsFailure)
             throw new Exception(result.Error.Message);
 

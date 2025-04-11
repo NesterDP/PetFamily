@@ -1,27 +1,23 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using CSharpFunctionalExtensions;
+using FileService.Contracts.Requests;
+using FileService.Contracts.SubModels;
 using FileService.Core.CustomErrors;
-using UploadPresignedUrlRequest = FileService.Features.UploadPresignedUrl.UploadPresignedUrlRequest;
-using StartMultipartUploadRequest = FileService.Features.StartMultipartUpload.StartMultipartUploadRequest;
-using UploadPresignedUrlPartRequest = FileService.Features.UploadPresignedUrlPart.UploadPresignedUrlPartRequest;
-using CompleteMultipartRequest = FileService.Features.CompleteMultipartUpload.CompleteMultipartRequest;
-using StartMultipartUploadResponse = FileService.Features.StartMultipartUpload.StartMultipartUploadResponse;
-using UploadResponse = FileService.Features.UploadPresignedUrl.UploadResponse;
-using ProviderGetResponse = FileService.Features.GetPresignedUrl.ProviderGetResponse;
+using CompleteMultipartUploadRequest = FileService.Contracts.Requests.CompleteMultipartUploadRequest;
 
 namespace FileService.Infrastructure.Providers;
 
-public class FileProvider : IFileProvider
+public class FilesProvider : IFilesProvider
 {
     private readonly IAmazonS3 _s3Client;
-    private readonly ILogger<FileProvider> _logger;
+    private readonly ILogger<FilesProvider> _logger;
     private const string BUCKET_NAME = "bucket";
     private const string FILENAME_METADATA = "file-name";
     private const int EXPIRATION_HOURS = 24;
     private const int MAX_DEGREE_OF_PARALLELISM = 10;
 
-    public FileProvider(IAmazonS3 s3Client, ILogger<FileProvider> logger)
+    public FilesProvider(IAmazonS3 s3Client, ILogger<FilesProvider> logger)
     {
         _s3Client = s3Client;
         _logger = logger;
@@ -38,7 +34,7 @@ public class FileProvider : IFileProvider
         await _s3Client.GetObjectMetadataAsync(request);
     }
 
-    public async Task<UploadResponse> GenerateUploadUrl(UploadPresignedUrlRequest request)
+    public async Task<MinimalFileInfo> GenerateUploadUrl(UploadPresignedUrlRequest request)
     {
         var key = $"{request.ContentType}/{Guid.NewGuid()}";
 
@@ -57,10 +53,10 @@ public class FileProvider : IFileProvider
         };
 
         var presignedUrl = await _s3Client.GetPreSignedURLAsync(presignedRequest);
-        return new UploadResponse(key, presignedUrl);
+        return new MinimalFileInfo(key, presignedUrl);
     }
 
-    public async Task<UploadResponse> GenerateUploadUrlPart(
+    public async Task<MinimalFileInfo> GenerateUploadUrlPart(
         UploadPresignedUrlPartRequest request,
         string key)
     {
@@ -77,10 +73,10 @@ public class FileProvider : IFileProvider
 
         var presignedUrl = await _s3Client.GetPreSignedURLAsync(presignedRequest);
 
-        return new UploadResponse(key, presignedUrl);
+        return new MinimalFileInfo(key, presignedUrl);
     }
 
-    public async Task<StartMultipartUploadResponse> GenerateStartingMultipartUploadData(
+    public async Task<MultipartStartInfo> GenerateStartingMultipartUploadData(
         StartMultipartUploadRequest request,
         CancellationToken cancellationToken)
     {
@@ -102,20 +98,20 @@ public class FileProvider : IFileProvider
             cancellationToken);
 
 
-        return new StartMultipartUploadResponse(key, response.UploadId);
+        return new MultipartStartInfo(key, response.UploadId);
     }
 
     public async Task<GetObjectMetadataResponse> GenerateCompeteMultipartUploadData(
-        CompleteMultipartRequest request,
+        CompleteMultipartUploadRequest uploadRequest,
         string key,
         CancellationToken cancellationToken)
     {
-        var completeRequest = new CompleteMultipartUploadRequest()
+        var completeRequest = new Amazon.S3.Model.CompleteMultipartUploadRequest()
         {
             BucketName = BUCKET_NAME,
             Key = key,
-            UploadId = request.UploadId,
-            PartETags = request.Parts.Select(p => new PartETag(p.PartNumber, p.ETag)).ToList()
+            UploadId = uploadRequest.UploadId,
+            PartETags = uploadRequest.Parts.Select(p => new PartETag(p.PartNumber, p.ETag)).ToList()
         };
 
         await _s3Client.CompleteMultipartUploadAsync(completeRequest, cancellationToken);
@@ -148,7 +144,7 @@ public class FileProvider : IFileProvider
         return keys;
     }
 
-    public async Task<Result<List<ProviderGetResponse>, Error>> GenerateGetUrls(
+    public async Task<Result<List<MinimalFileInfo>, Error>> GenerateGetUrls(
         List<string> keys,
         CancellationToken cancellationToken)
     {
@@ -168,7 +164,7 @@ public class FileProvider : IFileProvider
     }
 
 
-    private async Task<Result<ProviderGetResponse, Error>> GenerateGetUrl(
+    private async Task<Result<MinimalFileInfo, Error>> GenerateGetUrl(
         string key,
         SemaphoreSlim semaphoreSlim,
         CancellationToken cancellationToken)
@@ -187,7 +183,7 @@ public class FileProvider : IFileProvider
         try
         {
             var url = await _s3Client.GetPreSignedURLAsync(presignedRequest);
-            return new ProviderGetResponse(key, url);
+            return new MinimalFileInfo(key, url);
         }
         catch (Exception ex)
         {

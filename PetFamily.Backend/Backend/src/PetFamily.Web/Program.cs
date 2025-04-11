@@ -1,3 +1,4 @@
+using FileService.Communication;
 using PetFamily.Web.Middlewares;
 using PetFamily.Web.ApplicationConfiguration;
 using Serilog;
@@ -22,6 +23,8 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddFileHttpCommunication(builder.Configuration);
 
 var app = builder.Build();
 

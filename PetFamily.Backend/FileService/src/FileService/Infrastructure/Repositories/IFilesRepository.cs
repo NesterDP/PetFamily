@@ -4,7 +4,7 @@ using FileService.Core.Models;
 
 namespace FileService.Infrastructure.Repositories;
 
-public interface IFileRepository
+public interface IFilesRepository
 {
     Task<Result<Guid, Error>> Add(FileData fileData, CancellationToken cancellationToken);
     Task<Result<IReadOnlyCollection<FileData>, Error>> Get(
