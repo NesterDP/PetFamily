@@ -13,8 +13,8 @@ public static class InfrastructureConfigurator
     {
         services
             .AddScoped<FileMongoDbContext>()
-            .AddScoped<IFileRepository, FileRepository>()
-            .AddScoped<IFileProvider, FileProvider>()
+            .AddScoped<IFilesRepository, FilesRepository>()
+            .AddScoped<IFilesProvider, FilesProvider>()
             .ConfigureS3Storage(configuration)
             .ConfigureMongoDb(configuration);
         

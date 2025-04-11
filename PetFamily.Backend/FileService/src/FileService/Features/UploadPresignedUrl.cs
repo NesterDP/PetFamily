@@ -1,5 +1,7 @@
 using FileService.API;
 using FileService.API.Endpoints;
+using FileService.Contracts.Requests;
+using FileService.Contracts.Responses;
 using FileService.Core.Models;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
@@ -10,13 +12,6 @@ namespace FileService.Features;
 
 public static class UploadPresignedUrl
 {
-    public record UploadPresignedUrlRequest(
-        string FileName,
-        string ContentType,
-        long Size);
-
-    public record UploadResponse(string Key, string Url);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -27,26 +22,28 @@ public static class UploadPresignedUrl
 
     private static async Task<IResult> Handler(
         UploadPresignedUrlRequest request,
-        IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        IFilesProvider filesProvider,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)
     {
-        var response = await fileProvider.GenerateUploadUrl(request);
+        var providerResponse = await filesProvider.GenerateUploadUrl(request);
 
         var fileId = Guid.NewGuid();
-        
-        CreateJobs(fileId, response.Key, cancellationToken);
+
+        CreateJobs(fileId, providerResponse.Key, cancellationToken);
 
         var fileData = new FileData
         {
             Id = fileId,
-            StoragePath = response.Key,
+            StoragePath = providerResponse.Key,
             Size = request.Size,
             ContentType = request.ContentType,
             UploadDate = DateTime.UtcNow
         };
-        
-        await fileRepository.Add(fileData, cancellationToken);
+
+        await filesRepository.Add(fileData, cancellationToken);
+
+        var response = new UploadPresignedUrlResponse(providerResponse.Key, providerResponse.Url);
 
         return CustomResponses.Ok(response);
     }

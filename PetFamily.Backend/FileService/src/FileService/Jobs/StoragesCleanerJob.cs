@@ -6,17 +6,17 @@ namespace FileService.Jobs;
 
 public class StoragesCleanerJob
 {
-    private readonly IFileRepository _fileRepository;
-    private readonly IFileProvider _fileProvider;
+    private readonly IFilesRepository _filesRepository;
+    private readonly IFilesProvider _filesProvider;
     private readonly ILogger<StoragesCleanerJob> _logger;
 
     public StoragesCleanerJob(
-        IFileRepository fileRepository,
-        IFileProvider fileProvider,
+        IFilesRepository filesRepository,
+        IFilesProvider filesProvider,
         ILogger<StoragesCleanerJob> logger)
     {
-        _fileRepository = fileRepository;
-        _fileProvider = fileProvider;
+        _filesRepository = filesRepository;
+        _filesProvider = filesProvider;
         _logger = logger;
     }
 
@@ -28,9 +28,9 @@ public class StoragesCleanerJob
     {
         _logger.LogInformation("Start ClearStoragesJob with fileId = {fileId} and Key = {key}", fileId, key);
 
-         await _fileRepository.DeleteMany([fileId], cancellationToken);
+         await _filesRepository.DeleteMany([fileId], cancellationToken);
          
-         await _fileProvider.DeleteFiles([key], cancellationToken);
+         await _filesProvider.DeleteFiles([key], cancellationToken);
         
         _logger.LogInformation("End ClearStoragesJob");
     }

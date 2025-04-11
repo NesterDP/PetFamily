@@ -5,15 +5,13 @@ using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
 using Hangfire;
+using CompleteMultipartUploadRequest = FileService.Contracts.Requests.CompleteMultipartUploadRequest;
+using CompleteMultipartUploadResponse = FileService.Contracts.Responses.CompleteMultipartUploadResponse;
 
 namespace FileService.Features;
 
 public static class CompleteMultipartUpload
 {
-    public record PartETagInfo(int PartNumber, string ETag);
-
-    public record CompleteMultipartRequest(string UploadId, List<PartETagInfo> Parts);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -24,16 +22,14 @@ public static class CompleteMultipartUpload
 
     private static async Task<IResult> Handler(
         string key,
-        CompleteMultipartRequest request,
-        IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        CompleteMultipartUploadRequest uploadRequest,
+        IFilesProvider filesProvider,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)
     {
+        var metadata = await filesProvider.GenerateCompeteMultipartUploadData(uploadRequest, key, cancellationToken);
+
         var fileId = Guid.NewGuid();
-
-        var (clearJobId, consistencyJobId) = CreateJobs(key, fileId, cancellationToken);
-
-        var metadata = await fileProvider.GenerateCompeteMultipartUploadData(request, key, cancellationToken);
 
         var fileData = new FileData
         {
@@ -44,27 +40,16 @@ public static class CompleteMultipartUpload
             UploadDate = DateTime.UtcNow
         };
 
-        await fileRepository.Add(fileData, cancellationToken);
-        
-        BackgroundJob.Delete(consistencyJobId);
-        BackgroundJob.Delete(clearJobId);
-        
-        return CustomResponses.Ok(key);
-    }
-
-    private static (string clearJobId, string consistencyJobId) CreateJobs(
-        string key,
-        Guid fileId,
-        CancellationToken cancellationToken)
-    {
         var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
-                j.Execute(fileId, key, cancellationToken), 
+                j.Execute(fileId, key, cancellationToken),
             TimeSpan.FromHours(24));
 
-        var consistencyJobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
-                j.Execute(fileId, key, clearJobId, cancellationToken),
-            TimeSpan.FromSeconds(60));
-        
-        return (clearJobId, consistencyJobId);
+        await filesRepository.Add(fileData, cancellationToken);
+
+        BackgroundJob.Delete(clearJobId);
+
+        var response = new CompleteMultipartUploadResponse(key);
+
+        return CustomResponses.Ok(response);
     }
 }
