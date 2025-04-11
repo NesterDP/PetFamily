@@ -25,6 +25,6 @@ public static class StartMultipartUpload
 
         var response = new StartMultipartUploadResponse(providerResponse.Key, providerResponse.UploadId);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 }

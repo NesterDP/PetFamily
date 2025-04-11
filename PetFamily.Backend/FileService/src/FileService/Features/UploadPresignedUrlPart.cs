@@ -26,6 +26,6 @@ public static class UploadPresignedUrlPart
 
         var response = new UploadPresignedUrlPartResponse(providerResponse.Key, providerResponse.Url);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 }

@@ -50,6 +50,6 @@ public static class CompleteMultipartUpload
 
         var response = new CompleteMultipartUploadResponse(key);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 }

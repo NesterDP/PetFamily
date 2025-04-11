@@ -34,6 +34,6 @@ public static class DeleteFilesByIds
 
         var response = new DeleteFilesByIdsResponse(providerResponse);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 }

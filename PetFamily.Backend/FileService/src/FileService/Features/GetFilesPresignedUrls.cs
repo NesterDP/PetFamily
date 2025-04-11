@@ -48,6 +48,6 @@ public static class GetFilesPresignedUrls
 
         var response = new GetFilesPresignedUrlsResponse(extendedFileInfos);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 }

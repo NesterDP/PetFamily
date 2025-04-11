@@ -45,7 +45,7 @@ public static class UploadPresignedUrl
 
         var response = new UploadPresignedUrlResponse(providerResponse.Key, providerResponse.Url);
 
-        return CustomResponses.Ok(response);
+        return Results.Ok(response);
     }
 
     private static void CreateJobs(Guid fileId, string key, CancellationToken cancellationToken)
