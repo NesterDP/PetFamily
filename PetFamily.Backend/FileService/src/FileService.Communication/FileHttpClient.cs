@@ -15,7 +15,7 @@ public class FileHttpClient
         _httpClient = httpClient;
     }
 
-    public async Task<Result<IReadOnlyList<GetFilesPresignedUrlsResponse>, string>> GetFilesPresignedUrls(
+    public async Task<Result<GetFilesPresignedUrlsResponse, string>> GetFilesPresignedUrls(
         GetFilesPresignedUrlsRequest request,
         CancellationToken cancellationToken)
     {
@@ -25,8 +25,8 @@ public class FileHttpClient
             return "Failed to get files presigned urls";
 
         var fileResponse = await response.Content
-            .ReadFromJsonAsync<IReadOnlyList<GetFilesPresignedUrlsResponse>>(cancellationToken);
+            .ReadFromJsonAsync<GetFilesPresignedUrlsResponse>(cancellationToken);
 
-        return fileResponse?.ToList() ?? [];
+        return fileResponse!;
     }
 }
