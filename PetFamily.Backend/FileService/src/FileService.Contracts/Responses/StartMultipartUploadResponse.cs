@@ -1,3 +1,5 @@
+using FileService.Contracts.SubModels;
+
 namespace FileService.Contracts.Responses;
 
-public record StartMultipartUploadResponse(string Key, string UploadId);
+public record StartMultipartUploadResponse(List<MultipartStartProviderInfo> MultipartStartInfos);

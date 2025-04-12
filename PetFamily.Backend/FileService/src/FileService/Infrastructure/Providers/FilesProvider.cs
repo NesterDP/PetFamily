@@ -75,32 +75,7 @@ public class FilesProvider : IFilesProvider
 
         return new MinimalFileInfo(key, presignedUrl);
     }
-
-    public async Task<MultipartStartInfo> GenerateStartingMultipartUploadData(
-        StartMultipartUploadRequest request,
-        CancellationToken cancellationToken)
-    {
-        var key = $"{request.ContentType}/{Guid.NewGuid()}";
-
-        var startMultipartRequest = new InitiateMultipartUploadRequest
-        {
-            BucketName = BUCKET_NAME,
-            Key = key,
-            ContentType = request.ContentType,
-            Metadata =
-            {
-                [FILENAME_METADATA] = request.FileName
-            }
-        };
-
-        var response = await _s3Client.InitiateMultipartUploadAsync(
-            startMultipartRequest,
-            cancellationToken);
-
-
-        return new MultipartStartInfo(key, response.UploadId);
-    }
-
+    
     public async Task<GetObjectMetadataResponse> GenerateCompeteMultipartUploadData(
         CompleteMultipartUploadRequest uploadRequest,
         string key,
@@ -189,6 +164,62 @@ public class FilesProvider : IFilesProvider
         {
             _logger.LogError(ex, "Failed to generate url for file with key = {key}", key);
             return Error.Failure("file.get", "Failed generate url");
+        }
+        finally
+        {
+            semaphoreSlim.Release();
+        }
+    }
+    
+    public async Task<Result<List<MultipartStartProviderInfo>, Error>> GenerateStartingMultipartUploadData(
+        List<MultipartStartClientInfo> clientInfos,
+        CancellationToken cancellationToken)
+    {
+        var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
+
+        var tasks = clientInfos.Select(async clientInfo =>
+            await GenerateMultipartStartProviderInfo(clientInfo, semaphoreSlim, cancellationToken));
+
+        var infosResult = await Task.WhenAll(tasks);
+
+        if (infosResult.Any(p => p.IsFailure))
+            return infosResult.First().Error;
+
+        var results = infosResult.Select(p => p.Value).ToList();
+
+        return results;
+    }
+    
+    private async Task<Result<MultipartStartProviderInfo, Error>> GenerateMultipartStartProviderInfo(
+        MultipartStartClientInfo clientInfo,
+        SemaphoreSlim semaphoreSlim,
+        CancellationToken cancellationToken)
+    {
+        await semaphoreSlim.WaitAsync(cancellationToken);
+
+        var key = $"{clientInfo.ContentType}/{Guid.NewGuid()}";
+
+        var startMultipartRequest = new InitiateMultipartUploadRequest
+        {
+            BucketName = BUCKET_NAME,
+            Key = key,
+            ContentType = clientInfo.ContentType,
+            Metadata =
+            {
+                [FILENAME_METADATA] = clientInfo.FileName
+            }
+        };
+
+        try
+        {
+            var response = await _s3Client.InitiateMultipartUploadAsync(startMultipartRequest, cancellationToken);
+            
+            return new MultipartStartProviderInfo(key, response.UploadId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to generate starting multipart upload data");
+            return Error.Failure("file.get", "Failed to generate starting multipart upload data");
         }
         finally
         {

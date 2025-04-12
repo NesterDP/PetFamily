@@ -19,8 +19,8 @@ public interface IFilesProvider
         List<string> keys,
         CancellationToken cancellationToken);
 
-    public Task<MultipartStartInfo> GenerateStartingMultipartUploadData(
-        StartMultipartUploadRequest request,
+    public Task<Result<List<MultipartStartProviderInfo>, Error>> GenerateStartingMultipartUploadData(
+        List<MultipartStartClientInfo> clientInfos,
         CancellationToken cancellationToken);
 
     public Task<MinimalFileInfo> GenerateUploadUrlPart(
