@@ -66,7 +66,7 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
         
-        // удаление данных из БД модуля
+        // сохранение изменений в БД модуля
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Successfully deleted photos for pet with ID = {ID}", pet.Value.Id.Value);

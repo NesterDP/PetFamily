@@ -67,7 +67,7 @@ public class CompleteUploadPhotosToPetHandler
 
         var request = new CompleteMultipartUploadRequest(clientInfos);
 
-        // межсерверное взаимодействие, подтверждение загрузки в S3 и создание записи о файле в Mongo
+        // межсерверное взаимодействие, подтверждение загрузки в S3 и создание записи о файлах в Mongo
         var result = await _httpClient.CompleteMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
