@@ -1,5 +1,7 @@
 using FileService.API;
 using FileService.API.Endpoints;
+using FileService.Contracts.Requests;
+using FileService.Contracts.Responses;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 
@@ -7,8 +9,6 @@ namespace FileService.Features;
 
 public static class DeleteFilesByIds
 {
-    public record DeletionRequest(Guid[] Ids);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -18,22 +18,22 @@ public static class DeleteFilesByIds
     }
 
     private static async Task<IResult> Handler(
-        DeletionRequest request,
-        IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        DeleteFielsByIdsRequest request,
+        IFilesProvider filesProvider,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)
     {
-        var filesData = await fileRepository.Get(request.Ids, cancellationToken);
+        var filesData = await filesRepository.Get(request.Ids, cancellationToken);
         if (filesData.IsFailure)
             return CustomResponses.Errors(filesData.Error);
 
-        // TODO: schedule some job to check if every file was deleted from both mongoDB and S3 storage
+        await filesRepository.DeleteMany(request.Ids, cancellationToken);
 
-        await fileRepository.DeleteMany(request.Ids, cancellationToken);
-
-        var response = await fileProvider
+        var providerResponse = await filesProvider
             .DeleteFiles(filesData.Value.Select(f => f.StoragePath).ToList(), cancellationToken);
 
-        return CustomResponses.Ok(response);
+        var response = new DeleteFilesByIdsResponse(providerResponse);
+
+        return Results.Ok(response);
     }
 }

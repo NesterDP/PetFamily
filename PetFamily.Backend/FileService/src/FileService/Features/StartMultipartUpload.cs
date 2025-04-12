@@ -1,15 +1,13 @@
 using FileService.API;
 using FileService.API.Endpoints;
+using FileService.Contracts.Requests;
+using FileService.Contracts.Responses;
 using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;
 
 public static class StartMultipartUpload
 {
-    public record StartMultipartUploadRequest(string FileName, string ContentType);
-    
-    public record StartMultipartUploadResponse(string Key, string UploadId);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -20,11 +18,13 @@ public static class StartMultipartUpload
 
     private static async Task<IResult> Handler(
         StartMultipartUploadRequest request,
-        IFileProvider fileProvider,
+        IFilesProvider filesProvider,
         CancellationToken cancellationToken = default)
     {
-        var response = await fileProvider.GenerateStartingMultipartUploadData(request, cancellationToken);
+        var providerResponse = await filesProvider.GenerateStartingMultipartUploadData(request, cancellationToken);
 
-        return CustomResponses.Ok(response);
+        var response = new StartMultipartUploadResponse(providerResponse.Key, providerResponse.UploadId);
+
+        return Results.Ok(response);
     }
 }

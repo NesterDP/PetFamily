@@ -16,4 +16,3 @@
 networks:
   shared_network:
     external: true
-    

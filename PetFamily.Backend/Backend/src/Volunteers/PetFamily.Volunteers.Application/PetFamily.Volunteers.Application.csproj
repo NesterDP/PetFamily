@@ -11,4 +11,8 @@
       <ProjectReference Include="..\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="fileservice" Version="1.0.1" />
+    </ItemGroup>
+
 </Project>
