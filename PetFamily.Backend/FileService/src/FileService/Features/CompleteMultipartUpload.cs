@@ -21,14 +21,14 @@ public class CompleteMultipartUpload
     }
     
     private static async Task<IResult> Handler(
-        CompleteMultipartUploadRequest uploadRequest,
+        CompleteMultipartUploadRequest request,
         IFilesProvider filesProvider,
         IFilesRepository filesRepository,
         ILogger<CompleteMultipartUpload> logger,
         CancellationToken cancellationToken = default)
     {
         var fileInfos = await filesProvider
-            .GenerateCompeteMultipartUploadData(uploadRequest.ClientInfos, cancellationToken);
+            .GenerateCompeteMultipartUploadData(request.ClientInfos, cancellationToken);
         
         var response = new CompleteMultipartUploadResponse([]);
 

@@ -16,6 +16,6 @@ public static class CustomResponses
     {
         var envelope = Envelope.Error(errorList);
         
-        return Results.Ok(envelope);
+        return Results.Conflict(envelope);
     }
 }
