@@ -1,3 +1,5 @@
+using FileService.Contracts.SubModels;
+
 namespace FileService.Contracts.Responses;
 
-public record CompleteMultipartUploadResponse(string Key);
+public record CompleteMultipartUploadResponse(List<MultipartCompleteFileInfo> MultipartCompleteInfos);

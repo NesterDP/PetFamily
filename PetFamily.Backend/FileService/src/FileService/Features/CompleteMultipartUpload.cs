@@ -1,5 +1,5 @@
-using FileService.API;
 using FileService.API.Endpoints;
+using FileService.Contracts.SubModels;
 using FileService.Core.Models;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
@@ -10,7 +10,7 @@ using CompleteMultipartUploadResponse = FileService.Contracts.Responses.Complete
 
 namespace FileService.Features;
 
-public static class CompleteMultipartUpload
+public class CompleteMultipartUpload
 {
     public sealed class Endpoint : IEndpoint
     {
@@ -19,37 +19,56 @@ public static class CompleteMultipartUpload
             app.MapPost("files/complete-multipart", Handler);
         }
     }
-
+    
     private static async Task<IResult> Handler(
-        string key,
         CompleteMultipartUploadRequest uploadRequest,
         IFilesProvider filesProvider,
         IFilesRepository filesRepository,
+        ILogger<CompleteMultipartUpload> logger,
         CancellationToken cancellationToken = default)
     {
-        var metadata = await filesProvider.GenerateCompeteMultipartUploadData(uploadRequest, key, cancellationToken);
+        var fileInfos = await filesProvider
+            .GenerateCompeteMultipartUploadData(uploadRequest.ClientInfos, cancellationToken);
+        
+        var response = new CompleteMultipartUploadResponse([]);
 
-        var fileId = Guid.NewGuid();
-
-        var fileData = new FileData
+        foreach (var fileInfo in fileInfos)
         {
-            Id = fileId,
-            StoragePath = key,
-            Size = metadata.Headers.ContentLength,
-            ContentType = metadata.Headers.ContentType,
-            UploadDate = DateTime.UtcNow
-        };
+            var fileId = Guid.NewGuid();
+            
+            var fileData = new FileData
+            {
+                Id = fileId,
+                StoragePath = fileInfo.Key,
+                Size = fileInfo.ContentLength,
+                ContentType = fileInfo.ContentType,
+                UploadDate = DateTime.UtcNow
+            };
+            
+            var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
+                    j.Execute(fileId, fileInfo.Key, cancellationToken),
+                TimeSpan.FromHours(24));
 
-        var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
-                j.Execute(fileId, key, cancellationToken),
-            TimeSpan.FromHours(24));
-
-        await filesRepository.Add(fileData, cancellationToken);
-
-        BackgroundJob.Delete(clearJobId);
-
-        var response = new CompleteMultipartUploadResponse(key);
-
+            try
+            {
+                await filesRepository.Add(fileData, cancellationToken);
+            
+                BackgroundJob.Delete(clearJobId);
+            
+                response.MultipartCompleteInfos.Add(new MultipartCompleteFileInfo(
+                    fileId,
+                    fileInfo.Key,
+                    fileInfo.ContentType,
+                    fileInfo.ContentLength));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, e.Message);
+            }
+        }
+        
+        // Вернет Id и метаданные загруженных файлов
+        // Если не удалось загрузить ни одного файла - вернет пустой список
         return Results.Ok(response);
     }
 }

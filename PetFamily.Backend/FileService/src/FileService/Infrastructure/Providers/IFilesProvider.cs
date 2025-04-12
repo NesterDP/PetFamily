@@ -27,9 +27,8 @@ public interface IFilesProvider
         UploadPresignedUrlPartRequest request,
         string key);
 
-    public Task<GetObjectMetadataResponse> GenerateCompeteMultipartUploadData(
-        CompleteMultipartUploadRequest uploadRequest,
-        string key,
+    public Task<List<MultipartCompleteProviderInfo>> GenerateCompeteMultipartUploadData(
+        List<MultipartCompleteClientInfo> clientInfos,
         CancellationToken cancellationToken);
 
     public Task<List<string>> DeleteFiles(
