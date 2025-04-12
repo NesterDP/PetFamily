@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Accounts.Application.Commands.CompleteUploadAvatar;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.Register;
+using PetFamily.Accounts.Application.Commands.StartUploadAvatar;
 using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Presentation.Accounts.Requests;
@@ -22,7 +25,7 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [HttpPost("registration")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
@@ -49,7 +52,7 @@ public class AccountsController : ApplicationController
         //return result.ToResponse();
         return Ok(result.Value.AccessToken);
     }
-    
+
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshTokens(
         [FromBody] RefreshTokenRequest request,
@@ -60,11 +63,35 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
         //HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
         //return result.ToResponse();
         //return Ok();
         return Ok(result.Value.AccessToken);
+    }
+
+    [Authorize]
+    [HttpPost("avatar-start")]
+    public async Task<IActionResult> StartUploadAvatar(
+        [FromBody] StartUploadAvatarRequest request,
+        [FromServices] StartUploadAvatarHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Authorize]
+    [HttpPost("avatar-complete")]
+    public async Task<IActionResult> CompleteUploadAvatar(
+        [FromBody] CompleteUploadAvatarRequest request,
+        [FromServices] CompleteUploadAvatarHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(GetUserId().Value);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 }
