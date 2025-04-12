@@ -56,12 +56,15 @@ public class FileHttpClient
 
         var fileResponse = await response.Content
             .ReadFromJsonAsync<CompleteMultipartUploadResponse>(cancellationToken);
+        
+        if (fileResponse!.MultipartCompleteInfos.Count == 0)
+            return "Failed to complete multipart upload";
 
         return fileResponse!;
     }
     
     public async Task<Result<DeleteFilesByIdsResponse, string>> DeleteFilesByIds(
-        DeleteFielsByIdsRequest request,
+        DeleteFilesByIdsRequest request,
         CancellationToken cancellationToken)
     {
         var response = await _httpClient.PostAsJsonAsync("files/deletion", request, cancellationToken);

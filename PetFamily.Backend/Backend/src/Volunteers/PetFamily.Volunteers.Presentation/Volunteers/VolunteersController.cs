@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
-using PetFamily.Framework.Processors;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.ChangePetPosition;
+using PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
 using PetFamily.Volunteers.Application.Commands.Create;
 using PetFamily.Volunteers.Application.Commands.Delete;
 using PetFamily.Volunteers.Application.Commands.DeletePet;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
+using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
 using PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
 using PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 using PetFamily.Volunteers.Application.Commands.UpdatePetStatus;
-using PetFamily.Volunteers.Application.Commands.UpdateSocialNetworks;
-using PetFamily.Volunteers.Application.Commands.UpdateTransferDetails;
-using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
 using PetFamily.Volunteers.Application.Queries.GetVolunteerById;
 using PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 using PetFamily.Volunteers.Presentation.Volunteers.Requests;
@@ -74,19 +71,30 @@ public class VolunteersController : ApplicationController
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
-    [Permission("volunteers.UploadPhotosToPet")]
-    [HttpPost("{id:guid}/pet/{petId:guid}/photos")]
-    public async Task<ActionResult<Guid>> UploadPhotosToPet(
+    [Permission("volunteers.StartUploadPhotosToPet")]
+    [HttpPost("{id:guid}/pet/{petId:guid}/photos-start")]
+    public async Task<ActionResult<Guid>> StartUploadPhotosToPet(
         [FromRoute] Guid id,
         [FromRoute] Guid petId,
-        [FromForm] UploadPhotosToPetRequest request,
-        [FromServices] UploadPhotosToPetHandler handler,
+        [FromBody] StartUploadPhotosToPetRequest request,
+        [FromServices] StartUploadPhotosToPetHandler handler,
         CancellationToken cancellationToken)
     {
-        await using var fileProcessor = new FormFileProcessor();
-        var fileDtos = fileProcessor.Process(request.Files);
-
-        var command = new UploadPhotosToPetCommand(id, petId, fileDtos);
+        var command = request.ToCommand(id, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("volunteers.CompleteUploadPhotosToPet")]
+    [HttpPost("{id:guid}/pet/{petId:guid}/photos-complete")]
+    public async Task<ActionResult<Guid>> CompleteUploadPhotosToPet(
+        [FromRoute] Guid id,
+        [FromRoute] Guid petId,
+        [FromBody] CompleteUploadPhotosToPetRequest request,
+        [FromServices] CompleteUploadPhotosToPetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(id, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -188,7 +196,7 @@ public class VolunteersController : ApplicationController
 
     [Permission("volunteers.Delete")]
     [HttpDelete("{id:guid}/hard")]
-    public async Task<ActionResult<Guid>> Delete(
+    public async Task<ActionResult<Guid>> DeleteVolunteerHard(
         [FromServices] HardDeleteVolunteerHandler handler,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -200,7 +208,7 @@ public class VolunteersController : ApplicationController
     
     [Permission("volunteers.Delete")]
     [HttpDelete("{id:guid}/soft")]
-    public async Task<ActionResult<Guid>> Delete(
+    public async Task<ActionResult<Guid>> DeleteVolunteerSoft(
         [FromServices] SoftDeleteVolunteerHandler handler,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)

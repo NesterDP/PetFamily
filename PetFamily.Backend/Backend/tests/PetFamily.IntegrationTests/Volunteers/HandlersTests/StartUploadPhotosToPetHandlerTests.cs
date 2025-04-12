@@ -6,17 +6,17 @@ using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.ValueObjects;
-using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
+using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
-public class UploadPhotosToPetHandlerTests : VolunteerTestsBase
+public class StartUploadPhotosToPetHandlerTests : VolunteerTestsBase
 {
-    private readonly ICommandHandler<Guid, UploadPhotosToPetCommand> _sut;
+    private readonly ICommandHandler<Guid, StartUploadPhotosToPetCommand> _sut;
 
-    public UploadPhotosToPetHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public StartUploadPhotosToPetHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UploadPhotosToPetCommand>>();
+        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, StartUploadPhotosToPetCommand>>();
         Fixture.Inject<Stream>(Stream.Null);
     }
 

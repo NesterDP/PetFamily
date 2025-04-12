@@ -18,7 +18,7 @@ public static class DeleteFilesByIds
     }
 
     private static async Task<IResult> Handler(
-        DeleteFielsByIdsRequest request,
+        DeleteFilesByIdsRequest request,
         IFilesProvider filesProvider,
         IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)

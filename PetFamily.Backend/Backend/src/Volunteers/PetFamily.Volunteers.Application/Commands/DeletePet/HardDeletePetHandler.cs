@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts.Requests;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,18 +21,21 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<HardDeletePetHandler> _logger;
     private readonly IValidator<DeletePetCommand> _validator;
+    private readonly FileHttpClient _httpClient;
     private readonly IUnitOfWork _unitOfWork;
 
     public HardDeletePetHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<HardDeletePetHandler> logger,
         IValidator<DeletePetCommand> validator,
+        FileHttpClient httpClient,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
+        _httpClient = httpClient;
         _unitOfWork = unitOfWork;
     }
 
@@ -53,17 +58,18 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
             return Errors.General.ValueNotFound(command.PetId).ToErrorList();
 
         volunteerResult.Value.HardDeletePet(pet);
+        
+        // межсерверное взаимодействие, удаление данных из Mongo и S3 хранилища
+        var request = new DeleteFilesByIdsRequest(pet.PhotosList.Select(p => p.Id.Value).ToList());
+        
+        var result = await _httpClient.DeleteFilesByIds(request, cancellationToken);
+        if (result.IsFailure)
+            return Errors.General.Failure(result.Error).ToErrorList();
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        await DeletePhotosFromFileProvider(pet, cancellationToken);
 
         _logger.LogInformation("Pet was hard deleted, his ID = {ID}", pet.Id);
 
         return pet.Id.Value;
-    }
-
-    private async Task DeletePhotosFromFileProvider(Pet pet, CancellationToken cancellationToken)
-    {
-        // TODO: сделать запрос на удаление всех фото удаляемого питомца к FileService (из mongoDB и S3 хранилища)
     }
 }

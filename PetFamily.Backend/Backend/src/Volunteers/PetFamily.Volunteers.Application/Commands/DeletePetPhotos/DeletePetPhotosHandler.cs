@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts.Requests;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,18 +16,21 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
 {
     private readonly IValidator<DeletePetPhotosCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
+    private readonly FileHttpClient _httpClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
 
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
         IVolunteersRepository volunteersRepository,
+        FileHttpClient httpClient,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork,
         ILogger<DeletePetPhotosHandler> logger)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
+        _httpClient = httpClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -56,11 +61,13 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         // обновили фото питомца
         volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updateList);
 
-        // обновили соответсвующую запись в БД независимо от того, удалятся ли данные в minio
+        // межпроцессное взаимодействие, удаление из данных из Mongo и S3 хранилища
+        var result = await _httpClient.DeleteFilesByIds(new DeleteFilesByIdsRequest(command.PhotosIds), cancellationToken);
+        if (result.IsFailure)
+            return Errors.General.Failure(result.Error).ToErrorList();
+        
+        // удаление данных из БД модуля
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-
-        // TODO: сделать запрос к FileService на удаление фото, пришедших в команде (из mongoDB и S3 хранилища)
 
         _logger.LogInformation("Successfully deleted photos for pet with ID = {ID}", pet.Value.Id.Value);
 
