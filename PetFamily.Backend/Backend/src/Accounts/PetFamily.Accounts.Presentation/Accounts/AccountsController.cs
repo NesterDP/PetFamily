@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.CompleteUploadAvatar;
 using PetFamily.Accounts.Application.Commands.Login;
@@ -9,12 +8,20 @@ using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Presentation.Accounts.Requests;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Accounts.Presentation.Accounts;
 
 public class AccountsController : ApplicationController
 {
-    //[Permission( "accounts.GetUserInfoById")]
+    private readonly UserScopedData _userData;
+
+    public AccountsController(UserScopedData userData)
+    {
+        _userData = userData;
+    }
+
+    [Permission("accounts.GetUserInfoById")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserInfoById(
         [FromRoute] Guid id,
@@ -71,26 +78,26 @@ public class AccountsController : ApplicationController
         return Ok(result.Value.AccessToken);
     }
 
-    [Authorize]
+    [Permission("accounts.StartUploadAvatar")]
     [HttpPost("avatar-start")]
     public async Task<IActionResult> StartUploadAvatar(
         [FromBody] StartUploadAvatarRequest request,
         [FromServices] StartUploadAvatarHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Authorize]
+
+    [Permission("accounts.CompleteUploadAvatar")]
     [HttpPost("avatar-complete")]
     public async Task<IActionResult> CompleteUploadAvatar(
         [FromBody] CompleteUploadAvatarRequest request,
         [FromServices] CompleteUploadAvatarHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

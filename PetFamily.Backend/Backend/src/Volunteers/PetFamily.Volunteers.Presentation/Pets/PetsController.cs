@@ -45,6 +45,4 @@ public class PetsController : ApplicationController
         var result = await dapperHandler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-    
-
 }
