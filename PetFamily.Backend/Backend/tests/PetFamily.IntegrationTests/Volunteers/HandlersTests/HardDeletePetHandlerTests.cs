@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
@@ -29,6 +30,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
         var fourthPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 4);
         var fifthPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 5);
         var command = new DeletePetCommand(volunteer.Id, pet.Id);
+        
+        Factory.SetupSuccessDeleteFilesByIdsMock(pet.PhotosList.Select(p => p.Id.Value).ToList());
         
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
@@ -61,6 +64,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
         var fourthPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 4);
         var command = new DeletePetCommand(volunteer.Id, pet.Id);
         
+        Factory.SetupSuccessDeleteFilesByIdsMock(pet.PhotosList.Select(p => p.Id.Value).ToList());
+        
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
@@ -91,6 +96,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
         var fourthPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 4);
         var fifthPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 5);
         var command = new DeletePetCommand(volunteer.Id, pet.Id);
+        
+        Factory.SetupSuccessDeleteFilesByIdsMock(pet.PhotosList.Select(p => p.Id.Value).ToList());
         
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
