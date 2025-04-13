@@ -1,23 +1,28 @@
 using System.Linq.Expressions;
+using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts.Requests;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
+using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 
-
-
-public class GetFilteredPetsWithPaginationHandler : IQueryHandler<PagedList<PetDto>, GetFilteredPetsWithPaginationQuery>
+public class GetFilteredPetsWithPaginationHandler 
+    : IQueryHandler<Result<PagedList<PetDto>, ErrorList>, GetFilteredPetsWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
+    private readonly IFileService _fileService;
 
-    public GetFilteredPetsWithPaginationHandler(IReadDbContext readDbContext)
+    public GetFilteredPetsWithPaginationHandler(IReadDbContext readDbContext, IFileService fileService)
     {
         _readDbContext = readDbContext;
+        _fileService = fileService;
     }
 
-    public async Task<PagedList<PetDto>> HandleAsync(
+    public async Task<Result<PagedList<PetDto>, ErrorList>> HandleAsync(
         GetFilteredPetsWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
@@ -112,8 +117,16 @@ public class GetFilteredPetsWithPaginationHandler : IQueryHandler<PagedList<PetD
         foreach (var pet in result.Items)
         {
             pet.Photos = pet.Photos.OrderByDescending(photo => photo.Main).ToArray();
-        }
+            
+            var request = new GetFilesPresignedUrlsRequest(pet.Photos.Select(p => p.Id).ToList());
+            var photosData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
+            if (photosData.IsFailure)
+                return Errors.General.Failure(photosData.Error).ToErrorList();
 
+            foreach (var photo in pet.Photos)
+                photo.Url = photosData.Value.FilesInfos.FirstOrDefault(d => d.Id == photo.Id)!.Url;
+        }
+        
         return result;
     }
 }

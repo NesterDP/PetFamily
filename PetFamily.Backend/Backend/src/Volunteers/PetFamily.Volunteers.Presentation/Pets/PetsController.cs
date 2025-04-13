@@ -19,7 +19,7 @@ public class PetsController : ApplicationController
     {
         var query = request.ToQuery();
         var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission( "volunteers.GetPetById")]
@@ -31,7 +31,7 @@ public class PetsController : ApplicationController
     {
         var query = new GetPetByIdQuery(id);
         var result = await handler.HandleAsync(query, cancellationToken);
-        return Ok(result);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.GetFilteredPetsWithPaginationDapper")]

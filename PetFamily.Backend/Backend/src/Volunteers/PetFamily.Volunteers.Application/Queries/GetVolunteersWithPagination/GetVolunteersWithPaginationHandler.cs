@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Core.Extensions;
@@ -5,7 +6,8 @@ using PetFamily.Core.Models;
 
 namespace PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 
-public class GetVolunteersWithPaginationHandler : IQueryHandler<PagedList<VolunteerDto>, GetVolunteersWithPaginationQuery>
+public class
+    GetVolunteersWithPaginationHandler : IQueryHandler<PagedList<VolunteerDto>, GetVolunteersWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -19,9 +21,10 @@ public class GetVolunteersWithPaginationHandler : IQueryHandler<PagedList<Volunt
         CancellationToken cancellationToken)
     {
         var volunteersQuery = _readDbContext.Volunteers;
-        
+
         volunteersQuery = volunteersQuery.Where(v => v.IsDeleted == false);
-        
+            //.Include(v => v.Pets);
+
         return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }
 }
