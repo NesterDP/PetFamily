@@ -7,7 +7,9 @@ using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Core.Abstractions;
 using PetFamily.IntegrationTests.Accounts.Heritage;
 using PetFamily.IntegrationTests.General;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Accounts.HandlersTests;
 
@@ -28,6 +30,7 @@ public class GetUserInfoByIdTests : AccountsTestsBase
         var EMAIL = "test@mail.com";
         var USERNAME = "testUserName";
         var PASSWORD = "Password121314s.";
+        var avatarId = Guid.NewGuid();
         
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
@@ -36,8 +39,13 @@ public class GetUserInfoByIdTests : AccountsTestsBase
             UserManager,
             RoleManager,
             AccountManager);
+        
+        user.Avatar = Avatar.Create(avatarId, DomainConstants.PNG).Value;
+        await AccountsDbContext.SaveChangesAsync();
 
         var query = new GetUserInfoByIdQuery(user.Id);
+        
+        Factory.SetupSuccessGetFilesPresignedUrlsMock([avatarId]);
 
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
@@ -49,6 +57,8 @@ public class GetUserInfoByIdTests : AccountsTestsBase
         result.Value.ParticipantAccount.Should().NotBeNull();
         result.Value.VolunteerAccount.Should().BeNull();
         result.Value.AdminAccount.Should().BeNull();
+        result.Value.Avatar.Id.Should().Be(avatarId);
+        result.Value.Avatar.Url.Should().NotBeNull();
     }
 
     [Fact]

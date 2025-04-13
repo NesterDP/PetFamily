@@ -7,6 +7,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.IntegrationTests.Accounts.Heritage;
 using PetFamily.IntegrationTests.General;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Accounts.HandlersTests;
@@ -73,7 +74,7 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
             RoleManager,
             AccountManager);
         
-        user.Avatar = Avatar.Create(oldAvatarId, "image/jpg").Value;
+        user.Avatar = Avatar.Create(oldAvatarId, DomainConstants.PNG).Value;
         await AccountsDbContext.SaveChangesAsync();
         
         var command = new CompleteUploadAvatarCommand(user.Id, Fixture.Create<CompleteUploadFileDto>());
@@ -111,7 +112,7 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
             RoleManager,
             AccountManager);
         
-        user.Avatar = Avatar.Create(oldAvatarId, "image/jpg").Value;
+        user.Avatar = Avatar.Create(oldAvatarId, DomainConstants.JPG).Value;
         await AccountsDbContext.SaveChangesAsync();
         
         var command = new CompleteUploadAvatarCommand(user.Id, Fixture.Create<CompleteUploadFileDto>());
