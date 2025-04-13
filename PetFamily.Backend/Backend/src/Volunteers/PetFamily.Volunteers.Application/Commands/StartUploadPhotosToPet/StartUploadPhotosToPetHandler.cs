@@ -17,18 +17,18 @@ public class StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploa
     private readonly IValidator<StartUploadPhotosToPetCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<StartUploadPhotosToPetHandler> _logger;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
 
     public StartUploadPhotosToPetHandler(
         IValidator<StartUploadPhotosToPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<StartUploadPhotosToPetHandler> logger,
-        FileHttpClient httpClient)
+        IFileService fileService)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
-        _httpClient = httpClient;
+        _fileService = fileService;
     }
 
     public async Task<Result<StartMultipartUploadResponse, ErrorList>> HandleAsync(
@@ -57,7 +57,7 @@ public class StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploa
         
         var request = new StartMultipartUploadRequest(clientInfos);
         
-        var result = await _httpClient.StartMultipartUpload(request, cancellationToken);
+        var result = await _fileService.StartMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
 

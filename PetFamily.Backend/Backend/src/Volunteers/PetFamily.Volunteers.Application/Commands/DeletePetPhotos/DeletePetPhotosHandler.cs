@@ -16,21 +16,21 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
 {
     private readonly IValidator<DeletePetPhotosCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
 
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
         IVolunteersRepository volunteersRepository,
-        FileHttpClient httpClient,
+        IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork,
         ILogger<DeletePetPhotosHandler> logger)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
-        _httpClient = httpClient;
+        _fileService = fileService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -62,7 +62,7 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updateList);
 
         // межпроцессное взаимодействие, удаление из данных из Mongo и S3 хранилища
-        var result = await _httpClient.DeleteFilesByIds(new DeleteFilesByIdsRequest(command.PhotosIds), cancellationToken);
+        var result = await _fileService.DeleteFilesByIds(new DeleteFilesByIdsRequest(command.PhotosIds), cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
         

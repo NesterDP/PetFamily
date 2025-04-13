@@ -6,7 +6,7 @@ using FileService.Contracts.Responses;
 
 namespace FileService.Communication;
 
-public class FileHttpClient
+public class FileHttpClient : IFileService
 {
     private readonly HttpClient _httpClient;
 

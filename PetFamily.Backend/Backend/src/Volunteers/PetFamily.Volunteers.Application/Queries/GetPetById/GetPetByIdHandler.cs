@@ -9,12 +9,12 @@ namespace PetFamily.Volunteers.Application.Queries.GetPetById;
 public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
 {
     private readonly IReadDbContext _readDbContext;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
 
-    public GetPetByIdHandler(IReadDbContext readDbContext, FileHttpClient httpClient)
+    public GetPetByIdHandler(IReadDbContext readDbContext, IFileService fileService)
     {
         _readDbContext = readDbContext;
-        _httpClient = httpClient;
+        _fileService = fileService;
     }
 
     public async Task<PetDto> HandleAsync(
@@ -34,7 +34,7 @@ public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
         var test2 = Guid.Parse("280beb27-cc2d-417b-86f3-619b9f329bb6");
         var request = new GetFilesPresignedUrlsRequest([test1, test2]);
         
-        var photosData = await _httpClient.GetFilesPresignedUrls(request, cancellationToken);
+        var photosData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
 
         foreach (var photoDto in result.Photos)
         {

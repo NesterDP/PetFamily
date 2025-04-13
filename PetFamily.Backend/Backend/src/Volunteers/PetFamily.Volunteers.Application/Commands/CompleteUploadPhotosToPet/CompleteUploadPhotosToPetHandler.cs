@@ -21,21 +21,21 @@ public class CompleteUploadPhotosToPetHandler
     private readonly IValidator<CompleteUploadPhotosToPetCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<CompleteUploadPhotosToPetHandler> _logger;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
 
     public CompleteUploadPhotosToPetHandler(
         IValidator<CompleteUploadPhotosToPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<CompleteUploadPhotosToPetHandler> logger,
-        FileHttpClient httpClient,
+        IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
-        _httpClient = httpClient;
+        _fileService = fileService;
         _unitOfWork = unitOfWork;
     }
 
@@ -68,7 +68,7 @@ public class CompleteUploadPhotosToPetHandler
         var request = new CompleteMultipartUploadRequest(clientInfos);
 
         // межсерверное взаимодействие, подтверждение загрузки в S3 и создание записи о файлах в Mongo
-        var result = await _httpClient.CompleteMultipartUpload(request, cancellationToken);
+        var result = await _fileService.CompleteMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
         

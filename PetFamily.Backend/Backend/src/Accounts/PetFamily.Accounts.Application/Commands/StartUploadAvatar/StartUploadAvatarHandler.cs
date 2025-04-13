@@ -15,16 +15,16 @@ public class StartUploadAvatarHandler : ICommandHandler<StartMultipartUploadResp
 {
     private readonly IValidator<StartUploadAvatarCommand> _validator;
     private readonly ILogger<StartUploadAvatarHandler> _logger;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
 
     public StartUploadAvatarHandler(
         IValidator<StartUploadAvatarCommand> validator,
         ILogger<StartUploadAvatarHandler> logger,
-        FileHttpClient httpClient)
+        IFileService fileService)
     {
         _validator = validator;
         _logger = logger;
-        _httpClient = httpClient;
+        _fileService = fileService;
     }
 
     public async Task<Result<StartMultipartUploadResponse, ErrorList>> HandleAsync(
@@ -39,7 +39,7 @@ public class StartUploadAvatarHandler : ICommandHandler<StartMultipartUploadResp
         var clientInfo = new MultipartStartClientInfo(command.FileInfo.FileName, command.FileInfo.ContentType);
         var request = new StartMultipartUploadRequest([clientInfo]);
 
-        var result = await _httpClient.StartMultipartUpload(request, cancellationToken);
+        var result = await _fileService.StartMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
 

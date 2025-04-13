@@ -21,21 +21,21 @@ public class CompleteUploadAvatarHandler
     private readonly IValidator<CompleteUploadAvatarCommand> _validator;
     private readonly IAccountRepository _accountRepository;
     private readonly ILogger<CompleteUploadAvatarHandler> _logger;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
 
     public CompleteUploadAvatarHandler(
         IValidator<CompleteUploadAvatarCommand> validator,
         IAccountRepository accountRepository,
         ILogger<CompleteUploadAvatarHandler> logger,
-        FileHttpClient httpClient,
+        IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)]
         IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _accountRepository = accountRepository;
         _logger = logger;
-        _httpClient = httpClient;
+        _fileService = fileService;
         _unitOfWork = unitOfWork;
     }
 
@@ -56,7 +56,7 @@ public class CompleteUploadAvatarHandler
         if (userResult.Value.Avatar.Id is not null)
         {
             var deleteRequest = new DeleteFilesByIdsRequest([userResult.Value.Avatar.Id!.Value]);
-            var deletionResult = await _httpClient.DeleteFilesByIds(deleteRequest, cancellationToken);
+            var deletionResult = await _fileService.DeleteFilesByIds(deleteRequest, cancellationToken);
             if (deletionResult.IsFailure)
                 return Errors.General.Failure(deletionResult.Error).ToErrorList();
         }
@@ -69,7 +69,7 @@ public class CompleteUploadAvatarHandler
 
         var uploadRequest = new CompleteMultipartUploadRequest([clientInfo]);
         
-        var uploadResult = await _httpClient.CompleteMultipartUpload(uploadRequest, cancellationToken);
+        var uploadResult = await _fileService.CompleteMultipartUpload(uploadRequest, cancellationToken);
         if (uploadResult.IsFailure)
             return Errors.General.Failure(uploadResult.Error).ToErrorList();
         

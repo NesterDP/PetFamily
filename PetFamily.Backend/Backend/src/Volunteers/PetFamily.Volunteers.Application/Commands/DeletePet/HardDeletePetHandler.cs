@@ -21,21 +21,21 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<HardDeletePetHandler> _logger;
     private readonly IValidator<DeletePetCommand> _validator;
-    private readonly FileHttpClient _httpClient;
+    private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
 
     public HardDeletePetHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<HardDeletePetHandler> logger,
         IValidator<DeletePetCommand> validator,
-        FileHttpClient httpClient,
+        IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
-        _httpClient = httpClient;
+        _fileService = fileService;
         _unitOfWork = unitOfWork;
     }
 
@@ -62,7 +62,7 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
         // межсерверное взаимодействие, удаление данных из Mongo и S3 хранилища
         var request = new DeleteFilesByIdsRequest(pet.PhotosList.Select(p => p.Id.Value).ToList());
         
-        var result = await _httpClient.DeleteFilesByIds(request, cancellationToken);
+        var result = await _fileService.DeleteFilesByIds(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
         
