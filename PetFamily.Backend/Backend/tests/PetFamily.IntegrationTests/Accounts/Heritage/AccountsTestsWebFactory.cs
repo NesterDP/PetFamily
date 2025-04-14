@@ -4,6 +4,7 @@ using FileService.Contracts.Responses;
 using FileService.Contracts.SubModels;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.IntegrationTests.Accounts.Heritage;
 
@@ -56,7 +57,7 @@ public class AccountsTestsWebFactory : IntegrationTestsWebFactory
             var completeMultipartFileInfo = new MultipartCompleteFileInfo(
                 fileIds[i],
                 "key" + i,
-                "image/jpg",
+                DomainConstants.JPG,
                 123);
 
             response.MultipartCompleteInfos.Add(completeMultipartFileInfo);
@@ -86,7 +87,7 @@ public class AccountsTestsWebFactory : IntegrationTestsWebFactory
                 "url" + i,
                 DateTime.UtcNow,
                 123,
-                "image/jpg");
+                DomainConstants.JPG);
 
             response.FilesInfos.Add(extendedFileInfo);
         }

@@ -22,7 +22,7 @@ public class VolunteerDto
 
     public int Experience { get; set; } = default;
     
-    public PetDto[] Pets { get; set; } = [];
+    // public List<PetDto> Pets { get; set; } = [];
     
     [JsonIgnore]
     public bool IsDeleted { get; set; }

@@ -1,7 +1,9 @@
 {
   "Permissions": {
     "Accounts" : [
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Discussions": [
       "discussions.CloseDiscussion",
@@ -67,7 +69,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Volunteer": [
       "volunteers.AddPet",
@@ -96,7 +100,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Admin" : [
       "volunteers.AddPet",
@@ -134,7 +140,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ]
   }
 }

@@ -17,6 +17,13 @@ namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests;
 
 public class VolunteerRequestsController : ApplicationController
 {
+    private readonly UserScopedData _userData;
+
+    public VolunteerRequestsController(UserScopedData userData)
+    {
+        _userData = userData;
+    }
+    
     [Permission("volunteerRequests.GetUnhandledRequests")]
     [HttpGet("unhandled-requests")]
     public async Task<ActionResult<Guid>> GetUnhandledRequests(
@@ -36,7 +43,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] GetHandledRequestsByAdminIdHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery(GetUserId().Value);
+        var query = request.ToQuery(_userData.UserId);
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
@@ -48,7 +55,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] GetRequestsByUserIdHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery(GetUserId().Value);
+        var query = request.ToQuery(_userData.UserId);
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
@@ -61,11 +68,11 @@ public class VolunteerRequestsController : ApplicationController
         CancellationToken cancellationToken)
     {
         // users can have multiple roles, this feature is for users that doesn't have any roles but participant role
-        var onlyParticipant = CheckExclusiveRole(DomainConstants.PARTICIPANT);
+        var onlyParticipant = _userData.ConfirmRoleExlusivity(DomainConstants.PARTICIPANT);
         if (onlyParticipant.IsFailure)
             return onlyParticipant.Error.ToResponse();
 
-        var command = new CreateVolunteerRequestCommand(GetUserId().Value, request.VolunteerInfo);
+        var command = new CreateVolunteerRequestCommand(_userData.UserId, request.VolunteerInfo);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -77,7 +84,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] TakeRequestOnReviewHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new TakeRequestOnReviewCommand(id, GetUserId().Value);
+        var command = new TakeRequestOnReviewCommand(id, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -90,7 +97,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] RequireRevisionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, GetUserId().Value);
+        var command = request.ToCommand(id, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -103,7 +110,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] AmendRequestHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, GetUserId().Value);
+        var command = request.ToCommand(id, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -115,7 +122,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] ApproveRequestHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new ApproveRequestCommand(id, GetUserId().Value);
+        var command = new ApproveRequestCommand(id, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -127,7 +134,7 @@ public class VolunteerRequestsController : ApplicationController
         [FromServices] RejectRequestHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new RejectRequestCommand(id, GetUserId().Value);
+        var command = new RejectRequestCommand(id, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

@@ -5,7 +5,6 @@ using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-using Xunit.Sdk;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -29,15 +28,16 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var volunteer2 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(PETS_COUNT);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
+        result.Value.TotalCount.Should().Be(PETS_COUNT);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
     }
 
     [Fact]
@@ -58,10 +58,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(8);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
-        result.Items.Select(i => i.Id).ToHashSet().Should().BeEquivalentTo(volunteer1PetsHash);
+        result.Value.TotalCount.Should().Be(8);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
+        result.Value.Items.Select(i => i.Id).ToHashSet().Should().BeEquivalentTo(volunteer1PetsHash);
     }
 
     [Fact]
@@ -90,19 +90,40 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         volunteer1.AllOwnedPets[2].UpdatePhotos(photos1);
         volunteer2.AllOwnedPets[4].UpdatePhotos(photos2);
 
+        await VolunteersWriteDbContext.SaveChangesAsync();
+        
+        var photosIds = photos1.Select(p => p.Id.Value).Union(photos2.Select(p => p.Id.Value))
+            .ToList();
+        
+        Factory.SetupSuccessGetFilesPresignedUrlsMock(photosIds);
+
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(PETS_COUNT);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
+        result.Value.TotalCount.Should().Be(PETS_COUNT);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
 
-        foreach (var pet in result.Items)
+        var resultPhotosIds = new List<Guid>();
+        foreach (var pet in result.Value.Items)
             if (pet.Photos.Length != 0)
+            {
+                // main photo should always be first
                 pet.Photos[0].Main.Should().BeTrue();
+
+                // every photo should get its url
+                foreach (var photo in pet.Photos)
+                {
+                    photo.Url.Should().NotBeNull();
+                    resultPhotosIds.Add(photo.Id);
+                }
+            }
+        
+        // each received photo should be unique
+        resultPhotosIds.ToHashSet().Should().BeEquivalentTo(photosIds.ToHashSet());
     }
 
     [Fact]
@@ -125,12 +146,12 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(PETS_COUNT);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
-        result.Items[0].Name.Should().Be("angel");
-        result.Items[1].Name.Should().Be("barks");
-        result.Items[2].Name.Should().Be("clap");
+        result.Value.TotalCount.Should().Be(PETS_COUNT);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
+        result.Value.Items[0].Name.Should().Be("angel");
+        result.Value.Items[1].Name.Should().Be("barks");
+        result.Value.Items[2].Name.Should().Be("clap");
     }
 
     [Fact]
@@ -153,12 +174,12 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(PETS_COUNT);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
-        result.Items[0].Name.Should().Be("clap");
-        result.Items[1].Name.Should().Be("barks");
-        result.Items[2].Name.Should().Be("angel");
+        result.Value.TotalCount.Should().Be(PETS_COUNT);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
+        result.Value.Items[0].Name.Should().Be("clap");
+        result.Value.Items[1].Name.Should().Be("barks");
+        result.Value.Items[2].Name.Should().Be("angel");
     }
 
     [Fact]
@@ -181,10 +202,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(1);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
-        result.Items[0].Name.Should().Be("angel");
+        result.Value.TotalCount.Should().Be(1);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
+        result.Value.Items[0].Name.Should().Be("angel");
     }
 
     [Fact]
@@ -234,9 +255,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         var result = await _sut.HandleAsync(query, CancellationToken.None);
 
         // assert
-        result.TotalCount.Should().Be(1);
-        result.HasPreviousPage.Should().BeFalse();
-        result.HasNextPage.Should().BeFalse();
-        result.Items[0].Name.Should().Be("chip");
+        result.Value.TotalCount.Should().Be(1);
+        result.Value.HasPreviousPage.Should().BeFalse();
+        result.Value.HasNextPage.Should().BeFalse();
+        result.Value.Items[0].Name.Should().Be("chip");
     }
 }

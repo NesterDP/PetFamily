@@ -20,7 +20,8 @@ public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerB
         var customQuery = _readDbContext.Volunteers;
 
         customQuery = customQuery.Where(v => v.Id == query.Id && v.IsDeleted == false);
-
+            //.Include(v => v.Pets);
+        
         var result = await customQuery.FirstOrDefaultAsync();
         
         return result;

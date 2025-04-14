@@ -22,6 +22,13 @@ namespace PetFamily.Volunteers.Presentation.Volunteers;
 
 public class VolunteersController : ApplicationController
 {
+    private readonly UserScopedData _userData;
+
+    public VolunteersController(UserScopedData userData)
+    {
+        _userData = userData;
+    }
+
     [Permission("volunteers.GetVolunteersWithPagination")]
     [HttpGet]
     public async Task<ActionResult> GetVolunteers(
@@ -53,7 +60,7 @@ public class VolunteersController : ApplicationController
         [FromServices] AddPetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -66,7 +73,7 @@ public class VolunteersController : ApplicationController
         [FromServices] StartUploadPhotosToPetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -79,7 +86,7 @@ public class VolunteersController : ApplicationController
         [FromServices] CompleteUploadPhotosToPetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -91,7 +98,7 @@ public class VolunteersController : ApplicationController
         [FromBody] UpdateMainInfoRequest request,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -130,7 +137,7 @@ public class VolunteersController : ApplicationController
         [FromServices] ChangePetPositionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -143,7 +150,7 @@ public class VolunteersController : ApplicationController
         [FromServices] UpdatePetInfoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -156,7 +163,7 @@ public class VolunteersController : ApplicationController
         [FromServices] UpdatePetHelpStatusHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -169,7 +176,7 @@ public class VolunteersController : ApplicationController
         [FromServices] UpdatePetMainPhotoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -206,7 +213,7 @@ public class VolunteersController : ApplicationController
         [FromServices] DeletePetPhotosHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(GetUserId().Value, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -218,7 +225,7 @@ public class VolunteersController : ApplicationController
         [FromServices] SoftDeletePetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetCommand(GetUserId().Value, petId);
+        var command = new DeletePetCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -230,7 +237,7 @@ public class VolunteersController : ApplicationController
         [FromServices] HardDeletePetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetCommand(GetUserId().Value, petId);
+        var command = new DeletePetCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
