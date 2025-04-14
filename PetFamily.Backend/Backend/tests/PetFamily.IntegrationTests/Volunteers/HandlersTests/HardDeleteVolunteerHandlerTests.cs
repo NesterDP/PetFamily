@@ -24,6 +24,8 @@ public class HardDeleteVolunteerHandlerTests : VolunteerTestsBase
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var command = new DeleteVolunteerCommand(volunteer.Id);
         
+        Factory.SetupSuccessDeleteFilesByIdsMock([]);
+        
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 

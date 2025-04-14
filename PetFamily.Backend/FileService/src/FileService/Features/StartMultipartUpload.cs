@@ -12,7 +12,7 @@ public static class StartMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/multipart", Handler);
+            app.MapPost("files/start-multipart", Handler);
         }
     }
 
@@ -21,9 +21,13 @@ public static class StartMultipartUpload
         IFilesProvider filesProvider,
         CancellationToken cancellationToken = default)
     {
-        var providerResponse = await filesProvider.GenerateStartingMultipartUploadData(request, cancellationToken);
+        var providerResponse = await filesProvider
+            .GenerateStartingMultipartUploadData(request.StartMultipartClientInfos, cancellationToken);
 
-        var response = new StartMultipartUploadResponse(providerResponse.Key, providerResponse.UploadId);
+        if (providerResponse.IsFailure)
+            return CustomResponses.Errors(providerResponse.Error);
+
+        var response = new StartMultipartUploadResponse(providerResponse.Value);
 
         return Results.Ok(response);
     }

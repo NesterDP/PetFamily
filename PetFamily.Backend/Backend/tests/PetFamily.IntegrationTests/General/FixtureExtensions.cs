@@ -3,7 +3,7 @@ using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
-using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
+using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.General;
 
@@ -30,12 +30,12 @@ public static class FixtureExtensions
             .With(c => c.HelpStatus, "InSearchOfHome")
             .Create();
     }
-    public static UploadPhotosToPetCommand UploadPhotosToPetCommand(
+    public static StartUploadPhotosToPetCommand UploadPhotosToPetCommand(
         this Fixture fixture,
         Guid volunteerId,
         Guid petId)
     {
-        return fixture.Build<UploadPhotosToPetCommand>()
+        return fixture.Build<StartUploadPhotosToPetCommand>()
             .With(c => c.VolunteerId, volunteerId)
             .With(c => c.PetId, petId)
             .Create();

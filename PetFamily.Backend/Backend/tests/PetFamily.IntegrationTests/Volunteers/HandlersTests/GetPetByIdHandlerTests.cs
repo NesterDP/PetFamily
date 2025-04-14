@@ -1,10 +1,11 @@
+using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
+using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Application.Queries.GetPetById;
 
@@ -12,15 +13,15 @@ namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
 public class GetPetByIdHandlerTests : VolunteerTestsBase
 {
-    private readonly IQueryHandler<PetDto, GetPetByIdQuery> _sut;
+    private readonly IQueryHandler<Result<PetDto, ErrorList>, GetPetByIdQuery> _sut;
 
     public GetPetByIdHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<IQueryHandler<PetDto, GetPetByIdQuery>>();
+        _sut = Scope.ServiceProvider.GetRequiredService<IQueryHandler<Result<PetDto, ErrorList>, GetPetByIdQuery>>();
     }
 
     [Fact]
-    public async Task GetPetById_returns_info_about_non_soft_deleted_pet_with_correct_photo_order()
+    public async Task GetPetById_Success_returns_info_about_non_soft_deleted_pet_with_correct_photo_order()
     {
         var PET_COUNT = 5;
         // arrange
@@ -48,48 +49,52 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
         await VolunteersWriteDbContext.SaveChangesAsync();
         var petSeeder = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetPetByIdQuery(pet.Id);
+        
+        Factory.SetupSuccessGetFilesPresignedUrlsMock(photos.Select(p => p.Id.Value).ToList());
 
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
         
         // assert
-        result.Should().NotBeNull();
-        result.Id.Should().Be(pet.Id);
-        result.OwnerId.Should().Be(volunteer.Id);
-        result.Name.Should().Be(pet.Name.Value);
-        result.Description.Should().Be(pet.Description.Value);
-        result.SpeciesId.Should().Be(species.Id);
-        result.BreedId.Should().Be(breed.Id);
-        result.Color.Should().Be(pet.Color.Value);
-        result.HealthInfo.Should().Be(pet.HealthInfo.Value);
-        result.City.Should().Be(pet.Address.City);
-        result.House.Should().Be(pet.Address.House);
-        result.Apartment.Should().Be(pet.Address.Apartment);
-        result.Weight.Should().Be(pet.Weight.Value);
-        result.Height.Should().Be(pet.Height.Value);
-        result.OwnerPhoneNumber.Should().Be(pet.OwnerPhoneNumber.Value);
-        result.IsCastrated.Should().Be(pet.IsCastrated.Value);
-        result.DateOfBirth.Year.Should().Be(pet.DateOfBirth.Value.Year);
-        result.IsVaccinated.Should().Be(pet.IsVaccinated.Value);
-        result.HelpStatus.Should().Be(pet.HelpStatus.Value.ToString());
-        result.CreationDate.Year.Should().Be(pet.CreationDate.Year);
-        result.Position.Should().Be(pet.Position.Value);
-        result.IsDeleted.Should().Be(pet.IsDeleted);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Id.Should().Be(pet.Id);
+        result.Value.OwnerId.Should().Be(volunteer.Id);
+        result.Value.Name.Should().Be(pet.Name.Value);
+        result.Value.Description.Should().Be(pet.Description.Value);
+        result.Value.SpeciesId.Should().Be(species.Id);
+        result.Value.BreedId.Should().Be(breed.Id);
+        result.Value.Color.Should().Be(pet.Color.Value);
+        result.Value.HealthInfo.Should().Be(pet.HealthInfo.Value);
+        result.Value.City.Should().Be(pet.Address.City);
+        result.Value.House.Should().Be(pet.Address.House);
+        result.Value.Apartment.Should().Be(pet.Address.Apartment);
+        result.Value.Weight.Should().Be(pet.Weight.Value);
+        result.Value.Height.Should().Be(pet.Height.Value);
+        result.Value.OwnerPhoneNumber.Should().Be(pet.OwnerPhoneNumber.Value);
+        result.Value.IsCastrated.Should().Be(pet.IsCastrated.Value);
+        result.Value.DateOfBirth.Year.Should().Be(pet.DateOfBirth.Value.Year);
+        result.Value.IsVaccinated.Should().Be(pet.IsVaccinated.Value);
+        result.Value.HelpStatus.Should().Be(pet.HelpStatus.Value.ToString());
+        result.Value.CreationDate.Year.Should().Be(pet.CreationDate.Year);
+        result.Value.Position.Should().Be(pet.Position.Value);
+        result.Value.IsDeleted.Should().Be(pet.IsDeleted);
         
-        result.TransferDetails[0].Name.Should().Be(transferDetails[0].Name);
-        result.TransferDetails[0].Description.Should().Be(transferDetails[0].Description);
-        result.TransferDetails[1].Name.Should().Be(transferDetails[1].Name);
-        result.TransferDetails[1].Description.Should().Be(transferDetails[1].Description);
+        result.Value.TransferDetails[0].Name.Should().Be(transferDetails[0].Name);
+        result.Value.TransferDetails[0].Description.Should().Be(transferDetails[0].Description);
+        result.Value.TransferDetails[1].Name.Should().Be(transferDetails[1].Name);
+        result.Value.TransferDetails[1].Description.Should().Be(transferDetails[1].Description);
 
         // main photo should be the first one
-        result.Photos[0].Id.Should().Be(MAIN_PHOTO);
-        result.Photos[0].Main.Should().Be(true);
-        result.Photos[1].Id.Should().Be(photos[0].Id);
-        result.Photos[1].Main.Should().Be(photos[0].Main);
+        result.Value.Photos[0].Id.Should().Be(MAIN_PHOTO);
+        result.Value.Photos[0].Main.Should().Be(true);
+        result.Value.Photos[0].Url.Should().NotBeNull();
+        result.Value.Photos[1].Id.Should().Be(photos[0].Id);
+        result.Value.Photos[1].Main.Should().Be(false);
+        result.Value.Photos[1].Url.Should().NotBeNull();
     }
     
     [Fact]
-    public async Task GetPetById_returns_null_for_soft_deleted_pet()
+    public async Task GetPetById_failure_returns_error_for_soft_deleted_pet()
     {
         // arrange
         var PET_COUNT = 5;
@@ -98,26 +103,26 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
         volunteer.SoftDeletePet(pet);
         await VolunteersWriteDbContext.SaveChangesAsync();
         var query = new GetPetByIdQuery(pet.Id);
-
+        
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
         
         // assert
-        result.Should().BeNull();
+        result.IsFailure.Should().BeTrue();
     }
     
     [Fact]
-    public async Task GetPetById_returns_null_for_pet_that_does_not_exist()
+    public async Task GetPetById_returns_error_for_pet_that_does_not_exist()
     {
         // arrange
         var PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetPetByIdQuery(Guid.NewGuid());
-
+        
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
         
         // assert
-        result.Should().BeNull();
+        result.IsFailure.Should().BeTrue();
     }
 }

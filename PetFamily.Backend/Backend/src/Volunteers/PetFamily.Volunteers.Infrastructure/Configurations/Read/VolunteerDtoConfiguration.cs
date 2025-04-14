@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
@@ -18,11 +19,9 @@ public class VolunteerDtoConfiguration : IEntityTypeConfiguration<VolunteerDto>
         builder.Property(v => v.IsDeleted)
             .HasColumnName("is_deleted");
         
-        builder.HasMany<PetDto>(v => v.Pets)
+        /*builder.HasMany(v => v.Pets)
             .WithOne()
-            .HasForeignKey(p => p.Id)
-            .IsRequired(false);
-        
-        //builder.HasQueryFilter(v => v.)
+            .HasForeignKey(p => p.OwnerId)
+            .IsRequired();*/
     }
 }

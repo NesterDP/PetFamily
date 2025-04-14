@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
-using PetFamily.Framework.Processors;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.ChangePetPosition;
+using PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
 using PetFamily.Volunteers.Application.Commands.Create;
 using PetFamily.Volunteers.Application.Commands.Delete;
 using PetFamily.Volunteers.Application.Commands.DeletePet;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
+using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
 using PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
 using PetFamily.Volunteers.Application.Commands.UpdatePetMainPhoto;
 using PetFamily.Volunteers.Application.Commands.UpdatePetStatus;
-using PetFamily.Volunteers.Application.Commands.UpdateSocialNetworks;
-using PetFamily.Volunteers.Application.Commands.UpdateTransferDetails;
-using PetFamily.Volunteers.Application.Commands.UploadPhotosToPet;
 using PetFamily.Volunteers.Application.Queries.GetVolunteerById;
 using PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 using PetFamily.Volunteers.Presentation.Volunteers.Requests;
@@ -25,6 +22,13 @@ namespace PetFamily.Volunteers.Presentation.Volunteers;
 
 public class VolunteersController : ApplicationController
 {
+    private readonly UserScopedData _userData;
+
+    public VolunteersController(UserScopedData userData)
+    {
+        _userData = userData;
+    }
+
     [Permission("volunteers.GetVolunteersWithPagination")]
     [HttpGet]
     public async Task<ActionResult> GetVolunteers(
@@ -49,57 +53,52 @@ public class VolunteersController : ApplicationController
         return Ok(result);
     }
     
-    [Permission("volunteers.Create")]
-    [HttpPost]
-    public async Task<ActionResult<Guid>> Create(
-        [FromServices] CreateVolunteerHandler handler,
-        [FromBody] CreateVolunteerRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand();
-        var result = await handler.HandleAsync(command, cancellationToken);
-        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
-    }
-    
     [Permission("volunteers.AddPet")]
-    [HttpPost("{id:guid}/pet")]
+    [HttpPost("pet")]
     public async Task<ActionResult<Guid>> AddPet(
-        [FromRoute] Guid id,
         [FromBody] AddPetRequest request,
         [FromServices] AddPetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
-    [Permission("volunteers.UploadPhotosToPet")]
-    [HttpPost("{id:guid}/pet/{petId:guid}/photos")]
-    public async Task<ActionResult<Guid>> UploadPhotosToPet(
-        [FromRoute] Guid id,
+    [Permission("volunteers.StartUploadPhotosToPet")]
+    [HttpPost("pet/{petId:guid}/photos-start")]
+    public async Task<ActionResult<Guid>> StartUploadPhotosToPet(
         [FromRoute] Guid petId,
-        [FromForm] UploadPhotosToPetRequest request,
-        [FromServices] UploadPhotosToPetHandler handler,
+        [FromBody] StartUploadPhotosToPetRequest request,
+        [FromServices] StartUploadPhotosToPetHandler handler,
         CancellationToken cancellationToken)
     {
-        await using var fileProcessor = new FormFileProcessor();
-        var fileDtos = fileProcessor.Process(request.Files);
-
-        var command = new UploadPhotosToPetCommand(id, petId, fileDtos);
+        var command = request.ToCommand(_userData.UserId, petId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [Permission("volunteers.CompleteUploadPhotosToPet")]
+    [HttpPost("pet/{petId:guid}/photos-complete")]
+    public async Task<ActionResult<Guid>> CompleteUploadPhotosToPet(
+        [FromRoute] Guid petId,
+        [FromBody] CompleteUploadPhotosToPetRequest request,
+        [FromServices] CompleteUploadPhotosToPetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [Permission("volunteers.UpdateMainInfo")]
-    [HttpPut("{id:guid}/main-info")]
+    [HttpPut("main-info")]
     public async Task<ActionResult<Guid>> UpdateMainInfo(
         [FromServices] UpdateMainInfoHandler handler,
-        [FromRoute] Guid id,
         [FromBody] UpdateMainInfoRequest request,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id);
+        var command = request.ToCommand(_userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -131,64 +130,60 @@ public class VolunteersController : ApplicationController
     }*/
     
     [Permission("volunteers.ChangePetPosition")]
-    [HttpPut("{id:guid}/pet/{petId:guid}/position")]
+    [HttpPut("pet/{petId:guid}/position")]
     public async Task<ActionResult<Guid>> ChangePetPosition(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] ChangePetPositionRequest request,
         [FromServices] ChangePetPositionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.UpdatePetInfo")]
-    [HttpPut("{id:guid}/pet/{petId:guid}/info")]
+    [HttpPut("pet/{petId:guid}/info")]
     public async Task<ActionResult<Guid>> PetInfo(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] UpdatePetInfoRequest request,
         [FromServices] UpdatePetInfoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.UpdatePetStatus")]
-    [HttpPut("{id:guid}/pet/{petId:guid}/help-status")]
+    [HttpPut("pet/{petId:guid}/help-status")]
     public async Task<ActionResult<Guid>> PetHelpStatus(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] UpdatePetHelpStatusRequest request,
         [FromServices] UpdatePetHelpStatusHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.UpdatePetMainPhoto")]
-    [HttpPut("{id:guid}/pet/{petId:guid}/main-photo")]
+    [HttpPut("pet/{petId:guid}/main-photo")]
     public async Task<ActionResult<Guid>> MainPhoto(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] UpdatePetMainPhotoRequest request,
         [FromServices] UpdatePetMainPhotoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
     [Permission("volunteers.Delete")]
     [HttpDelete("{id:guid}/hard")]
-    public async Task<ActionResult<Guid>> Delete(
+    public async Task<ActionResult<Guid>> DeleteVolunteerHard(
         [FromServices] HardDeleteVolunteerHandler handler,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -200,7 +195,7 @@ public class VolunteersController : ApplicationController
     
     [Permission("volunteers.Delete")]
     [HttpDelete("{id:guid}/soft")]
-    public async Task<ActionResult<Guid>> Delete(
+    public async Task<ActionResult<Guid>> DeleteVolunteerSoft(
         [FromServices] SoftDeleteVolunteerHandler handler,
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
@@ -211,41 +206,38 @@ public class VolunteersController : ApplicationController
     }
     
     [Permission( "volunteers.DeletePetPhotos")]
-    [HttpDelete("{id:guid}/pet/{petId:guid}/photos")]
+    [HttpDelete("pet/{petId:guid}/photos")]
     public async Task<ActionResult<Guid>> DeletePetPhotos(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromBody] DeletePetPhotosRequest request,
         [FromServices] DeletePetPhotosHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id, petId);
+        var command = request.ToCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.DeletePet")]
-    [HttpDelete("{id:guid}/pet/{petId:guid}/soft")]
+    [HttpDelete("pet/{petId:guid}/soft")]
     public async Task<ActionResult<Guid>> Delete(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromServices] SoftDeletePetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetCommand(id, petId);
+        var command = new DeletePetCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
     
     [Permission("volunteers.DeletePet")]
-    [HttpDelete("{id:guid}/pet/{petId:guid}/hard")]
+    [HttpDelete("pet/{petId:guid}/hard")]
     public async Task<ActionResult<Guid>> Delete(
-        [FromRoute] Guid id,
         [FromRoute] Guid petId,
         [FromServices] HardDeletePetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetCommand(id, petId);
+        var command = new DeletePetCommand(_userData.UserId, petId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

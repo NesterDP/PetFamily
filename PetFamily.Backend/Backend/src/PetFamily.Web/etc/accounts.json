@@ -1,7 +1,9 @@
 {
   "Permissions": {
     "Accounts" : [
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Discussions": [
       "discussions.CloseDiscussion",
@@ -33,7 +35,8 @@
       "volunteers.UpdatePetMainPhoto",
       "volunteers.UpdatePetStatus",
       "volunteers.UpdateTransferDetails",
-      "volunteers.UploadPhotosToPet",
+      "volunteers.StartUploadPhotosToPet",
+      "volunteers.CompleteUploadPhotosToPet",
       "volunteers.GetFilteredPetsWithPagination",
       "volunteers.GetFilteredPetsWithPaginationDapper",
       "volunteers.GetPetById",
@@ -66,7 +69,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Volunteer": [
       "volunteers.AddPet",
@@ -78,7 +83,8 @@
       "volunteers.UpdatePetMainPhoto",
       "volunteers.UpdatePetStatus",
       "volunteers.UpdateTransferDetails",
-      "volunteers.UploadPhotosToPet",
+      "volunteers.StartUploadPhotosToPet",
+      "volunteers.CompleteUploadPhotosToPet",
       "volunteers.GetFilteredPetsWithPagination",
       "volunteers.GetFilteredPetsWithPaginationDapper",
       "volunteers.GetPetById",
@@ -94,7 +100,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ],
     "Admin" : [
       "volunteers.AddPet",
@@ -108,7 +116,8 @@
       "volunteers.UpdatePetMainPhoto",
       "volunteers.UpdatePetStatus",
       "volunteers.UpdateTransferDetails",
-      "volunteers.UploadPhotosToPet",
+      "volunteers.StartUploadPhotosToPet",
+      "volunteers.CompleteUploadPhotosToPet",
       "volunteers.GetFilteredPetsWithPagination",
       "volunteers.GetFilteredPetsWithPaginationDapper",
       "volunteers.GetPetById",
@@ -131,7 +140,9 @@
       "discussions.AddMessage",
       "discussions.RemoveMessage",
       "discussions.EditMessage",
-      "accounts.GetUserInfoById"
+      "accounts.GetUserInfoById",
+      "accounts.StartUploadAvatar",
+      "accounts.CompleteUploadAvatar"
     ]
   }
 }

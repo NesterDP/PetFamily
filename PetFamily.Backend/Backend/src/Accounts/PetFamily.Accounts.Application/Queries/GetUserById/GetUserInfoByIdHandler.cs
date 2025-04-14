@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts.Requests;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Application.Dto;
 using PetFamily.Core.Abstractions;
@@ -11,10 +13,12 @@ namespace PetFamily.Accounts.Application.Queries.GetUserById;
 public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorList>, GetUserInfoByIdQuery>
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly IFileService _fileService;
 
-    public GetUserInfoByIdHandler(IAccountRepository accountRepository)
+    public GetUserInfoByIdHandler(IAccountRepository accountRepository, IFileService fileService)
     {
         _accountRepository = accountRepository;
+        _fileService = fileService;
     }
 
     public async Task<Result<UserInfoDto, ErrorList>> HandleAsync(
@@ -45,15 +49,21 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
                 .Select(t => new TransferDetailDto(t.Name, t.Description)).ToList();
             volunteerAccountDto.Certificates = result.Value.VolunteerAccount.Certificates;
         }
-        
+
         if (result.Value.AdminAccount != null)
             adminAccountDto = new AdminAccountDto();
-        
-        
+
+
         var avatar = new AvatarDto();
         if (result.Value.Avatar.Id is not null)
         {
-            // TODO: здесь должен быть запрос к FileService на получение URL по Id файла
+            var request = new GetFilesPresignedUrlsRequest([result.Value.Avatar.Id]);
+            var avatarData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
+            if (avatarData.IsFailure)
+                return Errors.General.Failure(avatarData.Error).ToErrorList();
+
+            avatar.Id = result.Value.Avatar.Id;
+            avatar.Url = avatarData.Value.FilesInfos.FirstOrDefault(d => d.Id == avatar.Id)!.Url;
         }
 
         var userInfoDto = new UserInfoDto()
