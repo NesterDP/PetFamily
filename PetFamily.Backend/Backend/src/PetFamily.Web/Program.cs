@@ -21,6 +21,7 @@ builder.Services.AddConfiguredControllers();
 
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
+builder.Services.ConfigureUserData();
 
 builder.Services.AddEndpointsApiExplorer();
 

@@ -12,6 +12,12 @@ namespace PetFamily.Discussions.Presentation.Discussions;
 
 public class DiscussionsController : ApplicationController
 {
+    private readonly UserScopedData _userData;
+    public DiscussionsController(UserScopedData userData)
+    {
+        _userData = userData;
+    }
+    
     [Permission("discussions.GetDiscussion")]
     [HttpGet("{relationId:guid}")]
     public async Task<ActionResult<Guid>> GetDiscussion(
@@ -32,7 +38,7 @@ public class DiscussionsController : ApplicationController
         [FromServices] AddMessageHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(relationId, GetUserId().Value);
+        var command = request.ToCommand(relationId, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -44,7 +50,7 @@ public class DiscussionsController : ApplicationController
         [FromServices] CloseDiscussionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new CloseDiscussionCommand(relationId, GetUserId().Value);
+        var command = new CloseDiscussionCommand(relationId, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -58,7 +64,7 @@ public class DiscussionsController : ApplicationController
         [FromServices] EditMessageHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(relationId, messageId, GetUserId().Value);
+        var command = request.ToCommand(relationId, messageId, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
@@ -71,7 +77,7 @@ public class DiscussionsController : ApplicationController
         [FromServices] RemoveMessageHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new RemoveMessageCommand(relationId, messageId, GetUserId().Value);
+        var command = new RemoveMessageCommand(relationId, messageId, _userData.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
