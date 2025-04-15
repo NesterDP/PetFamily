@@ -14,8 +14,8 @@ public class WriteDbContext: DbContext
     }
     
     public DbSet<VolunteerRequest> VolunteerRequests => Set<VolunteerRequest>();
+    public DbSet<TestEntity> TestEntities => Set<TestEntity>();
     
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(_connectionString);
