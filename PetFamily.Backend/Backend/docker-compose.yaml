@@ -3,6 +3,9 @@
     container_name: main_application
     build:
       context: .
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
       dockerfile: src/PetFamily.Web/Dockerfile
     #image: nesterdp/pet-family-backend:1.0
     restart: always

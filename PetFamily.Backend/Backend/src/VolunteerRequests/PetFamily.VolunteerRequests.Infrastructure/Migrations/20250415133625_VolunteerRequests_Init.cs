@@ -15,6 +15,21 @@ namespace PetFamily.VolunteerRequests.Infrastructure.Migrations
                 name: "volunteer_requests");
 
             migrationBuilder.CreateTable(
+                name: "test_entities",
+                schema: "volunteer_requests",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    status = table.Column<bool>(type: "boolean", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_test_entities", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "volunteer_requests",
                 schema: "volunteer_requests",
                 columns: table => new
@@ -37,6 +52,10 @@ namespace PetFamily.VolunteerRequests.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "test_entities",
+                schema: "volunteer_requests");
+
             migrationBuilder.DropTable(
                 name: "volunteer_requests",
                 schema: "volunteer_requests");

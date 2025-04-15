@@ -24,6 +24,30 @@ namespace PetFamily.VolunteerRequests.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("PetFamily.VolunteerRequests.Domain.Entities.TestEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_test_entities");
+
+                    b.ToTable("test_entities", "volunteer_requests");
+                });
+
             modelBuilder.Entity("PetFamily.VolunteerRequests.Domain.Entities.VolunteerRequest", b =>
                 {
                     b.Property<Guid>("Id")
