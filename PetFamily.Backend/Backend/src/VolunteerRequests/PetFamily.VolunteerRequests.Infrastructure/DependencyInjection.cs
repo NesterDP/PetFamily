@@ -4,6 +4,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.VolunteerRequests.Application.Abstractions;
+using PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestSentForApprovedEventHandlers;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
 using PetFamily.VolunteerRequests.Infrastructure.Repositories;
 using PetFamily.VolunteerRequests.Infrastructure.TransactionServices;
@@ -19,7 +20,9 @@ public static class DependencyInjection
         services
             .AddDbContexts(configuration)
             .AddTransactionManagement()
-            .AddRepositories();
+            .AddRepositories()
+            .AddServices();
+        
         return services;
     }
     
@@ -50,6 +53,19 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
+        services.AddScoped<ITestEntitiesRepository, TestEntitiesRepository>();
+        return services;
+    }
+
+    private static IServiceCollection AddServices(
+        this IServiceCollection services)
+    {
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(TestEntityCreationWithTrueStatus).Assembly);
+        });
+        
         return services;
     }
 }

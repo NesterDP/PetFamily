@@ -83,6 +83,9 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Rejected).Value;
         RejectedAt = DateTime.UtcNow;
+        
+        // добавляем доменное событие - заявка отклонена
+        AddDomainEvent(new VolunteerRequestSentForRejectedEvent(UserId));
 
         return UnitResult.Success<Error>();
     }

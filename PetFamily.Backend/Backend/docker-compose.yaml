@@ -83,7 +83,19 @@
       - mongo_data:/data/db
     networks:
       - shared_network
-
+    
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - shared_network
+      
 networks:
   shared_network:
     name: shared_network  
@@ -93,3 +105,4 @@ volumes:
   postgres-data:
   minio_data:
   mongo_data:
+  rabbitmq_data:
