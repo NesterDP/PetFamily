@@ -39,7 +39,7 @@ public class TestsOfModelBinding : VolunteerRequestsTestsBase
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         request.SetOnReview(adminId);
         request.SetRevisionRequired(adminId, revisionComment);
         

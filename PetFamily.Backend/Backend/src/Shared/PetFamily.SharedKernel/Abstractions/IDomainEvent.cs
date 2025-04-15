@@ -1,6 +1,5 @@
+using MediatR;
+
 namespace PetFamily.SharedKernel.Abstractions;
 
-public interface IDomainEvent
-{
-    
-}
+public interface IDomainEvent : INotification;
