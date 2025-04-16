@@ -63,14 +63,15 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         if (result.IsFailure)
             return result.Error.ToErrorList();
         
-        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
-        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
-        if (discussionResult.IsFailure)
-            return discussionResult.Error;
-        
         await _publisher.PublishDomainEvents(request.Value, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        // будет отправлено в брокер
+        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
+        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
+        //if (discussionResult.IsFailure)
+        //    return discussionResult.Error;
 
         _logger.LogInformation(
             "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);

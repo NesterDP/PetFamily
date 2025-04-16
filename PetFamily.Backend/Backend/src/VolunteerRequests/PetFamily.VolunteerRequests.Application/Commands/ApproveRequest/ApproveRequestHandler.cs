@@ -68,20 +68,22 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         var result = request.Value.SetApproved(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
-
-        var createVolunteerAccountRequest = new CreateVolunteerAccountRequest(request.Value.UserId);
-        var accountResult = await _accountContract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
-        if (accountResult.IsFailure)
-            return accountResult.Error.ToErrorList();
-
-        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
-        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
-        if (discussionResult.IsFailure)
-            return discussionResult.Error;
         
         await _publisher.PublishDomainEvents(request.Value, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        // будет отправлено в брокер
+        var createVolunteerAccountRequest = new CreateVolunteerAccountRequest(request.Value.UserId);
+        var accountResult = await _accountContract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
+        //if (accountResult.IsFailure)
+            //return accountResult.Error.ToErrorList();
+
+        // будет отправлено в брокер
+        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
+        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
+        //if (discussionResult.IsFailure)
+            //return discussionResult.Error;
 
         _logger.LogInformation(
             "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value, request.Value.UserId);
