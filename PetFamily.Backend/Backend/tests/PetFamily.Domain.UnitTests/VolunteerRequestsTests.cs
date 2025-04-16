@@ -1,6 +1,7 @@
 using FluentAssertions;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Domain.Entities;
+using PetFamily.VolunteerRequests.Domain.Events;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.UnitTests;
@@ -16,7 +17,7 @@ public class VolunteerRequestsTests
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
 
         // Act
-        var result = new VolunteerRequest(userId, volunteerInfo);
+        var result = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         // Assert
         result.Id.Value.Should().NotBeEmpty();
@@ -38,7 +39,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         // Act
         var result = request.SetSubmitted(volunteerInfo);
@@ -54,7 +55,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -74,7 +75,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         var adminId = AdminId.NewAdminId();
         
@@ -99,7 +100,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -119,7 +120,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -141,7 +142,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
 
         // Act
@@ -161,7 +162,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -181,7 +182,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -203,7 +204,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -224,7 +225,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -247,7 +248,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
 
@@ -266,7 +267,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -290,7 +291,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -312,7 +313,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
 
@@ -334,7 +335,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -357,7 +358,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         var adminId = AdminId.NewAdminId();
 
@@ -375,7 +376,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -397,7 +398,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -418,7 +419,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -438,7 +439,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -460,7 +461,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
 
         // Act
@@ -477,7 +478,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -489,6 +490,11 @@ public class VolunteerRequestsTests
         result.IsSuccess.Should().BeTrue();
         request.AdminId.Should().Be(adminId);
         request.Status.Value.Should().Be(VolunteerRequestStatusEnum.Approved);
+
+        var domainEvent = request.DomainEvents.SingleOrDefault() as VolunteerRequestSentForApprovedEvent;
+        request.DomainEvents.SingleOrDefault().Should().NotBeNull();
+        domainEvent.Should().NotBeNull();
+        domainEvent.UserId.Should().Be(userId);
     }
 
     [Fact]
@@ -499,7 +505,7 @@ public class VolunteerRequestsTests
         var REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         
@@ -520,7 +526,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);
@@ -540,7 +546,7 @@ public class VolunteerRequestsTests
         var DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
         var adminId = AdminId.NewAdminId();
         
         request.SetOnReview(adminId);

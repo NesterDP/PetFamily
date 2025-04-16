@@ -1,7 +1,5 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using PetFamily.Core.Dto.Shared;
-using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;

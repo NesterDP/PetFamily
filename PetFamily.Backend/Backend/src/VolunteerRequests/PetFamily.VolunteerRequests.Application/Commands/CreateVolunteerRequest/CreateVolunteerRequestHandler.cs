@@ -53,7 +53,7 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
 
         var volunteerInfo = VolunteerInfo.Create(command.VolunteerInfo).Value;
 
-        var volunteerRequest = new VolunteerRequest(userId, volunteerInfo);
+        var volunteerRequest = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         await _volunteerRequestsRepository.AddAsync(volunteerRequest, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

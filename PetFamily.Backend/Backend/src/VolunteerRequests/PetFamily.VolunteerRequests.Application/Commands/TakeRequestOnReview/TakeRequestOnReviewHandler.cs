@@ -57,17 +57,18 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
         var result = request.Value.SetOnReview(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
-
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        // будет отправлено в брокер
         if (request.Value.RevisionComment == null)
         {
             List<Guid> userIds = [adminId, request.Value.UserId];
             var contractRequest = new CreateDiscussionRequest(requestId, userIds);
             var discussion = await _contract.CreateDiscussion(contractRequest, cancellationToken);
-            if (discussion.IsFailure)
-                return discussion.Error;
+            //if (discussion.IsFailure)
+                //return discussion.Error;
         }
-        
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
             "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);

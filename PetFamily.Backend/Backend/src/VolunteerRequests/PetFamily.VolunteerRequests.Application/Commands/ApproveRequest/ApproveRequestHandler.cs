@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Contracts;
@@ -9,6 +10,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.Discussions.Contracts;
 using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Extensions;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Abstractions;
@@ -24,6 +26,7 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICreateVolunteerAccountContract _accountContract;
     private readonly ICloseDiscussionContract _discussionContract;
+    private readonly IPublisher _publisher;
 
     public ApproveRequestHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository,
@@ -32,7 +35,8 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         [FromKeyedServices(UnitOfWorkSelector.VolunteerRequests)]
         IUnitOfWork unitOfWork,
         ICreateVolunteerAccountContract accountContract,
-        ICloseDiscussionContract discussionContract)
+        ICloseDiscussionContract discussionContract,
+        IPublisher publisher)
     {
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _logger = logger;
@@ -40,6 +44,7 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         _unitOfWork = unitOfWork;
         _accountContract = accountContract;
         _discussionContract = discussionContract;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -63,18 +68,22 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         var result = request.Value.SetApproved(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
-
-        var createVolunteerAccountRequest = new CreateVolunteerAccountRequest(request.Value.UserId);
-        var accountResult = await _accountContract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
-        if (accountResult.IsFailure)
-            return accountResult.Error.ToErrorList();
-
-        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
-        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
-        if (discussionResult.IsFailure)
-            return discussionResult.Error;
+        
+        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        // будет отправлено в брокер
+        var createVolunteerAccountRequest = new CreateVolunteerAccountRequest(request.Value.UserId);
+        var accountResult = await _accountContract.CreateVolunteerAccountAsync(createVolunteerAccountRequest, cancellationToken);
+        //if (accountResult.IsFailure)
+            //return accountResult.Error.ToErrorList();
+
+        // будет отправлено в брокер
+        var closeDiscussionRequest = new CloseDiscussionRequest(request.Value.Id, adminId);
+        var discussionResult = await _discussionContract.CloseDiscussion(closeDiscussionRequest, cancellationToken);
+        //if (discussionResult.IsFailure)
+            //return discussionResult.Error;
 
         _logger.LogInformation(
             "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value, request.Value.UserId);

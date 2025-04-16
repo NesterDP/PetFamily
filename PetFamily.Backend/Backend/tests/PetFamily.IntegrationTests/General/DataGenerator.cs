@@ -100,7 +100,7 @@ public static class DataGenerator
     {
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(testInfo).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         return request;
     }
@@ -276,7 +276,7 @@ public static class DataGenerator
             userId = optionalId.Value;
         
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
-        var request = new VolunteerRequest(userId, volunteerInfo);
+        var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 
         await dbContext.VolunteerRequests.AddAsync(request);
         await dbContext.SaveChangesAsync();

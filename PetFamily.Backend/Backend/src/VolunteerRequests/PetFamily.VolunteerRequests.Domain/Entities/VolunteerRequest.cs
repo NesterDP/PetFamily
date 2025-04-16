@@ -1,13 +1,14 @@
 using CSharpFunctionalExtensions;
+using PetFamily.SharedKernel.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.VolunteerRequests.Domain.Events;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.VolunteerRequests.Domain.Entities;
 
-public class VolunteerRequest
+public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 {
-    public VolunteerRequestId Id { get; private set; }
     public AdminId? AdminId { get; private set; }
     public UserId UserId { get; private set; }
     public VolunteerInfo VolunteerInfo { get; private set; }
@@ -18,11 +19,10 @@ public class VolunteerRequest
     
     public DateTime? RejectedAt { get; private set; }
     
-    private VolunteerRequest() { } // ef core
+    private VolunteerRequest(VolunteerRequestId id) : base(id) { } // ef core
 
-    public VolunteerRequest(UserId userId, VolunteerInfo volunteerInfo)
+    public VolunteerRequest(VolunteerRequestId id, UserId userId, VolunteerInfo volunteerInfo) : base(id)
     {
-        Id = VolunteerRequestId.NewVolunteerRequestId();
         UserId = userId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
         VolunteerInfo = volunteerInfo;
@@ -83,6 +83,9 @@ public class VolunteerRequest
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Rejected).Value;
         RejectedAt = DateTime.UtcNow;
+        
+        // добавляем доменное событие - заявка отклонена
+        AddDomainEvent(new VolunteerRequestSentForRejectedEvent(UserId));
 
         return UnitResult.Success<Error>();
     }
@@ -97,6 +100,9 @@ public class VolunteerRequest
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Approved).Value;
+
+        // добавляем доменное событие - заявка одобрена
+        AddDomainEvent(new VolunteerRequestSentForApprovedEvent(UserId));
 
         return UnitResult.Success<Error>();
     }
