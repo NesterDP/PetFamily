@@ -1,18 +1,19 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Models;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
-using PetFamily.Species.Contracts;
-using PetFamily.Species.Contracts.Requests;
+using PetFamily.Volunteers.Contracts.Messaging;
 using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.AddPet;
 
@@ -22,20 +23,20 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IBreedToSpeciesExistenceContract _contract;
+    private readonly IRequestClient<BreedToSpeciesExistenceEvent> _client;
 
     public AddPetHandler(
         IValidator<AddPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<AddPetHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
-        IBreedToSpeciesExistenceContract contract)
+        IRequestClient<BreedToSpeciesExistenceEvent> client)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _contract = contract;
+        _client = client;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -139,12 +140,11 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         Guid clientBreedId,
         CancellationToken cancellationToken)
     {
-        var request = new BreedToSpeciesExistenceRequest(clientSpeciesId, clientBreedId);
-        var result = await _contract.BreedToSpeciesExistence(request, cancellationToken);
-        if (result.IsFailure)
-            return result.Error;
-
-
+        var existenceEvent = new BreedToSpeciesExistenceEvent(clientSpeciesId, clientBreedId);
+        var checkResult =  await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
+        if (checkResult.Message.Text != DomainConstants.OK)
+            return Errors.General.Conflict(checkResult.Message.Text);
+        
         return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }
 }
