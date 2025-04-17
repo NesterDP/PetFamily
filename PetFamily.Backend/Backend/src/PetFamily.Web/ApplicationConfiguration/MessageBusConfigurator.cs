@@ -1,4 +1,5 @@
 using MassTransit;
+using PetFamily.Discussions.Infrastructure.Consumers;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -9,6 +10,8 @@ public static class MessageBusConfigurator
         services.AddMassTransit(configure =>
         {
             configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {

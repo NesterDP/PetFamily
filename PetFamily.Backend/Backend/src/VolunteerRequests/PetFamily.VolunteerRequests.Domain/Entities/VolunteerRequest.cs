@@ -85,7 +85,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         RejectedAt = DateTime.UtcNow;
         
         // добавляем доменное событие - заявка отклонена
-        AddDomainEvent(new VolunteerRequestWasRejectedEvent(UserId));
+        AddDomainEvent(new VolunteerRequestWasRejectedEvent(UserId, AdminId, Id));
 
         return UnitResult.Success<Error>();
     }
