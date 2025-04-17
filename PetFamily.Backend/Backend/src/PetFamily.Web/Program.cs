@@ -23,6 +23,8 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 builder.Services.ConfigureUserData();
 
+builder.Services.AddMessageBus(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddFileHttpCommunication(builder.Configuration);
