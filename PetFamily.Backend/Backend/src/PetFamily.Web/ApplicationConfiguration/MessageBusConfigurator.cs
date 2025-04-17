@@ -20,6 +20,7 @@ public static class MessageBusConfigurator
             configure.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
             configure.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
             configure.AddConsumer<BreedToPetExistenceEventConsumer>();
+            configure.AddConsumer<SpeciesToPetExistenceEventConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {
