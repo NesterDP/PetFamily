@@ -17,6 +17,7 @@ public static class MessageBusConfigurator
             configure.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
             configure.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
             configure.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
+            configure.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {

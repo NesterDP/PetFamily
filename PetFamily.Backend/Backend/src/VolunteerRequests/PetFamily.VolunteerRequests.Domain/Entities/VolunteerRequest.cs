@@ -53,6 +53,9 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.OnReview).Value;
+        
+        // добавляем доменное событие - заявка взята на рассмотрение
+        AddDomainEvent(new VolunteerRequestWasTakenOnReviewEvent(UserId, AdminId, Id));
 
         return UnitResult.Success<Error>();
     }

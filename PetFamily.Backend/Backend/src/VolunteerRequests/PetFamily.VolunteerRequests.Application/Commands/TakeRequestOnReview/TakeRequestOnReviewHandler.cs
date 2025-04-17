@@ -1,15 +1,16 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
-using PetFamily.Discussions.Contracts;
-using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Extensions;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Abstractions;
+using PetFamily.VolunteerRequests.Domain.Events;
 
 namespace PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 
@@ -19,7 +20,7 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
     private readonly ILogger<TakeRequestOnReviewHandler> _logger;
     private readonly IValidator<TakeRequestOnReviewCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ICreateDiscussionContract _contract;
+    private readonly IPublisher _publisher;
 
     public TakeRequestOnReviewHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository,
@@ -27,13 +28,13 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
         IValidator<TakeRequestOnReviewCommand> validator,
         [FromKeyedServices(UnitOfWorkSelector.VolunteerRequests)]
         IUnitOfWork unitOfWork,
-        ICreateDiscussionContract contract)
+        IPublisher publisher)
     {
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _logger = logger;
         _validator = validator;
         _unitOfWork = unitOfWork;
-        _contract = contract;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -58,18 +59,13 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
         if (result.IsFailure)
             return result.Error.ToErrorList();
         
+        if (request.Value.RevisionComment is not null) 
+            request.Value.RemoveAllDomainEvents<VolunteerRequestWasTakenOnReviewEvent>();
+        
+        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-        // будет отправлено в брокер
-        if (request.Value.RevisionComment == null)
-        {
-            List<Guid> userIds = [adminId, request.Value.UserId];
-            var contractRequest = new CreateDiscussionRequest(requestId, userIds);
-            var discussion = await _contract.CreateDiscussion(contractRequest, cancellationToken);
-            //if (discussion.IsFailure)
-                //return discussion.Error;
-        }
-
         _logger.LogInformation(
             "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);
 
