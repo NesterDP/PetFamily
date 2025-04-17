@@ -1,11 +1,13 @@
 using CSharpFunctionalExtensions;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
+using PetFamily.SharedKernel.Models;
 using PetFamily.SharedKernel.Structs;
-using PetFamily.Volunteers.Contracts;
-using PetFamily.Volunteers.Contracts.Requests;
+using PetFamily.Species.Contracts.Messaging;
 
 namespace PetFamily.Species.Application.Commands.DeleteBreedById;
 
@@ -14,28 +16,28 @@ public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdComma
     private readonly ISpeciesRepository _speciesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeleteBreedByIdHandler> _logger;
-    private readonly IBreedToPetExistenceContract _contract;
-    
+    private readonly IRequestClient<BreedToPetExistenceEvent> _client;
+
     public DeleteBreedByIdHandler(
         ISpeciesRepository speciesRepository,
         [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork,
         ILogger<DeleteBreedByIdHandler> logger,
-        IBreedToPetExistenceContract contract)
+        IRequestClient<BreedToPetExistenceEvent> client)
     {
         _speciesRepository = speciesRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _contract = contract;
+        _client = client;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         DeleteBreedByIdCommand command,
         CancellationToken cancellationToken)
     {
-        var request = new BreedToPetExistenceRequest(command.BreedId);
-        var checkResult = await _contract.BreedToPetExistence(request, cancellationToken);
-        if (checkResult.IsFailure)
-            return checkResult.Error.ToErrorList();
+        var existenceEvent = new BreedToPetExistenceEvent(command.BreedId);
+        var checkResult =  await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
+        if (checkResult.Message.Text != DomainConstants.OK)
+            return Errors.General.Conflict(checkResult.Message.Text).ToErrorList();
         
         var speciesResult = await _speciesRepository.GetByIdAsync(command.SpeciesId, cancellationToken);
         if (speciesResult.IsFailure)

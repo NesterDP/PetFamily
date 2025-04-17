@@ -19,4 +19,6 @@ public static class DomainConstants
     public const string PNG = "image/png";
     public const string JPG = "image/jpg";
     public const string WEBP = "image/webp";
+
+    public const string OK = "Ok";
 }

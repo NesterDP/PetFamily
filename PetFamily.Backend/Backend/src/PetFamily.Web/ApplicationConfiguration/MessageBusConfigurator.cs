@@ -1,5 +1,6 @@
 using MassTransit;
 using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Volunteers.Infrastructure.Consumers;
 using VolunteerRequestWasApprovedEventAccountsConsumer =
     PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
 
@@ -18,6 +19,7 @@ public static class MessageBusConfigurator
             configure.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
             configure.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
             configure.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
+            configure.AddConsumer<BreedToPetExistenceEventConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {
