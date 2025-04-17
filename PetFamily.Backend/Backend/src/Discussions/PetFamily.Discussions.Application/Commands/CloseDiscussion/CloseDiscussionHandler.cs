@@ -55,7 +55,7 @@ public class CloseDiscussionHandler : ICommandHandler<Guid, CloseDiscussionComma
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-        _logger.LogInformation($"Discussion with Id = {discussion.Value.Id} has been closed.");
+        _logger.LogInformation("Discussion with Id = {ID} has been closed", discussion.Value.Id.Value);
 
         return discussion.Value.Id.Value;
     }

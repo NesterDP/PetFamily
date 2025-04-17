@@ -1,5 +1,8 @@
 using MassTransit;
 using PetFamily.Discussions.Infrastructure.Consumers;
+using VolunteerRequestWasApprovedEventAccountsConsumer =
+    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
+
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -12,6 +15,8 @@ public static class MessageBusConfigurator
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
+            configure.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
+            configure.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {

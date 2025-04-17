@@ -102,7 +102,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Approved).Value;
 
         // добавляем доменное событие - заявка одобрена
-        AddDomainEvent(new VolunteerRequestWasApprovedEvent(UserId));
+        AddDomainEvent(new VolunteerRequestWasApprovedEvent(UserId, adminId, Id));
 
         return UnitResult.Success<Error>();
     }

@@ -6,25 +6,25 @@ using PetFamily.VolunteerRequests.Contracts.Messaging;
 
 namespace PetFamily.Discussions.Infrastructure.Consumers;
 
-public class VolunteerRequestWasRejectedEventConsumer : IConsumer<VolunteerRequestWasRejectedEvent>
+public class VolunteerRequestWasApprovedEventConsumer : IConsumer<VolunteerRequestWasApprovedEvent>
 {
-    private readonly ILogger<VolunteerRequestWasRejectedEventConsumer> _logger;
+    private readonly ILogger<VolunteerRequestWasApprovedEventConsumer> _logger;
     private readonly ICloseDiscussionContract _discussionContract;
 
-    public VolunteerRequestWasRejectedEventConsumer(
-        ILogger<VolunteerRequestWasRejectedEventConsumer> logger,
+    public VolunteerRequestWasApprovedEventConsumer(
+        ILogger<VolunteerRequestWasApprovedEventConsumer> logger,
         ICloseDiscussionContract discussionContract)
     {
         _logger = logger;
         _discussionContract = discussionContract;
     }
 
-    public async Task Consume(ConsumeContext<VolunteerRequestWasRejectedEvent> context)
+    public async Task Consume(ConsumeContext<VolunteerRequestWasApprovedEvent> context)
     {
         var request = new CloseDiscussionRequest(context.Message.RequestId, context.Message.UserId);
 
         var result = await _discussionContract.CloseDiscussion(request, CancellationToken.None);
-        
+
         if (result.IsSuccess)
             _logger.LogInformation("Successfully closed discussion with ID = {ID}", result.Value);
         else
