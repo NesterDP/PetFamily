@@ -85,7 +85,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         RejectedAt = DateTime.UtcNow;
         
         // добавляем доменное событие - заявка отклонена
-        AddDomainEvent(new VolunteerRequestSentForRejectedEvent(UserId));
+        AddDomainEvent(new VolunteerRequestWasRejectedEvent(UserId));
 
         return UnitResult.Success<Error>();
     }
@@ -102,7 +102,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Approved).Value;
 
         // добавляем доменное событие - заявка одобрена
-        AddDomainEvent(new VolunteerRequestSentForApprovedEvent(UserId));
+        AddDomainEvent(new VolunteerRequestWasApprovedEvent(UserId));
 
         return UnitResult.Success<Error>();
     }

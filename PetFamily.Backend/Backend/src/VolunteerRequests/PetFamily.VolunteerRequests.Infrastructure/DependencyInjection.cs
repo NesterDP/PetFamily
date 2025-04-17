@@ -4,7 +4,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.VolunteerRequests.Application.Abstractions;
-using PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestSentForApprovedEventHandlers;
+using PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasApprovedEventHandlers;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
 using PetFamily.VolunteerRequests.Infrastructure.Repositories;
 using PetFamily.VolunteerRequests.Infrastructure.TransactionServices;
