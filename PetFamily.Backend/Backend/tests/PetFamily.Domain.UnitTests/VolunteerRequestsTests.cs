@@ -491,7 +491,7 @@ public class VolunteerRequestsTests
         request.AdminId.Should().Be(adminId);
         request.Status.Value.Should().Be(VolunteerRequestStatusEnum.Approved);
 
-        var domainEvent = request.DomainEvents.SingleOrDefault() as VolunteerRequestSentForApprovedEvent;
+        var domainEvent = request.DomainEvents.SingleOrDefault() as VolunteerRequestWasApprovedEvent;
         request.DomainEvents.SingleOrDefault().Should().NotBeNull();
         domainEvent.Should().NotBeNull();
         domainEvent.UserId.Should().Be(userId);

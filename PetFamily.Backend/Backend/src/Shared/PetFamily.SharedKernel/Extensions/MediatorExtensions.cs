@@ -10,12 +10,11 @@ public static class MediatorExtensions
         DomainEntity<TId> entity,
         CancellationToken cancellationToken = default) where TId : IComparable<TId>
     {
-        var domainEvents = entity.DomainEvents.ToList();
-        
-        foreach (var domainEvent in domainEvents)
+        foreach (var domainEvent in entity.DomainEvents)
         {
             await publisher.Publish(domainEvent, cancellationToken);
-            entity.RemoveDomainEvent(domainEvent);
         }
+        
+        entity.ClearDomainEvents();
     }
 }

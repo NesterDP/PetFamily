@@ -3,4 +3,4 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.VolunteerRequests.Domain.Events;
 
-public record VolunteerRequestSentForApprovedEvent(UserId UserId) : IDomainEvent;
+public record VolunteerRequestWasApprovedEvent(UserId UserId) : IDomainEvent;

@@ -7,7 +7,7 @@ using PetFamily.VolunteerRequests.Domain.Events;
 namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestSentForApprovedEventHandlers;
 
 
-public class TestEntityCreationWithFalseStatus : INotificationHandler<VolunteerRequestSentForRejectedEvent>
+public class TestEntityCreationWithFalseStatus : INotificationHandler<VolunteerRequestWasRejectedEvent>
 {
     private readonly ITestEntitiesRepository _repository;
 
@@ -16,7 +16,7 @@ public class TestEntityCreationWithFalseStatus : INotificationHandler<VolunteerR
         _repository = repository;
     }
 
-    public async Task Handle(VolunteerRequestSentForRejectedEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(VolunteerRequestWasRejectedEvent domainEvent, CancellationToken cancellationToken)
     {
         var testEntity = new TestEntity(TestId.NewTestId(), domainEvent.UserId);
         testEntity.SetStatus(false);
