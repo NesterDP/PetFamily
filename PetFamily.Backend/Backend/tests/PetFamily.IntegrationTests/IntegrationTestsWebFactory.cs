@@ -11,6 +11,7 @@ using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
 using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Discussions.Infrastructure.Consumers.Definitions;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.Consumers;
@@ -18,6 +19,10 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
 using PetFamily.Web;
+using ApprovedRequestConsumerAccounts = PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer;
+using ApprovedRequestConsumerAccountsDefinition =
+    PetFamily.Accounts.Infrastructure.Consumers.Definitions.ApprovedRequestConsumerDefinition;
+
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
@@ -29,9 +34,6 @@ using VolunteerRequestsReadDbContext = PetFamily.VolunteerRequests.Infrastructur
 using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 using DiscussionsIReadDbContext = PetFamily.Discussions.Application.Abstractions.IReadDbContext;
 using DiscussionsReadDbContext = PetFamily.Discussions.Infrastructure.DbContexts.ReadDbContext;
-
-using VolunteerRequestWasApprovedEventAccountsConsumer =
-    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
 
 
 namespace PetFamily.IntegrationTests;
@@ -81,10 +83,10 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         
         services.AddMassTransitTestHarness(cfg =>
         {
-            cfg.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
+            cfg.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
+            cfg.AddConsumer<ApprovedRequestConsumer, ApprovedRequestConsumerDefinition>();
+            cfg.AddConsumer<ApprovedRequestConsumerAccounts, ApprovedRequestConsumerAccountsDefinition>();
+            cfg.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
             cfg.AddConsumer<BreedToPetExistenceEventConsumer>();
             cfg.AddConsumer<SpeciesToPetExistenceEventConsumer>();
             cfg.AddConsumer<BreedToSpeciesExistenceEventConsumer>();

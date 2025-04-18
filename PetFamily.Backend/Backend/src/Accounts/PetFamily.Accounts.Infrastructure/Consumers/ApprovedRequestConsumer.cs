@@ -6,13 +6,13 @@ using PetFamily.VolunteerRequests.Contracts.Messaging;
 
 namespace PetFamily.Accounts.Infrastructure.Consumers;
 
-public class VolunteerRequestWasApprovedEventConsumer : IConsumer<VolunteerRequestWasApprovedEvent>
+public class ApprovedRequestConsumer : IConsumer<VolunteerRequestWasApprovedEvent>
 {
-    private readonly ILogger<VolunteerRequestWasApprovedEventConsumer> _logger;
+    private readonly ILogger<ApprovedRequestConsumer> _logger;
     private readonly ICreateVolunteerAccountContract _accountContract;
 
-    public VolunteerRequestWasApprovedEventConsumer(
-        ILogger<VolunteerRequestWasApprovedEventConsumer> logger,
+    public ApprovedRequestConsumer(
+        ILogger<ApprovedRequestConsumer> logger,
         ICreateVolunteerAccountContract accountContract)
     {
         _logger = logger;

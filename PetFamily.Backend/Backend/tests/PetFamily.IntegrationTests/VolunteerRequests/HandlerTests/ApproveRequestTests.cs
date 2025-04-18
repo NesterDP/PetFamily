@@ -3,6 +3,7 @@ using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Infrastructure.Consumers;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Core.Abstractions;
 using PetFamily.Discussions.Domain.Entities;
@@ -17,8 +18,7 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
-using VolunteerRequestWasApprovedEventAccountsConsumer =
-    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
+using ApprovedRequestConsumer = PetFamily.Discussions.Infrastructure.Consumers.ApprovedRequestConsumer;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.HandlerTests;
 
@@ -68,8 +68,8 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.Approved);
         
         // receiving correct data BD
-        var consumer1 = harness.GetConsumerHarness<VolunteerRequestWasApprovedEventConsumer>();
-        var consumer2 = harness.GetConsumerHarness<VolunteerRequestWasApprovedEventAccountsConsumer>();
+        var consumer1 = harness.GetConsumerHarness<ApprovedRequestConsumer>();
+        var consumer2 = harness.GetConsumerHarness<PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer>();
 
         await Task.WhenAll(
             consumer1.Consumed.Any<VolunteerRequestWasApprovedEvent>(),

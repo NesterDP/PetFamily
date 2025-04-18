@@ -45,7 +45,7 @@ public class TakeRequestOnReviewTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.OnReview);
         
         // setting request "OnReview" should create discussion
-        var consumer = harness.GetConsumerHarness<VolunteerRequestWasTakenOnReviewEventConsumer>();
+        var consumer = harness.GetConsumerHarness<OnReviewRequestConsumer>();
         await consumer.Consumed.Any<VolunteerRequestWasTakenOnReviewEvent>();
         await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
         

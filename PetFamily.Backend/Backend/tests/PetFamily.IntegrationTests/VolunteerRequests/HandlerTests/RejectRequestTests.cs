@@ -58,7 +58,7 @@ public class RejectRequestTests : VolunteerRequestsTestsBase
         changedRequest.RejectedAt.Should().NotBeNull();
         
         // should close discussion that is related to request
-        var consumerHarness = harness.GetConsumerHarness<VolunteerRequestWasRejectedEventConsumer>();
+        var consumerHarness = harness.GetConsumerHarness<RejectedRequestConsumer>();
         await consumerHarness.Consumed.Any<VolunteerRequestWasRejectedEvent>();
         await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
         
