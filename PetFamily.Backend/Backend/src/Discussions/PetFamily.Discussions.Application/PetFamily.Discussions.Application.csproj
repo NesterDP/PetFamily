@@ -10,4 +10,8 @@
       <ProjectReference Include="..\PetFamily.Discussions.Domain\PetFamily.Discussions.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MassTransit" Version="8.3.3" />
+    </ItemGroup>
+
 </Project>

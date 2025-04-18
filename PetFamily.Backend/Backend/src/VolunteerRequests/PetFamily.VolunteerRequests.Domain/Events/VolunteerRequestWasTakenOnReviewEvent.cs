@@ -3,7 +3,7 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.VolunteerRequests.Domain.Events;
 
-public record VolunteerRequestWasRejectedEvent(
+public record VolunteerRequestWasTakenOnReviewEvent(
     UserId UserId,
     AdminId AdminId,
     VolunteerRequestId RequestId) : IDomainEvent;

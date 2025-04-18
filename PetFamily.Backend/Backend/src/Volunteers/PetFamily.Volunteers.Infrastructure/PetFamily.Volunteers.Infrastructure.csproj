@@ -8,10 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PetFamily.Volunteers.Application\PetFamily.Volunteers.Application.csproj" />
+      <ProjectReference Include="..\PetFamily.Volunteers.Contracts\PetFamily.Volunteers.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.3" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
       <PackageReference Include="Minio" Version="6.0.1" />

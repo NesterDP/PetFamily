@@ -8,11 +8,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\PetFamily.Framework\PetFamily.Framework.csproj" />
+      <ProjectReference Include="..\..\VolunteerRequests\PetFamily.VolunteerRequests.Contracts\PetFamily.VolunteerRequests.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.Accounts.Application\PetFamily.Accounts.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.3" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
       <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.1.2" />

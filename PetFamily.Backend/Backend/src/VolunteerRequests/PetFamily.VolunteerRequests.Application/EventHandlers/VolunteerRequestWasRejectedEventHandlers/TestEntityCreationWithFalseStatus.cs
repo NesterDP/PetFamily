@@ -4,7 +4,7 @@ using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Domain.Entities;
 using PetFamily.VolunteerRequests.Domain.Events;
 
-namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasApprovedEventHandlers;
+namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasRejectedEventHandlers;
 
 
 public class TestEntityCreationWithFalseStatus : INotificationHandler<VolunteerRequestWasRejectedEvent>

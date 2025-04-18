@@ -1,10 +1,14 @@
 using FluentAssertions;
+using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
+using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Discussions.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.VolunteerRequests.Heritage;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
+using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.HandlerTests;
@@ -24,6 +28,7 @@ public class TakeRequestOnReviewTests : VolunteerRequestsTestsBase
     {
         // arrange
         var adminId = Guid.NewGuid();
+        var harness = Factory.Services.GetTestHarness();
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         
@@ -40,8 +45,13 @@ public class TakeRequestOnReviewTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.OnReview);
         
         // setting request "OnReview" should create discussion
-        var discussion = await DiscussionsDbContext.Discussions
+        var consumer = harness.GetConsumerHarness<VolunteerRequestWasTakenOnReviewEventConsumer>();
+        await consumer.Consumed.Any<VolunteerRequestWasTakenOnReviewEvent>();
+        await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
+        
+        var discussion = await freshDbContext.Discussions
             .FirstOrDefaultAsync(d => d.RelationId == result.Value);
+        
         discussion.Should().NotBeNull();
     }
 }

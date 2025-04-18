@@ -1,23 +1,27 @@
 using FluentAssertions;
+using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.Discussions.Domain.Entities;
 using PetFamily.Discussions.Domain.ValueObjects;
+using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Discussions.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.VolunteerRequests.Heritage;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
+using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.HandlerTests;
 
 
-public class RejectRequest : VolunteerRequestsTestsBase
+public class RejectRequestTests : VolunteerRequestsTestsBase
 {
     private readonly ICommandHandler<Guid, RejectRequestCommand> _sut;
 
-    public RejectRequest(VolunteerRequestsWebFactory factory) : base(factory)
+    public RejectRequestTests(VolunteerRequestsWebFactory factory) : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, RejectRequestCommand>>();
     }
@@ -27,6 +31,7 @@ public class RejectRequest : VolunteerRequestsTestsBase
     {
         // arrange
         var adminId = Guid.NewGuid();
+        var harness = Factory.Services.GetTestHarness();
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         seededRequest.SetOnReview(adminId);
@@ -53,7 +58,11 @@ public class RejectRequest : VolunteerRequestsTestsBase
         changedRequest.RejectedAt.Should().NotBeNull();
         
         // should close discussion that is related to request
-        var updatedDiscussion = await DiscussionsDbContext.Discussions
+        var consumerHarness = harness.GetConsumerHarness<VolunteerRequestWasRejectedEventConsumer>();
+        await consumerHarness.Consumed.Any<VolunteerRequestWasRejectedEvent>();
+        await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
+        
+        var updatedDiscussion = await freshDbContext.Discussions
             .FirstOrDefaultAsync(d => d.Id == discussion.Id);
         
         updatedDiscussion.Should().NotBeNull();

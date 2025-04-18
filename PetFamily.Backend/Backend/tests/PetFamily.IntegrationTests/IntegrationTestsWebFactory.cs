@@ -1,4 +1,5 @@
 using System.Data.Common;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -9,7 +10,10 @@ using Npgsql;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
+using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Infrastructure.Consumers;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
@@ -26,6 +30,9 @@ using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContext
 using DiscussionsIReadDbContext = PetFamily.Discussions.Application.Abstractions.IReadDbContext;
 using DiscussionsReadDbContext = PetFamily.Discussions.Infrastructure.DbContexts.ReadDbContext;
 
+using VolunteerRequestWasApprovedEventAccountsConsumer =
+    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
+
 
 namespace PetFamily.IntegrationTests;
 
@@ -34,13 +41,12 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
 
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
+    public readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres")
         .WithDatabase("pet_family_tests")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
-
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -50,6 +56,9 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
+        // mass transit
+        ConfigureMassTransitServices(services);
+        
         // Volunteers
         ReconfigureVolunteersServices(services);
 
@@ -65,7 +74,23 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         // Discussions
         ReconfigureDiscussionsServices(services);
     }
-
+    
+    private void ConfigureMassTransitServices(IServiceCollection services)
+    {
+        services.RemoveMassTransitHostedService(); 
+        
+        services.AddMassTransitTestHarness(cfg =>
+        {
+            cfg.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
+            cfg.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
+            cfg.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
+            cfg.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
+            cfg.AddConsumer<BreedToPetExistenceEventConsumer>();
+            cfg.AddConsumer<SpeciesToPetExistenceEventConsumer>();
+            cfg.AddConsumer<BreedToSpeciesExistenceEventConsumer>();
+        });
+    }
+    
     private void ReconfigureDiscussionsServices(IServiceCollection services)
     {
         var writeDbContext = services.SingleOrDefault(s =>
@@ -181,7 +206,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-
+        
         using var scope = Services.CreateScope();
 
         // Применяем миграции для VolunteerDbContext
