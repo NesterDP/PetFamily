@@ -58,8 +58,6 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         if (result.IsFailure)
             return result.Error.ToErrorList();
 
-        // await _publisher.PublishDomainEvents(request.Value, cancellationToken);
-
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _publisher.PublishDomainEvents(request.Value, cancellationToken);
