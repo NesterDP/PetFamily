@@ -66,7 +66,7 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
 
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
 
             _logger.LogInformation(
                 "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value,
@@ -76,7 +76,7 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         }
         catch (Exception e)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(e, "Failed to approve request");
             return Errors.General.Failure("Transaction failed").ToErrorList();
         }

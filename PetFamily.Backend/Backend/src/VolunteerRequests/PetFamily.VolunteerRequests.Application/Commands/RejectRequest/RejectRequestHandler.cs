@@ -66,7 +66,7 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
         
             _logger.LogInformation(
                 "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);
@@ -75,7 +75,7 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         }
         catch (Exception e)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(e, "Failed to reject request");
             return Errors.General.Failure("Transaction failed").ToErrorList();
         }

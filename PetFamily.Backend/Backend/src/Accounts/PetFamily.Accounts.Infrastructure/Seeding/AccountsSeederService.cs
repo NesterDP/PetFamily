@@ -93,13 +93,13 @@ public class AccountsSeederService
         
                 await _accountManager.CreateAdminAccount(adminAccount);
                 
-                transaction.Commit();
+                await transaction.CommitAsync();
                 _logger.LogInformation("Successfully seeded admin");
             }
         }
         catch (Exception e)
         {
-           transaction.Rollback();
+           await transaction.RollbackAsync();
            _logger.LogError(e, "Failed to seed admin");
            throw;
         }

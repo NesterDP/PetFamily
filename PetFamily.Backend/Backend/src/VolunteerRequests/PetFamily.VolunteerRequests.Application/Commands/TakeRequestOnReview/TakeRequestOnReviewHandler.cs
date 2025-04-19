@@ -70,7 +70,7 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
 
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
 
             _logger.LogInformation(
                 "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);
@@ -79,7 +79,7 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
         }
         catch (Exception e)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(e, "Failed to take request on review");
             return Errors.General.Failure("Transaction failed").ToErrorList();
         }
