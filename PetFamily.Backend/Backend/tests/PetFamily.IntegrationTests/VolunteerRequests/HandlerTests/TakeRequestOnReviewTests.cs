@@ -7,6 +7,7 @@ using PetFamily.Discussions.Infrastructure.Consumers;
 using PetFamily.Discussions.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.VolunteerRequests.Heritage;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
@@ -45,6 +46,7 @@ public class TakeRequestOnReviewTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.OnReview);
         
         // setting request "OnReview" should create discussion
+        await Task.Delay(InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS*2000);
         var consumer = harness.GetConsumerHarness<OnReviewRequestConsumer>();
         await consumer.Consumed.Any<VolunteerRequestWasTakenOnReviewEvent>();
         await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());

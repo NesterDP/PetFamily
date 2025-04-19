@@ -68,6 +68,7 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.Approved);
         
         // receiving correct data BD
+        await Task.Delay(InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS*2000);
         var consumer1 = harness.GetConsumerHarness<ApprovedRequestConsumer>();
         var consumer2 = harness.GetConsumerHarness<PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer>();
 
@@ -78,7 +79,8 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         
         await using var freshDiscussionsDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
         await using var freshAccountsDbContext = new AccountsDbContext(Factory._dbContainer.GetConnectionString());
-        
+
+       
         // should close discussion that is related to request
         var updatedDiscussion = await freshDiscussionsDbContext.Discussions
             .FirstOrDefaultAsync(d => d.Id == discussion.Id);
