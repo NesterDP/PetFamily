@@ -1,12 +1,11 @@
 using MassTransit;
+using PetFamily.Accounts.Infrastructure.Consumers;
+using PetFamily.Accounts.Infrastructure.Consumers.Definitions;
 using PetFamily.Discussions.Infrastructure.Consumers;
 using PetFamily.Discussions.Infrastructure.Consumers.Definitions;
 using PetFamily.Discussions.Infrastructure.Consumers.Faults;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Infrastructure.Consumers;
-using ApprovedRequestConsumerAccounts = PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer;
-using ApprovedRequestConsumerAccountsDefinition =
-    PetFamily.Accounts.Infrastructure.Consumers.Definitions.ApprovedRequestConsumerDefinition;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -19,8 +18,8 @@ public static class MessageBusConfigurator
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
-            configure.AddConsumer<ApprovedRequestConsumer, ApprovedRequestConsumerDefinition>();
-            configure.AddConsumer<ApprovedRequestConsumerAccounts, ApprovedRequestConsumerAccountsDefinition>();
+            configure.AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
+            configure.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
             configure.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
             configure.AddConsumer<BreedToPetExistenceEventConsumer>();
             configure.AddConsumer<SpeciesToPetExistenceEventConsumer>();

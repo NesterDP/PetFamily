@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using PetFamily.Accounts.Infrastructure.Consumers;
+using PetFamily.Accounts.Infrastructure.Consumers.Definitions;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
@@ -19,10 +21,6 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
 using PetFamily.Web;
-using ApprovedRequestConsumerAccounts = PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer;
-using ApprovedRequestConsumerAccountsDefinition =
-    PetFamily.Accounts.Infrastructure.Consumers.Definitions.ApprovedRequestConsumerDefinition;
-
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
 using SpeciesIReadDbContext = PetFamily.Species.Application.IReadDbContext;
 using SpeciesReadDbContext = PetFamily.Species.Infrastructure.DbContexts.ReadDbContext;
@@ -84,8 +82,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         services.AddMassTransitTestHarness(cfg =>
         {
             cfg.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
-            cfg.AddConsumer<ApprovedRequestConsumer, ApprovedRequestConsumerDefinition>();
-            cfg.AddConsumer<ApprovedRequestConsumerAccounts, ApprovedRequestConsumerAccountsDefinition>();
+            cfg.AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
+            cfg.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
             cfg.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
             cfg.AddConsumer<BreedToPetExistenceEventConsumer>();
             cfg.AddConsumer<SpeciesToPetExistenceEventConsumer>();

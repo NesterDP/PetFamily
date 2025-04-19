@@ -18,7 +18,6 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
-using ApprovedRequestConsumer = PetFamily.Discussions.Infrastructure.Consumers.ApprovedRequestConsumer;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.HandlerTests;
 
@@ -69,8 +68,8 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         
         // receiving correct data BD
         await Task.Delay(InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS*2000);
-        var consumer1 = harness.GetConsumerHarness<ApprovedRequestConsumer>();
-        var consumer2 = harness.GetConsumerHarness<PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestConsumer>();
+        var consumer1 = harness.GetConsumerHarness<ApprovedRequestDiscussionsConsumer>();
+        var consumer2 = harness.GetConsumerHarness<PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestAccountsConsumer>();
 
         await Task.WhenAll(
             consumer1.Consumed.Any<VolunteerRequestWasApprovedEvent>(),

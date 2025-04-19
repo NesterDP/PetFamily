@@ -3,11 +3,11 @@ using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.Accounts.Infrastructure.Consumers.Definitions;
 
-public class ApprovedRequestConsumerDefinition : ConsumerDefinition<ApprovedRequestConsumer>
+public class ApprovedRequestAccountsConsumerDefinition : ConsumerDefinition<ApprovedRequestAccountsConsumer>
 {
     protected override void ConfigureConsumer(
         IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<ApprovedRequestConsumer> consumerConfigurator,
+        IConsumerConfigurator<ApprovedRequestAccountsConsumer> consumerConfigurator,
         IRegistrationContext context)
     {
         base.ConfigureConsumer(endpointConfigurator, consumerConfigurator, context);
