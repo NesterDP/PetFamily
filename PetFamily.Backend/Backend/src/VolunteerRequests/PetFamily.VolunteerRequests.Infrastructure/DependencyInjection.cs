@@ -6,8 +6,10 @@ using PetFamily.SharedKernel.Structs;
 using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasApprovedEventHandlers;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
+using PetFamily.VolunteerRequests.Infrastructure.Outbox;
 using PetFamily.VolunteerRequests.Infrastructure.Repositories;
 using PetFamily.VolunteerRequests.Infrastructure.TransactionServices;
+using Quartz;
 
 namespace PetFamily.VolunteerRequests.Infrastructure;
 
@@ -21,7 +23,8 @@ public static class DependencyInjection
             .AddDbContexts(configuration)
             .AddTransactionManagement()
             .AddRepositories()
-            .AddServices();
+            .AddMediatrService()
+            .AddOutbox();
         
         return services;
     }
@@ -54,10 +57,11 @@ public static class DependencyInjection
     {
         services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
         services.AddScoped<ITestEntitiesRepository, TestEntitiesRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
         return services;
     }
 
-    private static IServiceCollection AddServices(
+    private static IServiceCollection AddMediatrService(
         this IServiceCollection services)
     {
         services.AddMediatR(cfg =>
@@ -65,6 +69,25 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(TestEntityCreationWithTrueStatus).Assembly);
         });
+        
+        return services;
+    }
+
+    private static IServiceCollection AddOutbox(this IServiceCollection services)
+    {
+        services.AddScoped<ProcessOutboxMessagesService>();
+        
+        services.AddQuartz(configure =>
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configure
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
+        });
+        
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
         
         return services;
     }
