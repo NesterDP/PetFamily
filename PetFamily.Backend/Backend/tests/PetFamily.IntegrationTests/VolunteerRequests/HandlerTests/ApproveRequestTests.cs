@@ -3,6 +3,7 @@ using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Infrastructure.Consumers;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Core.Abstractions;
 using PetFamily.Discussions.Domain.Entities;
@@ -17,8 +18,6 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequests.Contracts.Messaging;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
-using VolunteerRequestWasApprovedEventAccountsConsumer =
-    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.HandlerTests;
 
@@ -68,8 +67,9 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         changedRequest.Status.Value.Should().Be(VolunteerRequestStatusEnum.Approved);
         
         // receiving correct data BD
-        var consumer1 = harness.GetConsumerHarness<VolunteerRequestWasApprovedEventConsumer>();
-        var consumer2 = harness.GetConsumerHarness<VolunteerRequestWasApprovedEventAccountsConsumer>();
+        await Task.Delay(InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS*2000);
+        var consumer1 = harness.GetConsumerHarness<ApprovedRequestDiscussionsConsumer>();
+        var consumer2 = harness.GetConsumerHarness<PetFamily.Accounts.Infrastructure.Consumers.ApprovedRequestAccountsConsumer>();
 
         await Task.WhenAll(
             consumer1.Consumed.Any<VolunteerRequestWasApprovedEvent>(),
@@ -78,7 +78,8 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         
         await using var freshDiscussionsDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
         await using var freshAccountsDbContext = new AccountsDbContext(Factory._dbContainer.GetConnectionString());
-        
+
+       
         // should close discussion that is related to request
         var updatedDiscussion = await freshDiscussionsDbContext.Discussions
             .FirstOrDefaultAsync(d => d.Id == discussion.Id);

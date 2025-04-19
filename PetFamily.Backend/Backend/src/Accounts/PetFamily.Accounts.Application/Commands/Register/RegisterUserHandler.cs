@@ -66,7 +66,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         
                 await _accountManager.CreateParticipantAccount(participantAccount);
                 
-                transaction.Commit();
+                await transaction.CommitAsync(cancellationToken);
                 _logger.LogInformation("Successfully created participant with UserName = {0}", command.UserName);
                 return SUCCESS_MESSAGE;
             }
@@ -77,7 +77,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         }
         catch (Exception e)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             _logger.LogInformation("Failed create participant with UserName = {0}", command.UserName);
             _logger.LogError(e, e.Message);
             return Errors.General.Failure("server.internal", "transaction failure").ToErrorList();

@@ -9,6 +9,7 @@ using PetFamily.Discussions.Infrastructure.Consumers;
 using PetFamily.Discussions.Infrastructure.DbContexts;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.VolunteerRequests.Heritage;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequests.Contracts.Messaging;
@@ -58,7 +59,8 @@ public class RejectRequestTests : VolunteerRequestsTestsBase
         changedRequest.RejectedAt.Should().NotBeNull();
         
         // should close discussion that is related to request
-        var consumerHarness = harness.GetConsumerHarness<VolunteerRequestWasRejectedEventConsumer>();
+        await Task.Delay(InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS*2000);
+        var consumerHarness = harness.GetConsumerHarness<RejectedRequestConsumer>();
         await consumerHarness.Consumed.Any<VolunteerRequestWasRejectedEvent>();
         await using var freshDbContext = new WriteDbContext(Factory._dbContainer.GetConnectionString());
         

@@ -62,13 +62,13 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
             
             _logger.LogInformation("Created volunteer account for user with id = {ID}", request.UserId);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
 
             return volunteerAccount.Id;
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(ex, "Failed to create volunteer account");
             return Errors.General.Failure("Transaction failed");
         }

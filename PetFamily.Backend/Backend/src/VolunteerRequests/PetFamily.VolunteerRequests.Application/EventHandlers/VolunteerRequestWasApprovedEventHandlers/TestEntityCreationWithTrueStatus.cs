@@ -1,4 +1,7 @@
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Domain.Entities;
@@ -9,10 +12,15 @@ namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequest
 public class TestEntityCreationWithTrueStatus : INotificationHandler<VolunteerRequestWasApprovedEvent>
 {
     private readonly ITestEntitiesRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public TestEntityCreationWithTrueStatus(ITestEntitiesRepository repository)
+    public TestEntityCreationWithTrueStatus(
+        ITestEntitiesRepository repository,
+        [FromKeyedServices(UnitOfWorkSelector.VolunteerRequests)]
+        IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Handle(VolunteerRequestWasApprovedEvent domainEvent, CancellationToken cancellationToken)
@@ -21,5 +29,6 @@ public class TestEntityCreationWithTrueStatus : INotificationHandler<VolunteerRe
         testEntity.SetStatus(true);
 
         await _repository.AddAsync(testEntity, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

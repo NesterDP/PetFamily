@@ -7,10 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using PetFamily.Accounts.Infrastructure.Consumers;
+using PetFamily.Accounts.Infrastructure.Consumers.Definitions;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
 using PetFamily.Discussions.Infrastructure.Consumers;
+using PetFamily.Discussions.Infrastructure.Consumers.Definitions;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.Consumers;
@@ -29,9 +32,6 @@ using VolunteerRequestsReadDbContext = PetFamily.VolunteerRequests.Infrastructur
 using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 using DiscussionsIReadDbContext = PetFamily.Discussions.Application.Abstractions.IReadDbContext;
 using DiscussionsReadDbContext = PetFamily.Discussions.Infrastructure.DbContexts.ReadDbContext;
-
-using VolunteerRequestWasApprovedEventAccountsConsumer =
-    PetFamily.Accounts.Infrastructure.Consumers.VolunteerRequestWasApprovedEventConsumer;
 
 
 namespace PetFamily.IntegrationTests;
@@ -81,10 +81,10 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         
         services.AddMassTransitTestHarness(cfg =>
         {
-            cfg.AddConsumer<VolunteerRequestWasRejectedEventConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasApprovedEventConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasApprovedEventAccountsConsumer>();
-            cfg.AddConsumer<VolunteerRequestWasTakenOnReviewEventConsumer>();
+            cfg.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
+            cfg.AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
+            cfg.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
+            cfg.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
             cfg.AddConsumer<BreedToPetExistenceEventConsumer>();
             cfg.AddConsumer<SpeciesToPetExistenceEventConsumer>();
             cfg.AddConsumer<BreedToSpeciesExistenceEventConsumer>();
