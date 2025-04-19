@@ -1,6 +1,7 @@
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Domain.Events;
 
 namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasRejectedEventHandlers;
@@ -8,24 +9,25 @@ namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequest
 public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasRejectedEvent>
 {
     private readonly ILogger<SendIntegrationEvent> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
-
+    private readonly IOutboxRepository _outboxRepository;
 
     public SendIntegrationEvent(
         ILogger<SendIntegrationEvent> logger,
-        IPublishEndpoint publishEndpoint)
+        IOutboxRepository outboxRepository)
     {
         _logger = logger;
-        _publishEndpoint = publishEndpoint;
+        _outboxRepository = outboxRepository;
     }
 
     public async Task Handle(VolunteerRequestWasRejectedEvent domainEvent, CancellationToken cancellationToken)
     {
-        await _publishEndpoint.Publish(new Contracts.Messaging.VolunteerRequestWasRejectedEvent(
+        var integrationEvent = new Contracts.Messaging.VolunteerRequestWasRejectedEvent(
             domainEvent.UserId,
             domainEvent.AdminId,
-            domainEvent.RequestId), cancellationToken);
+            domainEvent.RequestId);
         
-        _logger.LogInformation("Integration event \"VolunteerRequestWasRejectedEvent\" was published");
+        await _outboxRepository.Add(integrationEvent, cancellationToken);
+        
+        _logger.LogInformation("Integration event \"VolunteerRequestWasRejectedEvent\" was saved in database");
     }
 }

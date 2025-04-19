@@ -61,10 +61,10 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
         var result = request.Value.SetApproved(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
+        
+        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
         _logger.LogInformation(
             "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value, request.Value.UserId);

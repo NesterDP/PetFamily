@@ -1,6 +1,7 @@
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Domain.Events;
 
 namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasTakenOnReviewEventHandlers;
@@ -8,23 +9,25 @@ namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequest
 public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasTakenOnReviewEvent>
 {
     private readonly ILogger<SendIntegrationEvent> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
-    
+    private readonly IOutboxRepository _outboxRepository;
+
     public SendIntegrationEvent(
         ILogger<SendIntegrationEvent> logger,
-        IPublishEndpoint publishEndpoint)
+        IOutboxRepository outboxRepository)
     {
         _logger = logger;
-        _publishEndpoint = publishEndpoint;
+        _outboxRepository = outboxRepository;
     }
 
     public async Task Handle(VolunteerRequestWasTakenOnReviewEvent domainEvent, CancellationToken cancellationToken)
     {
-        await _publishEndpoint.Publish(new Contracts.Messaging.VolunteerRequestWasTakenOnReviewEvent(
+        var integrationEvent = new Contracts.Messaging.VolunteerRequestWasTakenOnReviewEvent(
             domainEvent.UserId,
             domainEvent.AdminId,
-            domainEvent.RequestId), cancellationToken);
+            domainEvent.RequestId);
+        
+        await _outboxRepository.Add(integrationEvent, cancellationToken);
 
-        _logger.LogInformation("Integration event \"VolunteerRequestWasTakenOnReviewEvent\" was published");
+        _logger.LogInformation("Integration event \"VolunteerRequestWasTakenOnReviewEvent\" was saved in database");
     }
 }

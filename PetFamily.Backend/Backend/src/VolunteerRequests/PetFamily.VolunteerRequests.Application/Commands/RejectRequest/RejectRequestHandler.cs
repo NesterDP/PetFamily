@@ -57,11 +57,11 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         var result = request.Value.SetRejected(adminId);
         if (result.IsFailure)
             return result.Error.ToErrorList();
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
+        
         await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
         _logger.LogInformation(
             "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);
 

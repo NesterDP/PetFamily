@@ -61,10 +61,10 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
 
         if (request.Value.RevisionComment is not null)
             request.Value.RemoveAllDomainEvents<VolunteerRequestWasTakenOnReviewEvent>();
+        
+        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
         _logger.LogInformation(
             "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);
