@@ -13,7 +13,6 @@ using Quartz;
 
 namespace PetFamily.VolunteerRequests.Infrastructure;
 
-
 public static class DependencyInjection
 {
     public static IServiceCollection AddVolunteerRequestsInfrastructure(
@@ -25,33 +24,33 @@ public static class DependencyInjection
             .AddRepositories()
             .AddMediatrService()
             .AddOutbox();
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddDbContexts(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddScoped<WriteDbContext>(_ =>
             new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
-        
+
         services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
             new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddTransactionManagement(
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.VolunteerRequests);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        
+
         return services;
     }
-    
+
     private static IServiceCollection AddRepositories(
         this IServiceCollection services)
     {
@@ -69,14 +68,14 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(TestEntityCreationWithTrueStatus).Assembly);
         });
-        
+
         return services;
     }
 
     private static IServiceCollection AddOutbox(this IServiceCollection services)
     {
         services.AddScoped<ProcessOutboxMessagesService>();
-        
+
         services.AddQuartz(configure =>
         {
             var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
@@ -84,11 +83,13 @@ public static class DependencyInjection
             configure
                 .AddJob<ProcessOutboxMessagesJob>(jobKey)
                 .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
-                    schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
+                    schedule => schedule.WithIntervalInSeconds(
+                            InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS)
+                        .RepeatForever()));
         });
-        
+
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-        
+
         return services;
     }
 }

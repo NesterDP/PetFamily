@@ -47,24 +47,37 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         var requestId = VolunteerRequestId.Create(command.RequestId);
 
         var adminId = AdminId.Create(command.AdminId);
-
-        var request = await _volunteerRequestsRepository
-            .GetByIdAsync(requestId, cancellationToken);
-
-        if (request.IsFailure)
-            return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
-
-        var result = request.Value.SetRejected(adminId);
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
         
-        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
+        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        try
+        {
+            var request = await _volunteerRequestsRepository
+                .GetByIdAsync(requestId, cancellationToken);
+
+            if (request.IsFailure)
+                return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
+
+            var result = request.Value.SetRejected(adminId);
+            if (result.IsFailure)
+                return result.Error.ToErrorList();
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-        _logger.LogInformation(
-            "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);
+            await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-        return requestId.Value;
+            transaction.Commit();
+        
+            _logger.LogInformation(
+                "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);
+
+            return requestId.Value;
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            _logger.LogError(e, "Failed to reject request");
+            return Errors.General.Failure("Transaction failed").ToErrorList();
+        }
     }
 }

@@ -3,12 +3,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PetFamily.Accounts.Contracts;
-using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
-using PetFamily.Discussions.Contracts;
-using PetFamily.Discussions.Contracts.Requests;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Extensions;
 using PetFamily.SharedKernel.Structs;
@@ -52,23 +48,37 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
 
         var adminId = AdminId.Create(command.AdminId);
 
-        var request = await _volunteerRequestsRepository
-            .GetByIdAsync(requestId, cancellationToken);
+        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        if (request.IsFailure)
-            return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
+        try
+        {
+            var request = await _volunteerRequestsRepository
+                .GetByIdAsync(requestId, cancellationToken);
 
-        var result = request.Value.SetApproved(adminId);
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
-        
-        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
+            if (request.IsFailure)
+                return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var result = request.Value.SetApproved(adminId);
+            if (result.IsFailure)
+                return result.Error.ToErrorList();
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value, request.Value.UserId);
+            await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-        return requestId.Value;
+            transaction.Commit();
+
+            _logger.LogInformation(
+                "Admin with ID = {ID1} gave volunteer role to user with id = {ID2}", adminId.Value,
+                request.Value.UserId);
+
+            return requestId.Value;
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            _logger.LogError(e, "Failed to approve request");
+            return Errors.General.Failure("Transaction failed").ToErrorList();
+        }
     }
 }

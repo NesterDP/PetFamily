@@ -49,26 +49,39 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
 
         var requestId = VolunteerRequestId.Create(command.RequestId);
 
-        var request = await _volunteerRequestsRepository
-            .GetByIdAsync(requestId, cancellationToken);
+        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        if (request.IsFailure)
-            return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
+        try
+        {
+            var request = await _volunteerRequestsRepository
+                .GetByIdAsync(requestId, cancellationToken);
 
-        var result = request.Value.SetOnReview(adminId);
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
+            if (request.IsFailure)
+                return Errors.General.ValueNotFound($"VolunteerRequest with Id = {requestId.Value}").ToErrorList();
 
-        if (request.Value.RevisionComment is not null)
-            request.Value.RemoveAllDomainEvents<VolunteerRequestWasTakenOnReviewEvent>();
-        
-        await _publisher.PublishDomainEvents(request.Value, cancellationToken);
+            var result = request.Value.SetOnReview(adminId);
+            if (result.IsFailure)
+                return result.Error.ToErrorList();
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+            if (request.Value.RevisionComment is not null)
+                request.Value.RemoveAllDomainEvents<VolunteerRequestWasTakenOnReviewEvent>();
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);
+            await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
-        return requestId.Value;
+            transaction.Commit();
+
+            _logger.LogInformation(
+                "Admin with ID = {ID1} took request with {ID2} on review", adminId.Value, requestId.Value);
+
+            return requestId.Value;
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            _logger.LogError(e, "Failed to take request on review");
+            return Errors.General.Failure("Transaction failed").ToErrorList();
+        }
     }
 }
