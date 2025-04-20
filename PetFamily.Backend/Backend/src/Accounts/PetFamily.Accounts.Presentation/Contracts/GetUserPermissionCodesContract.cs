@@ -15,6 +15,6 @@ public class GetUserPermissionCodesContract : IGetUserPermissionCodesContract
 
     public async Task<HashSet<string>> GetUserPermissionCodes(GetUserPermissionCodesRequest request)
     {
-        return await _permissionManager.GetUserPermissionCodes(request.userId);
+        return await _permissionManager.GetUserPermissionCodes(request.UserId);
     }
 }

@@ -1,8 +1,4 @@
-using PetFamily.Accounts.Domain.DataModels;
-using PetFamily.Core.Dto.Volunteer;
-using PetFamily.SharedKernel.ValueObjects;
-
-namespace PetFamily.Accounts.Application.Dto;
+namespace PetFamily.Accounts.Contracts.Dto;
 
 public class UserInfoDto
 {

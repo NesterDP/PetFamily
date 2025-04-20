@@ -1,6 +1,4 @@
-using PetFamily.Core.Dto.Pet;
-
-namespace PetFamily.Accounts.Application.Dto;
+namespace PetFamily.Accounts.Contracts.Dto;
 
 public class ParticipantAccountDto
 {

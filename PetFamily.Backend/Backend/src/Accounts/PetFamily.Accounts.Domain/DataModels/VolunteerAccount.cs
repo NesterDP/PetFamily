@@ -1,3 +1,4 @@
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.ValueObjects;

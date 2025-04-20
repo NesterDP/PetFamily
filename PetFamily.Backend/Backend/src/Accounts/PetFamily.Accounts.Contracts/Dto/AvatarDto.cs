@@ -1,4 +1,4 @@
-namespace PetFamily.Accounts.Application.Dto;
+namespace PetFamily.Accounts.Contracts.Dto;
 
 public class AvatarDto
 {
