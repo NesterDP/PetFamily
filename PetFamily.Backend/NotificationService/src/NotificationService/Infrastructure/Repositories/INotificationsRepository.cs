@@ -16,4 +16,8 @@ public interface INotificationsRepository
     Task<Result<UserNotificationSettings, Error>> GetByIdAsync(
         UserNotificationSettingsId id,
         CancellationToken cancellationToken = default);
+    
+    Task<Result<UserNotificationSettings, Error>> GetByUserIdAsync(
+        UserId id,
+        CancellationToken cancellationToken = default);
 }

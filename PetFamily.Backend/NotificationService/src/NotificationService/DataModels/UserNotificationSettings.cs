@@ -6,8 +6,8 @@ public class UserNotificationSettings
 {
     public UserNotificationSettingsId Id { get; private set; }
     public UserId UserId { get; private set; }
-    public bool SendToEmail { get; private set; }
-    public bool SendToTelegram { get; private set; }
+    public bool? SendToEmail { get; private set; }
+    public bool? SendToTelegram { get; private set; }
     public bool SendToWebsite { get; private set; }
 
     // ef core
@@ -15,8 +15,8 @@ public class UserNotificationSettings
 
     public UserNotificationSettings(
         UserId userId,
-        bool sendToEmail,
-        bool sendToTelegram,
+        bool? sendToEmail,
+        bool? sendToTelegram,
         bool sendToWebsite)
     {
         Id = UserNotificationSettingsId.NewId();
@@ -31,17 +31,17 @@ public class UserNotificationSettings
         UserId = userId;
     }
 
-    public void SetEmailNotification(bool sendToEmail)
+    public void SetEmailNotification(bool? sendToEmail)
     {
         SendToEmail = sendToEmail;
     }
 
-    public void SetTelegramNotification(bool sendToTelegram)
+    public void SetTelegramNotification(bool? sendToTelegram)
     {
         SendToTelegram = sendToTelegram;
     }
 
-    public void SendWebSiteNotification(bool sendToWebsite)
+    public void SetWebSiteNotification(bool sendToWebsite)
     {
         SendToWebsite = sendToWebsite;
     }

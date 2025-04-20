@@ -47,4 +47,17 @@ public class NotificationsRepository : INotificationsRepository
 
         return settings;
     }
+    
+    public async Task<Result<UserNotificationSettings, Error>> GetByUserIdAsync(
+        UserId id,
+        CancellationToken cancellationToken = default)
+    {
+        var settings = await _context.UsersNotificationSettings
+            .FirstOrDefaultAsync(v => v.UserId == id, cancellationToken);
+
+        if (settings == null)
+            return Errors.General.ValueNotFound();
+
+        return settings;
+    }
 }

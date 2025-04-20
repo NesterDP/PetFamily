@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NotificationService.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250420181459_NotificationService_Init")]
+    [Migration("20250420190512_NotificationService_Init")]
     partial class NotificationService_Init
     {
         /// <inheritdoc />
@@ -32,11 +32,11 @@ namespace NotificationService.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool>("SendToEmail")
+                    b.Property<bool?>("SendToEmail")
                         .HasColumnType("boolean")
                         .HasColumnName("send_to_email");
 
-                    b.Property<bool>("SendToTelegram")
+                    b.Property<bool?>("SendToTelegram")
                         .HasColumnType("boolean")
                         .HasColumnName("send_to_telegram");
 

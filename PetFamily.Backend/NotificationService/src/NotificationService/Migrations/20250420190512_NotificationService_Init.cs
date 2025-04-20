@@ -21,8 +21,8 @@ namespace NotificationService.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    send_to_email = table.Column<bool>(type: "boolean", nullable: false),
-                    send_to_telegram = table.Column<bool>(type: "boolean", nullable: false),
+                    send_to_email = table.Column<bool>(type: "boolean", nullable: true),
+                    send_to_telegram = table.Column<bool>(type: "boolean", nullable: true),
                     send_to_website = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>

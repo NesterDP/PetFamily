@@ -29,11 +29,11 @@ namespace NotificationService.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool>("SendToEmail")
+                    b.Property<bool?>("SendToEmail")
                         .HasColumnType("boolean")
                         .HasColumnName("send_to_email");
 
-                    b.Property<bool>("SendToTelegram")
+                    b.Property<bool?>("SendToTelegram")
                         .HasColumnType("boolean")
                         .HasColumnName("send_to_telegram");
 

@@ -26,11 +26,11 @@ public class UserNotificationSettingsConfiguration : IEntityTypeConfiguration<Us
             .HasColumnName("user_id");
 
         builder.Property(u => u.SendToEmail)
-            .IsRequired()
+            .IsRequired(false)
             .HasColumnName("send_to_email");
         
         builder.Property(u => u.SendToTelegram)
-            .IsRequired()
+            .IsRequired(false)
             .HasColumnName("send_to_telegram");
         
         builder.Property(u => u.SendToWebsite)
