@@ -12,6 +12,8 @@ builder.Services.AddSerilog();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddMessageBus(builder.Configuration);
+
 builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
