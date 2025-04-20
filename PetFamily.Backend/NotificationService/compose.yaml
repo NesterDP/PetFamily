@@ -1,0 +1,18 @@
+﻿services:
+  notificationservice:
+    container_name: notificationservice
+    #image: notificationservice
+    build:
+      context: .
+      dockerfile: src/NotificationService/Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - "8091:8080"
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    external: true
