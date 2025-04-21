@@ -37,7 +37,6 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         _outboxRepository = outboxRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-
     }
 
     public async Task<Result<string, ErrorList>> HandleAsync(

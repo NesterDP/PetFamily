@@ -23,7 +23,7 @@ public class AccountsController : ApplicationController
         _userData = userData;
     }
 
-    [Permission("accounts.GetUserInfoById")]
+    //[Permission("accounts.GetUserInfoById")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserInfoById(
         [FromRoute] Guid id,

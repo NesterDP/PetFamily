@@ -4,16 +4,22 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageId>Accounts.Contracts</PackageId>
+        <PackageId>Accounts.Communication</PackageId>
         <Version>1.0.0</Version>
         <Authors>NesterDP</Authors>
         <Company>NetserDP</Company>
-        <PackageDescription>Nuget package for "Contracts" project of "Accounts" module</PackageDescription>
+        <PackageDescription>Nuget package for "Communication" project of "Accounts" module</PackageDescription>
         <RepositoryUrl>https://github.com/NesterDP/PetFamily</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PetFamily.Accounts.Contracts\PetFamily.Accounts.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="3.5.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
