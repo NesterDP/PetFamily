@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.CompleteUploadAvatar;
+using PetFamily.Accounts.Application.Commands.ConfirmEmail;
 using PetFamily.Accounts.Application.Commands.GenerateEmailToken;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
@@ -31,6 +32,17 @@ public class AccountsController : ApplicationController
     {
         var query = new GetUserInfoByIdQuery(id);
         var result = await handler.HandleAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPost("email-confirmation")]
+    public async Task<IActionResult> ConfirmEmail(
+        [FromBody] ConfirmEmailRequest request,
+        [FromServices] ConfirmEmailHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand();
+        var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
