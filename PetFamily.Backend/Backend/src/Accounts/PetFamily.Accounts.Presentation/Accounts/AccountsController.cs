@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.CompleteUploadAvatar;
+using PetFamily.Accounts.Application.Commands.GenerateEmailToken;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.Register;
@@ -98,6 +99,17 @@ public class AccountsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(_userData.UserId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPost("email-token-generation")]
+    public async Task<IActionResult> EmailTokenGeneration(
+        [FromBody] GenerateEmailTokenRequest request,
+        [FromServices] GenerateEmailTokenHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GenerateEmailTokenCommand(request.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
