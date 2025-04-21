@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="accounts.communication" Version="1.0.0" />
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.5.1" />
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.3" />

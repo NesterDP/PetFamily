@@ -1,6 +1,7 @@
 using NotificationService.API.Endpoints;
 using NotificationService.ApplicationConfiguration;
 using NotificationService.Middlewares;
+using PetFamily.Accounts.Communication;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddMessageBus(builder.Configuration);
 builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
+
+builder.Services.AddAccountsHttpCommunication(builder.Configuration);
 
 var app = builder.Build();
 
