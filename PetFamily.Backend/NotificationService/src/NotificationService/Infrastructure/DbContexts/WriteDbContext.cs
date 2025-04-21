@@ -18,7 +18,7 @@ public class WriteDbContext: DbContext
     {
         optionsBuilder.UseNpgsql(_connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
-        //optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
+        optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
