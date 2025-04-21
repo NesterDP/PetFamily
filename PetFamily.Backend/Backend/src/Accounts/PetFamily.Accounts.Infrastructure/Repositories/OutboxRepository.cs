@@ -1,15 +1,15 @@
 using System.Text.Json;
-using PetFamily.VolunteerRequests.Application.Abstractions;
-using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
-using PetFamily.VolunteerRequests.Infrastructure.Outbox;
+using PetFamily.Accounts.Application.Abstractions;
+using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.Outbox;
 
-namespace PetFamily.VolunteerRequests.Infrastructure.Repositories;
+namespace PetFamily.Accounts.Infrastructure.Repositories;
 
 public class OutboxRepository : IOutboxRepository
 {
-    private readonly WriteDbContext _dbContext;
+    private readonly AccountsDbContext _dbContext;
 
-    public OutboxRepository(WriteDbContext dbContext)
+    public OutboxRepository(AccountsDbContext dbContext)
     {
         _dbContext = dbContext;
     }
