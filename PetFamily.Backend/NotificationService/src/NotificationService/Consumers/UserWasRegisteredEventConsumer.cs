@@ -11,28 +11,28 @@ namespace NotificationService.Consumers;
 public class UserWasRegisteredEventConsumer : IConsumer<UserWasRegisteredEvent>
 {
     private readonly ILogger<UserWasRegisteredEventConsumer> _logger;
-    private readonly IAccountsService _httpClient;
+    private readonly IAccountsService _accountService;
     private readonly EmailService _emailService;
 
     public UserWasRegisteredEventConsumer(
         ILogger<UserWasRegisteredEventConsumer> logger,
-        IAccountsService httpClient,
+        IAccountsService accountService,
         EmailService emailService)
     {
         _logger = logger;
-        _httpClient = httpClient;
+        _accountService = accountService;
         _emailService = emailService;
     }
 
     public async Task Consume(ConsumeContext<UserWasRegisteredEvent> context)
     {
         // получение данных от сервиса аккаунтов по http
-        var userInfo = await _httpClient.GetUserInfoById(context.Message.UserId, CancellationToken.None);
+        var userInfo = await _accountService.GetUserInfoById(context.Message.UserId, CancellationToken.None);
         if (userInfo.IsFailure)
             throw new Exception(userInfo.Error);
 
         var request = new GenerateEmailTokenRequest(context.Message.UserId);
-        var token = await _httpClient.GenerateEmailConfirmationToken(request, CancellationToken.None);
+        var token = await _accountService.GenerateEmailConfirmationToken(request, CancellationToken.None);
         if (token.IsFailure)
             throw new Exception(token.Error);
 

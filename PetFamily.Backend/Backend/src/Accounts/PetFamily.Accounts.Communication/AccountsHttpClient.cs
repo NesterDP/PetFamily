@@ -10,8 +10,6 @@ namespace PetFamily.Accounts.Communication;
 public class AccountsHttpClient : IAccountsService
 {
     private readonly HttpClient _httpClient;
-    public const string EMAIL_CONFIRMATION_GET_ADDRESS = "api/Accounts/email-confirmation-get";
-    public const string EMAIL_CONFIRMATION_POST_ADDRESS = "api/Accounts/email-confirmation";
 
     public AccountsHttpClient(HttpClient httpClient)
     {

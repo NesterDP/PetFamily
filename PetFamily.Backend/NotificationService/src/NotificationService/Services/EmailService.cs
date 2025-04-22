@@ -10,14 +10,14 @@ using MimeKit;
 
 public class EmailService
 {
-    private readonly AccountsServiceOptions _httpOptions;
+    private readonly AccountsServiceOptions _accountsOptions;
     private readonly SmtpOptions _smtpOptions;
 
     public EmailService(
         IOptions<SmtpOptions> smtpOptions,
-        IOptions<AccountsServiceOptions> httpOptions)
+        IOptions<AccountsServiceOptions> accountsOptions)
     {
-        _httpOptions = httpOptions.Value;
+        _accountsOptions = accountsOptions.Value;
         _smtpOptions = smtpOptions.Value;
     }
 
@@ -28,11 +28,11 @@ public class EmailService
         message.To.Add(new MailboxAddress("", userInfo.Email));
         message.Subject = "Подтверждение почты";
         
-        var getLink = $"{_httpOptions.Url}/{AccountsHttpClient.EMAIL_CONFIRMATION_GET_ADDRESS}" +
+        var getLink = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_GET_ADDRESS}" +
                       $"?userId={userId}" +
                       $"&token={Uri.EscapeDataString(token)}";
         
-        var postUrl = $"{_httpOptions.Url}/{AccountsHttpClient.EMAIL_CONFIRMATION_POST_ADDRESS}";
+        var postUrl = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_POST_ADDRESS}";
     
         var bodyBuilder = new BodyBuilder
         {
