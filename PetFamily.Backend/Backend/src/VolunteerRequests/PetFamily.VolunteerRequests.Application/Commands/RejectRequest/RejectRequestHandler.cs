@@ -48,7 +48,7 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
 
         var adminId = AdminId.Create(command.AdminId);
         
-        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {

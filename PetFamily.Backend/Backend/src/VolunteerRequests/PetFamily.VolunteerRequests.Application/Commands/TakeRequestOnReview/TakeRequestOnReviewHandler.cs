@@ -49,7 +49,7 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
 
         var requestId = VolunteerRequestId.Create(command.RequestId);
 
-        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {

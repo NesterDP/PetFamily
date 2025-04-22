@@ -12,8 +12,4 @@
       <ProjectReference Include="..\PetFamily.VolunteerRequests.Contracts\PetFamily.VolunteerRequests.Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Contracts\" />
-    </ItemGroup>
-
 </Project>
