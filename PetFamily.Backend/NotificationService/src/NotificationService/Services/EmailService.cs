@@ -187,4 +187,31 @@ public class EmailService
         await client.SendAsync(message);
         await client.DisconnectAsync(true);
     }
+    
+    public async Task SendRequestWasTakenOnReviewNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Взятие заявки на рассмотрение";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"начал проверять вашу заявку с ID = {requestId} ."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
 }
