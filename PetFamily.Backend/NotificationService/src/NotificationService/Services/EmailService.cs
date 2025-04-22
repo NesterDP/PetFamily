@@ -78,4 +78,31 @@ public class EmailService
         await client.SendAsync(message);
         await client.DisconnectAsync(true);
     }
+    
+    public async Task SendRevisionRequiredNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress("Сервис уведомлений", _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Необходимость внесения изменений в заявку";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"проверил вашу заявку с ID = {requestId} и отправил её на доработку."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
 }

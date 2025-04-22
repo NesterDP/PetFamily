@@ -13,6 +13,7 @@ public static class MessageBusConfigurator
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.AddConsumer<UserWasRegisteredEventConsumer, UserWasRegisteredEventConsumerDefinition>();
+            configure.AddConsumer<RequestRequiredRevisionConsumer, RequestRequiredRevisionConsumerDefinition>();
             
             configure.UsingRabbitMq((context, cfg) =>
             {
