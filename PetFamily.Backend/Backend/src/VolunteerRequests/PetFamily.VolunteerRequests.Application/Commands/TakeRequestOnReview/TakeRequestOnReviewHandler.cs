@@ -10,8 +10,6 @@ using PetFamily.SharedKernel.Extensions;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.VolunteerRequests.Application.Abstractions;
-using PetFamily.VolunteerRequests.Domain.Events;
-
 namespace PetFamily.VolunteerRequests.Application.Commands.TakeRequestOnReview;
 
 public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnReviewCommand>
@@ -62,9 +60,6 @@ public class TakeRequestOnReviewHandler : ICommandHandler<Guid, TakeRequestOnRev
             var result = request.Value.SetOnReview(adminId);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
-
-            if (request.Value.RevisionComment is not null)
-                request.Value.RemoveAllDomainEvents<VolunteerRequestWasTakenOnReviewEvent>();
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

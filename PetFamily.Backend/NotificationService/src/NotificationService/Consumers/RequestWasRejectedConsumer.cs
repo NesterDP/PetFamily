@@ -5,7 +5,7 @@ using PetFamily.VolunteerRequests.Contracts.Messaging;
 
 namespace NotificationService.Consumers;
 
-public class RequestWasRejectedConsumer : IConsumer<VolunteerRequestWasApprovedEvent>
+public class RequestWasRejectedConsumer : IConsumer<VolunteerRequestWasRejectedEvent>
 {
     private readonly ILogger<RequestWasRejectedConsumer> _logger;
     private readonly IAccountsService _accountService;
@@ -21,7 +21,7 @@ public class RequestWasRejectedConsumer : IConsumer<VolunteerRequestWasApprovedE
         _emailService = emailService;
     }
 
-    public async Task Consume(ConsumeContext<VolunteerRequestWasApprovedEvent> context)
+    public async Task Consume(ConsumeContext<VolunteerRequestWasRejectedEvent> context)
     {
         // получение данных от сервиса аккаунтов по http
         var userInfo = await _accountService
