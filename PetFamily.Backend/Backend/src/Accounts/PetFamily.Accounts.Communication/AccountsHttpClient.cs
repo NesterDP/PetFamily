@@ -7,7 +7,7 @@ using PetFamily.Accounts.Contracts.Requests;
 
 namespace PetFamily.Accounts.Communication;
 
-public class AccountsHttpClient : IAccountsHttpClient
+public class AccountsHttpClient : IAccountsService
 {
     private readonly HttpClient _httpClient;
     public const string EMAIL_CONFIRMATION_GET_ADDRESS = "api/Accounts/email-confirmation-get";

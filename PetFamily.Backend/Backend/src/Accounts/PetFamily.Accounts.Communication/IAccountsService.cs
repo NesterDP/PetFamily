@@ -4,7 +4,7 @@ using PetFamily.Accounts.Contracts.Requests;
 
 namespace PetFamily.Accounts.Communication;
 
-public interface IAccountsHttpClient
+public interface IAccountsService
 {
     Task<Result<UserInfoDto, string>> GetUserInfoById(
         Guid userId,

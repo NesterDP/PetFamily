@@ -10,12 +10,12 @@ using MimeKit;
 
 public class EmailService
 {
-    private readonly AccountsHttpClientOptions _httpOptions;
+    private readonly AccountsServiceOptions _httpOptions;
     private readonly SmtpOptions _smtpOptions;
 
     public EmailService(
         IOptions<SmtpOptions> smtpOptions,
-        IOptions<AccountsHttpClientOptions> httpOptions)
+        IOptions<AccountsServiceOptions> httpOptions)
     {
         _httpOptions = httpOptions.Value;
         _smtpOptions = smtpOptions.Value;

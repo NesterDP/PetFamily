@@ -11,12 +11,12 @@ namespace NotificationService.Consumers;
 public class UserWasRegisteredEventConsumer : IConsumer<UserWasRegisteredEvent>
 {
     private readonly ILogger<UserWasRegisteredEventConsumer> _logger;
-    private readonly IAccountsHttpClient _httpClient;
+    private readonly IAccountsService _httpClient;
     private readonly EmailService _emailService;
 
     public UserWasRegisteredEventConsumer(
         ILogger<UserWasRegisteredEventConsumer> logger,
-        IAccountsHttpClient httpClient,
+        IAccountsService httpClient,
         EmailService emailService)
     {
         _logger = logger;

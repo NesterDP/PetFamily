@@ -21,7 +21,7 @@ builder.Services.AddEndpoints();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
 
-builder.Services.AddAccountsHttpCommunication(builder.Configuration);
+builder.Services.AddAccountsService(builder.Configuration);
 builder.Services.AddEmailService(builder.Configuration);
 
 var app = builder.Build();

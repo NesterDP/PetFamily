@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Accounts.Communication</PackageId>
-        <Version>1.0.3</Version>
+        <Version>1.0.5</Version>
         <Authors>NesterDP</Authors>
         <Company>NetserDP</Company>
         <PackageDescription>Nuget package for "Communication" project of "Accounts" module</PackageDescription>
