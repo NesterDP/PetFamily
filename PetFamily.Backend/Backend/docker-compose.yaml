@@ -15,6 +15,7 @@
       - "postgres"
       - "seq"
       - "minio"
+      - "rabbitmq"
     ports:
       - "8080:8080"
     networks:
