@@ -10,6 +10,8 @@ namespace PetFamily.Accounts.Communication;
 public class AccountsHttpClient : IAccountsHttpClient
 {
     private readonly HttpClient _httpClient;
+    public const string EMAIL_CONFIRMATION_GET_ADDRESS = "api/Accounts/email-confirmation-get";
+    public const string EMAIL_CONFIRMATION_POST_ADDRESS = "api/Accounts/email-confirmation";
 
     public AccountsHttpClient(HttpClient httpClient)
     {
@@ -30,8 +32,13 @@ public class AccountsHttpClient : IAccountsHttpClient
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
             return "Response format invalid: missing 'result' property";
+        
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
-        var userInfo = JsonSerializer.Deserialize<UserInfoDto>(resultElement.GetRawText());
+        var userInfo = JsonSerializer.Deserialize<UserInfoDto>(resultElement.GetRawText(), options);
         if (userInfo == null)
             return "Failed to parse UserInfoDto";
         

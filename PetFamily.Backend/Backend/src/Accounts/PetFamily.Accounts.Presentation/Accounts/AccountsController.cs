@@ -45,6 +45,18 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
+    
+    [HttpGet("email-confirmation-get")]
+    public async Task<IActionResult> ConfirmEmailGet(
+        [FromQuery] Guid userId,
+        [FromQuery] string token,
+        [FromServices] ConfirmEmailHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new ConfirmEmailCommand(userId, token);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
 
     [HttpPost("registration")]
     public async Task<IActionResult> Register(
