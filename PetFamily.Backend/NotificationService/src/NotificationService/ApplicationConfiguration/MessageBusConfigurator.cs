@@ -16,6 +16,7 @@ public static class MessageBusConfigurator
             configure.AddConsumer<RequestRequiredRevisionConsumer, RequestRequiredRevisionConsumerDefinition>();
             configure.AddConsumer<RequestWasAmendedConsumer, RequestWasAmendedConsumerDefinition>();
             configure.AddConsumer<RequestWasApprovedConsumer, RequestWasApprovedConsumerDefinition>();
+            configure.AddConsumer<RequestWasRejectedConsumer, RequestWasRejectedConsumerDefinition>();
             
             configure.UsingRabbitMq((context, cfg) =>
             {
