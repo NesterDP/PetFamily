@@ -16,6 +16,23 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 name: "accounts");
 
             migrationBuilder.CreateTable(
+                name: "outbox_messages",
+                schema: "accounts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    type = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    payload = table.Column<string>(type: "jsonb", maxLength: 2000, nullable: false),
+                    occurred_on_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    processed_on_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    error = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_outbox_messages", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "permissions",
                 schema: "accounts",
                 columns: table => new
@@ -311,6 +328,14 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "idx_outbox_messages_unprocessed",
+                schema: "accounts",
+                table: "outbox_messages",
+                columns: new[] { "occurred_on_utc", "processed_on_utc" },
+                filter: "processed_on_utc IS NULL")
+                .Annotation("Npgsql:IndexInclude", new[] { "id", "type", "payload" });
+
+            migrationBuilder.CreateIndex(
                 name: "ix_participant_accounts_user_id",
                 schema: "accounts",
                 table: "participant_accounts",
@@ -393,6 +418,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "admin_accounts",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
+                name: "outbox_messages",
                 schema: "accounts");
 
             migrationBuilder.DropTable(

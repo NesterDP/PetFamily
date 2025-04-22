@@ -1,0 +1,81 @@
+using Microsoft.Extensions.Options;
+using NotificationService.Core.Options;
+using PetFamily.Accounts.Communication;
+using PetFamily.Accounts.Contracts.Dto;
+
+namespace NotificationService.Services;
+
+using MailKit.Net.Smtp;
+using MimeKit;
+
+public class EmailService
+{
+    private readonly AccountsServiceOptions _httpOptions;
+    private readonly SmtpOptions _smtpOptions;
+
+    public EmailService(
+        IOptions<SmtpOptions> smtpOptions,
+        IOptions<AccountsServiceOptions> httpOptions)
+    {
+        _httpOptions = httpOptions.Value;
+        _smtpOptions = smtpOptions.Value;
+    }
+
+    public async Task SendConfirmationEmailAsync(UserInfoDto userInfo, string userId, string token)
+    {
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("Сервис уведомлений", _smtpOptions.FromEmail));
+        message.To.Add(new MailboxAddress("", userInfo.Email));
+        message.Subject = "Подтверждение почты";
+        
+        var getLink = $"{_httpOptions.Url}/{AccountsHttpClient.EMAIL_CONFIRMATION_GET_ADDRESS}" +
+                      $"?userId={userId}" +
+                      $"&token={Uri.EscapeDataString(token)}";
+        
+        var postUrl = $"{_httpOptions.Url}/{AccountsHttpClient.EMAIL_CONFIRMATION_POST_ADDRESS}";
+    
+        var bodyBuilder = new BodyBuilder
+        {
+            // HTML-версия
+            HtmlBody = $"""
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                            <h2 style="color: #0066FF;">Подтверждение почты</h2>
+                            
+                            <!-- Основная кнопка (POST) -->
+                            <form method="post" action="{postUrl}" style="margin-bottom: 25px;">
+                                <input type="hidden" name="userId" value="{userId}">
+                                <input type="hidden" name="token" value="{token}">
+                                <button type="submit" style="
+                                    background: #0066FF;
+                                    color: white;
+                                    padding: 12px 24px;
+                                    border: none;
+                                    border-radius: 6px;
+                                    font-size: 16px;
+                                    cursor: pointer;">
+                                    Подтвердить почту
+                                </button>
+                            </form>
+                            
+                            <!-- Альтернативная ссылка (GET) -->
+                            <p style="color: #555; font-size: 14px;">
+                                Или нажмите <a href="{getLink}" style="color: #0066FF; text-decoration: none;">эту ссылку</a>
+                            </p>
+                        </div>
+                        """,
+            
+            // Текстовая версия
+            TextBody = $"Для завершения регистрации вы также скопировать эту ссылку" +
+                       $" в адресную строку бразуера и перейти по ней:\n{getLink}"
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+}

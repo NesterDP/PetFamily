@@ -1,4 +1,4 @@
-namespace PetFamily.Core.Dto.Volunteer;
+namespace PetFamily.Accounts.Contracts.Dto;
 
 public record CertificateDto(
     string Name,

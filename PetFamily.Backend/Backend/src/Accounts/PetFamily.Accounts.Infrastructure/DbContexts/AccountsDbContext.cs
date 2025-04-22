@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Infrastructure.Outbox;
 
 namespace PetFamily.Accounts.Infrastructure.DbContexts;
 
@@ -17,6 +18,8 @@ public class AccountsDbContext
     public DbSet<ParticipantAccount> ParticipantAccounts => Set<ParticipantAccount>();
     public DbSet<VolunteerAccount> VolunteerAccounts => Set<VolunteerAccount>();
     public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
+    
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public AccountsDbContext(string connectionString)
     {

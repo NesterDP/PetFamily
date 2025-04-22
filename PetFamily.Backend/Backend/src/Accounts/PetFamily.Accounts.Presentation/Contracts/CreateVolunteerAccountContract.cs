@@ -37,17 +37,17 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> CreateVolunteerAccountAsync(
+    public async Task<Result<Guid, string>> CreateVolunteerAccountAsync(
         CreateVolunteerAccountRequest request,
         CancellationToken cancellationToken)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
         if (user is null)
-            return Errors.General.ValueNotFound(request.UserId);
+            return Errors.General.ValueNotFound(request.UserId).Message;
 
         var role = await _roleManager.FindByNameAsync(DomainConstants.VOLUNTEER);
         if (role is null)
-            return Errors.General.ValueNotFound(DomainConstants.VOLUNTEER);
+            return Errors.General.ValueNotFound(DomainConstants.VOLUNTEER).Message;
 
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -55,7 +55,7 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         {
             var roleResult = await _userManager.AddToRoleAsync(user, role.Name);
             if (!roleResult.Succeeded)
-                return Errors.General.Failure("Failed to add role to user");
+                return Errors.General.Failure("Failed to add role to user").Message;
 
             var volunteerAccount = new VolunteerAccount(user);
             await _accountManager.CreateVolunteerAccount(volunteerAccount);
@@ -70,7 +70,7 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         {
             await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(ex, "Failed to create volunteer account");
-            return Errors.General.Failure("Transaction failed");
+            return Errors.General.Failure("Transaction failed").Message;
         }
     }
 }

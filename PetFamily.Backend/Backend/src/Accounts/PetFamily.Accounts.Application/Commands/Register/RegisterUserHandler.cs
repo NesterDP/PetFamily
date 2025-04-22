@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
@@ -18,6 +17,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountManager _accountManager;
+    private readonly IOutboxRepository _outboxRepository;
     private readonly ILogger<RegisterUserHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -27,15 +27,16 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountManager accountManager,
+        IOutboxRepository outboxRepository,
         ILogger<RegisterUserHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _accountManager = accountManager;
+        _outboxRepository = outboxRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-
     }
 
     public async Task<Result<string, ErrorList>> HandleAsync(
@@ -65,9 +66,13 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
                 var participantAccount = new ParticipantAccount(participant.Value);
         
                 await _accountManager.CreateParticipantAccount(participantAccount);
+
+                await EnqueueEventAsync(participant.Value.Id, cancellationToken);
                 
                 await transaction.CommitAsync(cancellationToken);
+                
                 _logger.LogInformation("Successfully created participant with UserName = {0}", command.UserName);
+                
                 return SUCCESS_MESSAGE;
             }
             var errors = result.Errors
@@ -82,5 +87,13 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
             _logger.LogError(e, e.Message);
             return Errors.General.Failure("server.internal", "transaction failure").ToErrorList();
         }
+    }
+    
+    public async Task EnqueueEventAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var integrationEvent = new Contracts.Messaging.UserWasRegisteredEvent(userId);
+        
+        await _outboxRepository.Add(integrationEvent, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

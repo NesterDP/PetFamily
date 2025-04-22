@@ -2,11 +2,11 @@ using CSharpFunctionalExtensions;
 using FileService.Communication;
 using FileService.Contracts.Requests;
 using PetFamily.Accounts.Application.Abstractions;
-using PetFamily.Accounts.Application.Dto;
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.Shared;
-using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.CustomErrors;
+using FullNameDto = PetFamily.Accounts.Contracts.Dto.FullNameDto;
+using SocialNetworkDto = PetFamily.Accounts.Contracts.Dto.SocialNetworkDto;
 
 namespace PetFamily.Accounts.Application.Queries.GetUserById;
 

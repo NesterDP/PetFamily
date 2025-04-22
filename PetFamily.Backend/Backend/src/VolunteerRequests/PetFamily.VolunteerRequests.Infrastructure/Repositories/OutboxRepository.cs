@@ -23,6 +23,6 @@ public class OutboxRepository : IOutboxRepository
             Type = typeof(T).FullName!,
             Payload = JsonSerializer.Serialize(message)
         };
-        await _dbContext.AddAsync(outboxMessage, cancellationToken);
+        await _dbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
     }
 }

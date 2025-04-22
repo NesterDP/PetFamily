@@ -453,6 +453,49 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.ToTable("volunteer_accounts", "accounts");
                 });
 
+            modelBuilder.Entity("PetFamily.Accounts.Infrastructure.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text")
+                        .HasColumnName("error");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_on_utc");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_on_utc");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.HasIndex("OccurredOnUtc", "ProcessedOnUtc")
+                        .HasDatabaseName("idx_outbox_messages_unprocessed")
+                        .HasFilter("processed_on_utc IS NULL");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("OccurredOnUtc", "ProcessedOnUtc"), new[] { "Id", "Type", "Payload" });
+
+                    b.ToTable("outbox_messages", "accounts");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("PetFamily.Accounts.Domain.DataModels.Role", null)

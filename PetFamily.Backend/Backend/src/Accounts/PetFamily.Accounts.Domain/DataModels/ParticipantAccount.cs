@@ -1,3 +1,4 @@
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Dto.Pet;
 
 namespace PetFamily.Accounts.Domain.DataModels;

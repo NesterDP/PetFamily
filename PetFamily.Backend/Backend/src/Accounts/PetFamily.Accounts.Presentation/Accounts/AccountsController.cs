@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.CompleteUploadAvatar;
+using PetFamily.Accounts.Application.Commands.ConfirmEmail;
+using PetFamily.Accounts.Application.Commands.GenerateEmailToken;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.Register;
@@ -21,7 +23,7 @@ public class AccountsController : ApplicationController
         _userData = userData;
     }
 
-    [Permission("accounts.GetUserInfoById")]
+    //[Permission("accounts.GetUserInfoById")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserInfoById(
         [FromRoute] Guid id,
@@ -30,6 +32,29 @@ public class AccountsController : ApplicationController
     {
         var query = new GetUserInfoByIdQuery(id);
         var result = await handler.HandleAsync(query, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPost("email-confirmation")]
+    public async Task<IActionResult> ConfirmEmail(
+        [FromBody] ConfirmEmailRequest request,
+        [FromServices] ConfirmEmailHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand();
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpGet("email-confirmation-get")]
+    public async Task<IActionResult> ConfirmEmailGet(
+        [FromQuery] Guid userId,
+        [FromQuery] string token,
+        [FromServices] ConfirmEmailHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new ConfirmEmailCommand(userId, token);
+        var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
@@ -98,6 +123,17 @@ public class AccountsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(_userData.UserId);
+        var result = await handler.HandleAsync(command, cancellationToken);
+        return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
+    }
+    
+    [HttpPost("email-token-generation")]
+    public async Task<IActionResult> EmailTokenGeneration(
+        [FromBody] GenerateEmailTokenRequest request,
+        [FromServices] GenerateEmailTokenHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GenerateEmailTokenCommand(request.UserId);
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }

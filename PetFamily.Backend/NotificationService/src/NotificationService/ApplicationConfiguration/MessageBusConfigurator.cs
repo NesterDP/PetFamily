@@ -1,4 +1,6 @@
 using MassTransit;
+using NotificationService.Consumers;
+using NotificationService.Consumers.Definitions;
 
 namespace NotificationService.ApplicationConfiguration;
 
@@ -9,6 +11,8 @@ public static class MessageBusConfigurator
         services.AddMassTransit(configure =>
         {
             configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<UserWasRegisteredEventConsumer, UserWasRegisteredEventConsumerDefinition>();
             
             configure.UsingRabbitMq((context, cfg) =>
             {

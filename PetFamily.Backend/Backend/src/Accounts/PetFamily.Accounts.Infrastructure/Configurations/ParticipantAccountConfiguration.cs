@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
