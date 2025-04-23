@@ -39,6 +39,10 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
         VolunteerInfo = volunteerInfo;
+        
+        // добавляем доменное событие - заявка была исправлена
+        if (RevisionComment is not null)
+            AddDomainEvent(new VolunteerRequestWasAmendedEvent(UserId, AdminId!.Value, Id));
 
         return UnitResult.Success<Error>();
     }
@@ -71,6 +75,9 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.RevisionRequired).Value;
         RevisionComment = revisionComment;
+        
+        // добавляем доменное событие - заявка отправлена на доработку
+        AddDomainEvent(new VolunteerRequestRequiredRevisionEvent(UserId, adminId, Id));
 
         return UnitResult.Success<Error>();
     }

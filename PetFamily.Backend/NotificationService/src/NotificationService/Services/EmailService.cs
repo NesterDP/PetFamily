@@ -12,6 +12,7 @@ public class EmailService
 {
     private readonly AccountsServiceOptions _accountsOptions;
     private readonly SmtpOptions _smtpOptions;
+    private const string NOTIFICATION_SERVICE_NAME = "Сервис уведомлений";
 
     public EmailService(
         IOptions<SmtpOptions> smtpOptions,
@@ -24,7 +25,7 @@ public class EmailService
     public async Task SendConfirmationEmailAsync(UserInfoDto userInfo, string userId, string token)
     {
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Сервис уведомлений", _smtpOptions.FromEmail));
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
         message.To.Add(new MailboxAddress("", userInfo.Email));
         message.Subject = "Подтверждение почты";
         
@@ -67,6 +68,141 @@ public class EmailService
             // Текстовая версия
             TextBody = $"Для завершения регистрации вы также скопировать эту ссылку" +
                        $" в адресную строку бразуера и перейти по ней:\n{getLink}"
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+    
+    public async Task SendRevisionRequiredNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Необходимость внесения изменений в заявку";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"проверил вашу заявку с ID = {requestId} и отправил её на доработку."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+    
+    public async Task SendAmendedRequestNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{adminInfo.FullName.FirstName} {adminInfo.FullName.LastName}", adminInfo.Email));
+        
+        message.Subject = "Внесение изменений в заявку";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Пользователь {userInfo.FullName.FirstName} {userInfo.FullName.LastName} " +
+                       $"изменил заявку с ID = {requestId} и отправил её на рассмотрение."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+    
+    public async Task SendApprovedRequestNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Одобрение заявки";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"проверил вашу заявку с ID = {requestId} и одобрил её."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+    
+    public async Task SendRejectedRequestNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Отклонение заявки";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"проверил вашу заявку с ID = {requestId} и отклонил её."
+        };
+
+        message.Body = bodyBuilder.ToMessageBody();
+        
+        using var client = new SmtpClient();
+        
+        await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port);
+        await client.AuthenticateAsync(_smtpOptions.Username, _smtpOptions.Password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
+    }
+    
+    public async Task SendRequestWasTakenOnReviewNotification(UserInfoDto userInfo, UserInfoDto adminInfo, Guid requestId)
+    {
+        var message = new MimeMessage();
+        
+        message.From.Add(new MailboxAddress(NOTIFICATION_SERVICE_NAME, _smtpOptions.FromEmail));
+        
+        message.To.Add(new MailboxAddress(
+            $"{userInfo.FullName.FirstName} {userInfo.FullName.LastName}", userInfo.Email));
+        
+        message.Subject = "Взятие заявки на рассмотрение";
+        
+        var bodyBuilder = new BodyBuilder
+        {
+            TextBody = $"Админ {adminInfo.FullName.FirstName} {adminInfo.FullName.LastName} " +
+                       $"начал проверять вашу заявку с ID = {requestId} ."
         };
 
         message.Body = bodyBuilder.ToMessageBody();

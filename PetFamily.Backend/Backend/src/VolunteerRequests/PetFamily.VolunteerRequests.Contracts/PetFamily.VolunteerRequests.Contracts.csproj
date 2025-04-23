@@ -4,10 +4,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>VolunteerRequests.Contracts</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>NesterDP</Authors>
+        <Company>NetserDP</Company>
+        <PackageDescription>Nuget package for "Contracts" project of "VolunteerRequests" module</PackageDescription>
+        <RepositoryUrl>https://github.com/NesterDP/PetFamily</RepositoryUrl>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Requests\" />
-    </ItemGroup>
 
 </Project>
