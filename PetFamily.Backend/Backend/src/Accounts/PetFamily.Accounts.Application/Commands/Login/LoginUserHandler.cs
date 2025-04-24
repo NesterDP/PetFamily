@@ -32,17 +32,16 @@ public class LoginUserHandler : ICommandHandler<LoginResponse, LoginUserCommand>
         var user = await _userManager.FindByEmailAsync(command.Email);
         if (user is null)
             return Errors.General.ValueNotFound("No user with such login data", true).ToErrorList();
-        
-        var passwordConfirmed = await _userManager.CheckPasswordAsync(user, command.Password);
+
+        bool passwordConfirmed = await _userManager.CheckPasswordAsync(user, command.Password);
         if (!passwordConfirmed)
             return Errors.General.ValueNotFound("No user with such login data", true).ToErrorList();
 
-        var accessToken =  await _tokenProvider.GenerateAccessToken(user, cancellationToken);
+        var accessToken = await _tokenProvider.GenerateAccessToken(user, cancellationToken);
         var refreshToken = await _tokenProvider.GenerateRefreshToken(user, accessToken.Jti, cancellationToken);
-        
-        _logger.LogInformation("User with email = {0} successfully logged in", user.Email);
+
+        _logger.LogInformation("User with email = {UserEmail} successfully logged in", user.Email);
 
         return new LoginResponse(accessToken.AccessToken, refreshToken);
-        
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
@@ -54,8 +53,8 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<AccountsDbContext>(_ =>
-            new AccountsDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<AccountsDbContext>(
+            _ => new AccountsDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
         return services;
     }
 
@@ -97,24 +96,25 @@ public static class DependencyInjection
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         return services;
     }
-    private static IServiceCollection AddOutbox(this IServiceCollection services)
+
+    private static void AddOutbox(this IServiceCollection services)
     {
         services.AddScoped<ProcessOutboxMessagesService>();
 
-        services.AddQuartz(configure =>
+        services.AddQuartz(
+            configure =>
         {
-            var jobKey = new JobKey( Guid.NewGuid().ToString());
+            var jobKey = new JobKey(Guid.NewGuid().ToString());
 
             configure
                 .AddJob<ProcessOutboxMessagesJob>(jobKey)
-                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                .AddTrigger(
+                    trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
                     schedule => schedule.WithIntervalInSeconds(
                             InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS)
                         .RepeatForever()));
         });
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-        return services;
     }
 }

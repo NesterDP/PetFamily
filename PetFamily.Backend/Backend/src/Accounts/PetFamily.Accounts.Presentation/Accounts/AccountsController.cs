@@ -23,7 +23,7 @@ public class AccountsController : ApplicationController
         _userData = userData;
     }
 
-    //[Permission("accounts.GetUserInfoById")]
+    // [Permission("accounts.GetUserInfoById")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserInfoById(
         [FromRoute] Guid id,
@@ -34,7 +34,7 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [HttpPost("email-confirmation")]
     public async Task<IActionResult> ConfirmEmail(
         [FromBody] ConfirmEmailRequest request,
@@ -45,7 +45,7 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [HttpGet("email-confirmation-get")]
     public async Task<IActionResult> ConfirmEmailGet(
         [FromQuery] Guid userId,
@@ -81,7 +81,8 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
-        //return result.ToResponse();
+
+        // return result.ToResponse();
         return Ok(result.Value.AccessToken);
     }
 
@@ -97,9 +98,10 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
-        //HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
-        //return result.ToResponse();
-        //return Ok();
+
+        // HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
+        // return result.ToResponse();
+        // return Ok();
         return Ok(result.Value.AccessToken);
     }
 
@@ -126,7 +128,7 @@ public class AccountsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [HttpPost("email-token-generation")]
     public async Task<IActionResult> EmailTokenGeneration(
         [FromBody] GenerateEmailTokenRequest request,

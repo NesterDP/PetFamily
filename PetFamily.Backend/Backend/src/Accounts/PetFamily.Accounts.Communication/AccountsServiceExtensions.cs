@@ -12,7 +12,7 @@ public static class AccountsServiceExtensions
     {
         services.Configure<AccountsServiceOptions>(configuration
             .GetSection(AccountsServiceOptions.ACCOUNTS_SERVICE));
-        
+
         services.AddHttpClient<IAccountsService, AccountsHttpClient>((sp, config) =>
         {
             var accountsOptions = sp.GetRequiredService<IOptions<AccountsServiceOptions>>().Value;

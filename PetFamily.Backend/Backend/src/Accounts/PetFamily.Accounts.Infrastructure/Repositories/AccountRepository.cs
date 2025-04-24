@@ -15,7 +15,7 @@ public class AccountRepository : IAccountRepository
     {
         _dbContext = dbContext;
     }
-    
+
     public async Task<Result<User, Error>> GetUserById(Guid id)
     {
         var user = await _dbContext.Users
@@ -29,6 +29,5 @@ public class AccountRepository : IAccountRepository
             return Errors.General.ValueNotFound(id);
 
         return user;
-
     }
 }

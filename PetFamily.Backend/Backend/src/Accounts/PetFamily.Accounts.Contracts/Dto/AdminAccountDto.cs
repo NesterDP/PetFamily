@@ -1,6 +1,3 @@
 namespace PetFamily.Accounts.Contracts.Dto;
 
-public class AdminAccountDto
-{
-    
-}
+public class AdminAccountDto;

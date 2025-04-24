@@ -2,7 +2,6 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Contracts.Responses;
-using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
@@ -43,29 +42,29 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         if (userClaims.IsFailure)
             return userClaims.Error.ToErrorList();
 
-        var userIdString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Id).Value;
+        string userIdString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
         if (!Guid.TryParse(userIdString, out var userId))
             return Errors.General.ValueNotFound("user id").ToErrorList();
-        
+
         if (oldRefreshSession.Value.UserId != userId)
             return Errors.General.InvalidToken().ToErrorList();
-        
-        var userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti).Value;
+
+        string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti)!.Value;
         if (!Guid.TryParse(userJtiString, out var userJtiGuid))
             return Errors.General.ValueNotFound("user jti").ToErrorList();
-        
+
         if (oldRefreshSession.Value.Jti != userJtiGuid)
             return Errors.General.InvalidToken().ToErrorList();
-        
+
         _refreshSessionManager.Delete(oldRefreshSession.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var newAccessToken = await _tokenProvider
             .GenerateAccessToken(oldRefreshSession.Value.User, cancellationToken);
-        
+
         var newRefreshToken = await _tokenProvider
             .GenerateRefreshToken(oldRefreshSession.Value.User, newAccessToken.Jti, cancellationToken);
-        
+
         return new LoginResponse(newAccessToken.AccessToken, newRefreshToken);
     }
 }

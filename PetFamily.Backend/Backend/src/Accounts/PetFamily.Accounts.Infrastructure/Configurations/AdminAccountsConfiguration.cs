@@ -4,7 +4,6 @@ using PetFamily.Accounts.Domain.DataModels;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 
-
 public class AdminAccountsConfiguration : IEntityTypeConfiguration<AdminAccount>
 {
     public void Configure(EntityTypeBuilder<AdminAccount> builder)

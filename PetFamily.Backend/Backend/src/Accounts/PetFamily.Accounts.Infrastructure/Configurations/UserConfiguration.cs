@@ -23,36 +23,39 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 dto => SocialNetwork.Create(dto.Name, dto.Link).Value)
             .HasColumnName("social_networks");
 
-        builder.ComplexProperty(u => u.FullName, fnb =>
-        {
-            fnb.Property(fn => fn.FirstName)
-                .IsRequired(true)
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
-                .HasColumnName("first_name");
+        builder.ComplexProperty(
+            u => u.FullName,
+            fnb =>
+            {
+                fnb.Property(fn => fn.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                    .HasColumnName("first_name");
 
-            fnb.Property(fn => fn.LastName)
-                .IsRequired(true)
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
-                .HasColumnName("last_name");
+                fnb.Property(fn => fn.LastName)
+                    .IsRequired()
+                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                    .HasColumnName("last_name");
 
-            fnb.Property(fn => fn.Surname)
-                .IsRequired(false)
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
-                .HasColumnName("surname");
-        });
+                fnb.Property(fn => fn.Surname)
+                    .IsRequired(false)
+                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                    .HasColumnName("surname");
+            });
 
+        builder.OwnsOne(
+            u => u.Avatar,
+            fb =>
+            {
+                fb.ToTable("users");
 
-        builder.OwnsOne(u => u.Avatar, fb =>
-        {
-            fb.ToTable("users");
-
-            fb.Property(a => a.Id)
-                .HasConversion(
-                    id => id != null ? id.Value : (Guid?)null,
-                    value => value != null ? FileId.Create(value.Value) : null)
-                .IsRequired(false)
-                .HasColumnName("avatar_id");
-        });
+                fb.Property(a => a.Id)
+                    .HasConversion(
+                        id => id != null ? id.Value : (Guid?)null,
+                        value => value != null ? FileId.Create(value.Value) : null)
+                    .IsRequired(false)
+                    .HasColumnName("avatar_id");
+            });
 
         builder
             .HasMany(u => u.Roles)
@@ -64,7 +67,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(p => p.User)
             .HasForeignKey<ParticipantAccount>(p => p.UserId)
             .IsRequired(false);
-
 
         builder
             .HasOne(u => u.VolunteerAccount)

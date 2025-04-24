@@ -12,13 +12,13 @@ public class StartUploadAvatarCommandValidator : AbstractValidator<StartUploadAv
     {
         RuleFor(c => c.UserId).NotEmpty().WithError(Errors.General.ValueIsRequired());
         RuleFor(c => c.FileInfo.FileName).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        
+
         RuleFor(c => c.FileInfo.ContentType)
             .Must(c => Avatar.AllowedTypes.Contains(c))
             .WithError(Errors.General.ValueIsInvalid("contentType"));
-        
+
         RuleFor(c => c.FileInfo.Size)
-            .Must(c => c  < DomainConstants.MAX_FILE_SIZE_IN_BYTES)
+            .Must(c => c < DomainConstants.MAX_FILE_SIZE_IN_BYTES)
             .WithError(Errors.General.ValueIsInvalid("fileSize"));
     }
 }

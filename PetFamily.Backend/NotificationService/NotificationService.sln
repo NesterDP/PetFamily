@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5B400EFD-EB3C-49AD-A036-D6BBEFC80B76}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Contracts", "src\NotificationService.Contracts\NotificationService.Contracts.csproj", "{2B67C978-524A-432B-93F7-0475EE6F83B1}"

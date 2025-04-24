@@ -32,11 +32,11 @@ public class ConfirmEmailHandler : ICommandHandler<string, ConfirmEmailCommand>
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var user = await _userManager.FindByIdAsync(command.UserId.ToString());
         if (user is null)
             return Errors.General.ValueNotFound("No user with such userId", true).ToErrorList();
-        
+
         var result = await _userManager.ConfirmEmailAsync(user, command.Token);
 
         if (result.Succeeded == false)
@@ -45,7 +45,7 @@ public class ConfirmEmailHandler : ICommandHandler<string, ConfirmEmailCommand>
         _logger.LogInformation("Confirmed email for user with ID = {ID}", user.Id);
 
         const string response = "Email is confirmed";
-        
+
         return response;
     }
 }

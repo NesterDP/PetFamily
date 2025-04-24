@@ -49,17 +49,17 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         if (role is null)
             return Errors.General.ValueNotFound(DomainConstants.VOLUNTEER).Message;
 
-        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            var roleResult = await _userManager.AddToRoleAsync(user, role.Name);
+            var roleResult = await _userManager.AddToRoleAsync(user, role.Name!);
             if (!roleResult.Succeeded)
                 return Errors.General.Failure("Failed to add role to user").Message;
 
             var volunteerAccount = new VolunteerAccount(user);
             await _accountManager.CreateVolunteerAccount(volunteerAccount);
-            
+
             _logger.LogInformation("Created volunteer account for user with id = {ID}", request.UserId);
 
             await transaction.CommitAsync(cancellationToken);

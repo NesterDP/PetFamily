@@ -47,11 +47,10 @@ public class CompleteUploadAvatarHandler
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-
         var userResult = await _accountRepository.GetUserById(command.UserId);
         if (userResult.IsFailure)
             return userResult.Error.ToErrorList();
-        
+
         // межсерверное взаимодействие, удаление предыдущей фотографии пользователя
         if (userResult.Value.Avatar.Id is not null)
         {
@@ -60,7 +59,7 @@ public class CompleteUploadAvatarHandler
             if (deletionResult.IsFailure)
                 return Errors.General.Failure(deletionResult.Error).ToErrorList();
         }
-        
+
         // межсерверное взаимодействие, подтверждение загрузки новой фото
         var clientInfo = new MultipartCompleteClientInfo(
             command.FileInfo.Key,
@@ -68,11 +67,11 @@ public class CompleteUploadAvatarHandler
             command.FileInfo.Parts.Select(p => new PartETagInfo(p.PartNumber, p.ETag)).ToList());
 
         var uploadRequest = new CompleteMultipartUploadRequest([clientInfo]);
-        
+
         var uploadResult = await _fileService.CompleteMultipartUpload(uploadRequest, cancellationToken);
         if (uploadResult.IsFailure)
             return Errors.General.Failure(uploadResult.Error).ToErrorList();
-        
+
         // сохранение информации о новой фото в БД модуля
         var newAvatar = Avatar.Create(
             uploadResult.Value.MultipartCompleteInfos.FirstOrDefault()!.FileId,

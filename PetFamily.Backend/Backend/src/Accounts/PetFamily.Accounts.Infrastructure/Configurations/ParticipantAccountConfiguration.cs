@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Accounts.Domain.DataModels;
-using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
@@ -12,7 +11,7 @@ public class ParticipantAccountConfiguration : IEntityTypeConfiguration<Particip
     public void Configure(EntityTypeBuilder<ParticipantAccount> builder)
     {
         builder.ToTable("participant_accounts");
-        
+
         builder
             .Property(p => p.FavoritePets)
             .CustomListJsonCollectionConverter(

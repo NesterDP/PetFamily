@@ -1,25 +1,21 @@
 using PetFamily.Accounts.Contracts.Dto;
-using PetFamily.Core.Dto.Shared;
-using PetFamily.Core.Dto.Volunteer;
 using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Domain.DataModels;
 
 public class VolunteerAccount
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public int Experience { get; set; } = 0;
+    public int Experience { get; init; }
 
-    public List<TransferDetail> TransferDetails { get; set; } = [];
+    public List<TransferDetail> TransferDetails { get; init; } = [];
 
-    public List<CertificateDto> Certificates { get; set; } = [];
-    
-    public Guid UserId { get; set; } // navigation
-    
-    public User User { get; set; } // navigation
-    
-    public VolunteerAccount() { } // ef core
+    public List<CertificateDto> Certificates { get; init; } = [];
+
+    public Guid UserId { get; init; } // navigation
+
+    public User User { get; init; } = null!; // navigation
 
     public VolunteerAccount(User user)
     {
@@ -27,4 +23,6 @@ public class VolunteerAccount
         UserId = user.Id;
         User = user;
     }
+
+    private VolunteerAccount() { } // ef core
 }

@@ -17,9 +17,9 @@ public class PermissionManager
         IEnumerable<string> permissionsToAdd,
         CancellationToken cancellationToken = default)
     {
-        foreach (var permissionCode in permissionsToAdd)
+        foreach (string? permissionCode in permissionsToAdd)
         {
-            var isPermissionExist = await _accountsDbContext.Permissions
+            bool isPermissionExist = await _accountsDbContext.Permissions
                 .AnyAsync(p => p.Code == permissionCode, cancellationToken);
 
             if (isPermissionExist)

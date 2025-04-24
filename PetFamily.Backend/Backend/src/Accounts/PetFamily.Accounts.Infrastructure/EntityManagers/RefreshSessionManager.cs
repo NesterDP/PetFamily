@@ -24,13 +24,13 @@ public class RefreshSessionManager : IRefreshSessionManager
             .Include(rs => rs.User)
             .ThenInclude(u => u.Roles)
             .FirstOrDefaultAsync(rs => rs.RefreshToken == refreshToken, cancellationToken);
-        
+
         if (refreshSession is null)
             return Result.Failure<RefreshSession, Error>(Errors.General.ValueNotFound(refreshToken));
 
         return refreshSession;
     }
-    
+
     public void Delete(RefreshSession refreshSession)
     {
         _accountsDbContext.RefreshSessions.Remove(refreshSession);

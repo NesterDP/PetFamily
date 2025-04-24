@@ -30,7 +30,7 @@ public class JwtTokenProvider : ITokenProvider
         _jwtOptions = jwtOptions.Value;
         _refreshSessionOptions = refreshSessionOptions.Value;
         _dbContext = dbContext;
-      
+
     }
 
     public async Task<JwtTokenResult> GenerateAccessToken(User user, CancellationToken cancellationToken)
@@ -42,16 +42,16 @@ public class JwtTokenProvider : ITokenProvider
             .Include(u => u.Roles) // surpass lazy loading
             .Where(u => u.Id == user.Id)
             .SelectMany(u => u.Roles)
-            .Select(r => new Claim(CustomClaims.Role, r.Name))
+            .Select(r => new Claim(CustomClaims.Role, r.Name!))
             .ToListAsync(cancellationToken);
 
         var jti = Guid.NewGuid();
-        
+
         var claims = new[]
         {
             new Claim(CustomClaims.Id, user.Id.ToString()),
             new Claim(CustomClaims.Jti, jti.ToString()),
-            new Claim(CustomClaims.Email, user.Email ?? "")
+            new Claim(CustomClaims.Email, user.Email ?? string.Empty),
         };
 
         claims = claims.Concat(roleClaims).ToArray();
@@ -63,7 +63,7 @@ public class JwtTokenProvider : ITokenProvider
             signingCredentials: signingCredentials,
             claims: claims);
 
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        string? accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
         return new JwtTokenResult(accessToken, jti);
     }
@@ -76,26 +76,26 @@ public class JwtTokenProvider : ITokenProvider
             CreatedAt = DateTime.UtcNow,
             ExpiresIn = DateTime.UtcNow.AddDays(int.Parse(_refreshSessionOptions.ExpiredDaysTime)),
             Jti = accessTokenJti,
-            RefreshToken = Guid.NewGuid()
+            RefreshToken = Guid.NewGuid(),
         };
 
-        await _dbContext.AddAsync(refreshSession);
+        await _dbContext.AddAsync(refreshSession, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
+
         return refreshSession.RefreshToken;
     }
-    
+
     public async Task<Result<IReadOnlyList<Claim>, Error>> GetUserClaims(string jwtToken)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
-        
+
         var validationParameters = TokenValidationParametersFactory.CreateWithoutLifeTime(_jwtOptions);
 
         var validationResult = await jwtHandler.ValidateTokenAsync(jwtToken, validationParameters);
 
         if (validationResult.IsValid == false)
             return Errors.General.InvalidToken();
-        
+
         return validationResult.ClaimsIdentity.Claims.ToList();
 
     }

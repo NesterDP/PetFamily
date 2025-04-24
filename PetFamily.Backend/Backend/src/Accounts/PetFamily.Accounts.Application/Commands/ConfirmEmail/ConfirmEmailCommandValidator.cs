@@ -4,7 +4,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Accounts.Application.Commands.ConfirmEmail;
 
-
 public class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
 {
     public ConfirmEmailCommandValidator()

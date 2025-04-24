@@ -32,12 +32,12 @@ public class GenerateEmailTokenHandler : ICommandHandler<string, GenerateEmailTo
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var user = await _userManager.FindByIdAsync(command.UserId.ToString());
         if (user is null)
             return Errors.General.ValueNotFound("No user with such userId", true).ToErrorList();
 
-        var result = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        string result = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         _logger.LogInformation("Generated email confirmation token for user with ID = {ID}", user.Id);
 

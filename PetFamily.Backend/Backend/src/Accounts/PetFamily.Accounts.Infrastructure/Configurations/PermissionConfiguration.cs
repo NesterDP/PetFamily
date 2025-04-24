@@ -1,4 +1,3 @@
-using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain.DataModels;
@@ -13,7 +12,7 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
 
         builder.Property(p => p.Code)
             .HasColumnName("code");
-        
+
         builder
             .HasIndex(p => p.Code)
             .IsUnique();

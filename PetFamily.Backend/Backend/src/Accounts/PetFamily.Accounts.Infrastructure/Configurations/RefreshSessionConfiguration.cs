@@ -4,7 +4,6 @@ using PetFamily.Accounts.Domain.DataModels;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 
-
 public class RefreshSessionConfiguration : IEntityTypeConfiguration<RefreshSession>
 {
     public void Configure(EntityTypeBuilder<RefreshSession> builder)

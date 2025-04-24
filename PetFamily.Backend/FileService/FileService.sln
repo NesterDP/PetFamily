@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2942804-1FB2-4C05-B514-24220CE041CE}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Communication", "src\FileService.Communication\FileService.Communication.csproj", "{566C4FFB-FDD8-4E7E-A683-1A040DA8EF25}"

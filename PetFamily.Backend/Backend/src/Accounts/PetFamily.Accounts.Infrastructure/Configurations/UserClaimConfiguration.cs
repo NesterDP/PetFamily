@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations;
 
-
 public class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<Guid>>
 {
     public void Configure(EntityTypeBuilder<IdentityUserClaim<Guid>> builder)

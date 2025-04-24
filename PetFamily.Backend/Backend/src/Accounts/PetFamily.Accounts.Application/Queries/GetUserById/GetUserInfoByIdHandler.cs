@@ -34,7 +34,6 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
         VolunteerAccountDto? volunteerAccountDto = null;
         AdminAccountDto? adminAccountDto = null;
 
-
         if (result.Value.ParticipantAccount != null)
         {
             participantAccountDto = new ParticipantAccountDto();
@@ -52,7 +51,6 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
 
         if (result.Value.AdminAccount != null)
             adminAccountDto = new AdminAccountDto();
-
 
         var avatar = new AvatarDto();
         if (result.Value.Avatar.Id is not null)
@@ -73,14 +71,14 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
                 result.Value.FullName.LastName,
                 result.Value.FullName.Surname),
             Avatar = avatar,
-            Email = result.Value.Email,
-            PhoneNumber = result.Value.PhoneNumber,
-            Roles = result.Value.Roles.Select(r => new RoleDto(r.Name)).ToList(),
+            Email = result.Value.Email!,
+            PhoneNumber = result.Value.PhoneNumber!,
+            Roles = result.Value.Roles.Select(r => new RoleDto(r.Name!)).ToList(),
             SocialNetworks = result.Value.SocialNetworks
                 .Select(s => new SocialNetworkDto(s.Name, s.Link)).ToList(),
             ParticipantAccount = participantAccountDto,
             VolunteerAccount = volunteerAccountDto,
-            AdminAccount = adminAccountDto
+            AdminAccount = adminAccountDto,
         };
 
         return userInfoDto;

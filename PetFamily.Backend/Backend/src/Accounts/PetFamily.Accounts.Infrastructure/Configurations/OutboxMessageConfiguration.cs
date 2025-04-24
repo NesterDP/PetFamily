@@ -35,18 +35,9 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
             .IsRequired(false)
             .HasColumnName("processed_on_utc");
 
-        builder.HasIndex(e => new
-            {
-                e.OccurredOnUtc,
-                e.ProcessedOnUtc
-            })
+        builder.HasIndex(e => new { e.OccurredOnUtc, e.ProcessedOnUtc })
             .HasDatabaseName("idx_outbox_messages_unprocessed")
-            .IncludeProperties(e => new
-            {
-                e.Id,
-                e.Type,
-                e.Payload
-            })
+            .IncludeProperties(e => new { e.Id, e.Type, e.Payload })
             .HasFilter("processed_on_utc IS NULL");
     }
 }

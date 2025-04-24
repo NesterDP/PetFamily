@@ -30,16 +30,16 @@ public class AccountsHttpClient : IAccountsService
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
             return "Response format invalid: missing 'result' property";
-        
+
         var options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
         };
 
         var userInfo = JsonSerializer.Deserialize<UserInfoDto>(resultElement.GetRawText(), options);
         if (userInfo == null)
             return "Failed to parse UserInfoDto";
-        
+
         return userInfo!;
     }
 
@@ -57,12 +57,12 @@ public class AccountsHttpClient : IAccountsService
         using var doc = JsonDocument.Parse(responseJson);
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
-            return Result.Failure<string, string>( "Response format invalid: missing 'result' property");
+            return Result.Failure<string, string>("Response format invalid: missing 'result' property");
 
         var confirmationToken = JsonSerializer.Deserialize<string>(resultElement.GetRawText());
         if (confirmationToken == null)
             return Result.Failure<string, string>("Failed to parse token");
-        
+
         return Result.Success<string, string>(confirmationToken);
     }
 }

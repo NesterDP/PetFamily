@@ -21,7 +21,7 @@ public class OutboxRepository : IOutboxRepository
             Id = Guid.NewGuid(),
             OccurredOnUtc = DateTime.UtcNow,
             Type = typeof(T).FullName!,
-            Payload = JsonSerializer.Serialize(message)
+            Payload = JsonSerializer.Serialize(message),
         };
         await _dbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
     }

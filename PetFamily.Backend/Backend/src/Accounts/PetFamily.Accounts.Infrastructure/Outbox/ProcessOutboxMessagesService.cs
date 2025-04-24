@@ -11,10 +11,10 @@ namespace PetFamily.Accounts.Infrastructure.Outbox;
 
 public class ProcessOutboxMessagesService
 {
+    private const int HANDLED_MESSAGES_AT_ONCE = 20;
     private readonly IPublishEndpoint _publisher;
     private readonly AccountsDbContext _dbContext;
     private readonly ILogger<ProcessOutboxMessagesService> _logger;
-    private const int HANDLED_MESSAGES_AT_ONCE = 20;
 
     public ProcessOutboxMessagesService(
         IPublishEndpoint publisher,
@@ -39,26 +39,26 @@ public class ProcessOutboxMessagesService
             return;
 
         var pipeline = new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions
-            {
-                MaxRetryAttempts = 3,
-                BackoffType = DelayBackoffType.Exponential,
-                Delay = TimeSpan.FromSeconds(1),
-                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
-                OnRetry = retryArguments =>
+            .AddRetry(
+                new RetryStrategyOptions
                 {
-                    _logger.LogCritical(
-                        retryArguments.Outcome.Exception,
-                        "Current attempt: {attemptNumber}",
-                        retryArguments.AttemptNumber);
+                    MaxRetryAttempts = 3,
+                    BackoffType = DelayBackoffType.Exponential,
+                    Delay = TimeSpan.FromSeconds(1),
+                    ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                    OnRetry = retryArguments =>
+                    {
+                        _logger.LogCritical(
+                            retryArguments.Outcome.Exception,
+                            "Current attempt: {attemptNumber}",
+                            retryArguments.AttemptNumber);
 
-                    return ValueTask.CompletedTask;
-                }
-            })
+                        return ValueTask.CompletedTask;
+                    },
+                })
             .Build();
 
-        var processingTasks = messages.Select(message =>
-            ProcessMessageAsync(message, pipeline, cancellationToken));
+        var processingTasks = messages.Select(message => ProcessMessageAsync(message, pipeline, cancellationToken));
 
         await Task.WhenAll(processingTasks);
 
@@ -84,15 +84,16 @@ public class ProcessOutboxMessagesService
             var messageType = AssemblyReference.Assembly.GetType(message.Type)
                               ?? throw new NullReferenceException("Message type not found");
 
-            var deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
-                                      ?? throw new NullReferenceException("Message payload is not found");
+            object? deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
+                                          ?? throw new NullReferenceException("Message payload is not found");
 
-            await pipeline.ExecuteAsync(async token =>
-            {
-                await _publisher.Publish(deserializedMessage, messageType, token);
-
-                message.ProcessedOnUtc = DateTime.UtcNow;
-            }, cancellationToken);
+            await pipeline.ExecuteAsync(
+                async token =>
+                {
+                    await _publisher.Publish(deserializedMessage, messageType, token);
+                    message.ProcessedOnUtc = DateTime.UtcNow;
+                },
+                cancellationToken);
         }
         catch (Exception e)
         {

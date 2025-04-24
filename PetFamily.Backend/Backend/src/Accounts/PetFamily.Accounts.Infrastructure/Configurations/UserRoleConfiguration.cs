@@ -9,6 +9,5 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<G
     public void Configure(EntityTypeBuilder<IdentityUserRole<Guid>> builder)
     {
         builder.ToTable("user_roles");
-        
     }
 }

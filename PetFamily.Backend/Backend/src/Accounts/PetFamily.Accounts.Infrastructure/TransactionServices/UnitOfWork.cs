@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Core.Abstractions;
