@@ -11,8 +11,6 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Species.Application.Commands.Create;
 
-
-
 public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
 {
     private readonly ISpeciesRepository _speciesRepository;
@@ -24,7 +22,8 @@ public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
         ISpeciesRepository speciesRepository,
         ILogger<CreateSpeciesHandler> logger,
         IValidator<CreateSpeciesCommand> validator,
-        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Species)]
+        IUnitOfWork unitOfWork)
     {
         _speciesRepository = speciesRepository;
         _logger = logger;
@@ -39,19 +38,18 @@ public class CreateSpeciesHandler : ICommandHandler<Guid, CreateSpeciesCommand>
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var id = SpeciesId.NewSpeciesId();
 
         var name = Name.Create(command.Name).Value;
-        
+
         var species = new Domain.Entities.Species(id, name);
 
         await _speciesRepository.AddAsync(species, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Created species with ID = {id}", species.Id);
-        
+        _logger.LogInformation("Created species with ID = {id}", species.Id);
+
         return species.Id.Value;
     }
 }

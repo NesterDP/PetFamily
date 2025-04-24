@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
@@ -14,17 +13,20 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Domain.Entities.Spe
 
         builder.HasKey(s => s.Id);
 
-        builder.Property(s => s.Id).HasConversion(
-            id => id.Value,
-            value => SpeciesId.Create(value));
+        builder.Property(s => s.Id)
+            .HasConversion(
+                id => id.Value,
+                value => SpeciesId.Create(value));
 
-        builder.ComplexProperty(s => s.Name, nb =>
-        {
-            nb.Property(n => n.Value)
-                .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
-                .HasColumnName("name");
-        });
+        builder.ComplexProperty(
+            s => s.Name,
+            nb =>
+            {
+                nb.Property(n => n.Value)
+                    .IsRequired()
+                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                    .HasColumnName("name");
+            });
 
         builder.HasMany(s => s.Breeds)
             .WithOne()
@@ -33,8 +35,6 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Domain.Entities.Spe
             .IsRequired();
 
         builder.Navigation(s => s.Breeds).AutoInclude();
-
-
 
         /*
         builder.OwnsMany(s => s.Breeds)

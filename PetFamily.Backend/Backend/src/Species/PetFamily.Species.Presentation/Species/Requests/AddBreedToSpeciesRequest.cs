@@ -4,5 +4,5 @@ namespace PetFamily.Species.Presentation.Species.Requests;
 
 public record AddBreedToSpeciesRequest(string Name)
 {
-    public AddBreedToSpeciesCommand ToCommand(Guid id) => new AddBreedToSpeciesCommand(id, Name);
+    public AddBreedToSpeciesCommand ToCommand(Guid id) => new(id, Name);
 }

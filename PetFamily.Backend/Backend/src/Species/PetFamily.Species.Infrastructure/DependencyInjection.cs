@@ -21,34 +21,32 @@ public static class DependencyInjection
             .AddTransactionManagement();
         return services;
     }
-    
+
     private static IServiceCollection AddDbContexts(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>(_ =>
-            new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
-        
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<WriteDbContext>(
+            _ =>
+                new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+
+        services.AddScoped<IReadDbContext, ReadDbContext>(
+            _ =>
+                new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
         return services;
     }
-    
-    private static IServiceCollection AddRepositories(
-        this IServiceCollection services)
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ISpeciesRepository, SpeciesRepository>();
         return services;
     }
-    
-    private static IServiceCollection AddTransactionManagement(
-        this IServiceCollection services)
+
+    private static void AddTransactionManagement(this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Species);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-        
+
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        
-        return services;
     }
 }

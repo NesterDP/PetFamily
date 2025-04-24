@@ -11,7 +11,10 @@ public interface ISpeciesRepository
     Guid Save(Domain.Entities.Species species, CancellationToken cancellationToken = default);
 
     Guid Delete(Domain.Entities.Species species, CancellationToken cancellationToken = default);
-    Task<Result<Domain.Entities.Species, Error>> GetByIdAsync(SpeciesId id, CancellationToken cancellationToken = default);
-    
-    Task<Result<Domain.Entities.Species, Error>> GetByNameAsync(string speciesName, CancellationToken cancellationToken = default);
+
+    Task<Result<Domain.Entities.Species, Error>> GetByIdAsync(
+        SpeciesId id, CancellationToken cancellationToken = default);
+
+    Task<Result<Domain.Entities.Species, Error>> GetByNameAsync(
+        string speciesName, CancellationToken cancellationToken = default);
 }

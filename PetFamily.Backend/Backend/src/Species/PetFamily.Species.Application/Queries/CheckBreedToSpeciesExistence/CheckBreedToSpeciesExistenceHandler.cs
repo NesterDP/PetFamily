@@ -5,8 +5,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Species.Application.Queries.CheckBreedToSpeciesExistence;
 
-
-
 public class CheckBreedToSpeciesExistenceHandler : IQueryHandler<UnitResult<Error>, CheckBreedToSpeciesExistenceQuery>
 {
     private readonly IReadDbContext _readDbContext;
@@ -27,8 +25,9 @@ public class CheckBreedToSpeciesExistenceHandler : IQueryHandler<UnitResult<Erro
             return Errors.General.ValueNotFound(query.SpeciesId);
 
         var breedExist = await _readDbContext.Breeds
-            .FirstOrDefaultAsync(b => b.Id == query.BreedId &&
-                                      b.SpeciesId == query.SpeciesId, cancellationToken);
+            .FirstOrDefaultAsync(
+                b => b.Id == query.BreedId &&
+                     b.SpeciesId == query.SpeciesId, cancellationToken);
 
         if (breedExist == null)
             return Errors.General.ValueNotFound(query.BreedId);

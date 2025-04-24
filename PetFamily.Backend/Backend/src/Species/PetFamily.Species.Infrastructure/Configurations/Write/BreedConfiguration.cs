@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Domain.Entities;
@@ -15,16 +14,19 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
 
         builder.HasKey(b => b.Id);
 
-        builder.Property(b => b.Id).HasConversion(
-            id => id.Value,
-            value => BreedId.Create(value));
+        builder.Property(b => b.Id)
+            .HasConversion(
+                id => id.Value,
+                value => BreedId.Create(value));
 
-        builder.ComplexProperty(b => b.Name, nb =>
-        {
-            nb.Property(n => n.Value)
-                .IsRequired()
-                .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
-                .HasColumnName("name");
-        });
+        builder.ComplexProperty(
+            b => b.Name,
+            nb =>
+            {
+                nb.Property(n => n.Value)
+                    .IsRequired()
+                    .HasMaxLength(DomainConstants.MAX_NAME_LENGTH)
+                    .HasColumnName("name");
+            });
     }
 }

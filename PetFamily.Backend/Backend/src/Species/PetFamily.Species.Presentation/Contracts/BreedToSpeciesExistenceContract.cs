@@ -6,7 +6,8 @@ using PetFamily.Species.Contracts.Requests;
 
 namespace PetFamily.Species.Presentation.Contracts;
 
-public class BreedToSpeciesExistenceContract(CheckBreedToSpeciesExistenceHandler handler) : IBreedToSpeciesExistenceContract
+public class BreedToSpeciesExistenceContract(CheckBreedToSpeciesExistenceHandler handler)
+    : IBreedToSpeciesExistenceContract
 {
     public async Task<UnitResult<Error>> BreedToSpeciesExistence(
         BreedToSpeciesExistenceRequest request,

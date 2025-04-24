@@ -18,7 +18,7 @@ public class GetBreedsBySpeciesIdHandler : IQueryHandler<List<BreedDto>, GetBree
         CancellationToken cancellationToken)
     {
         var result = _readDbContext.Breeds.Where(b => b.SpeciesId == query.Id);
-        
+
         return await result.ToListAsync(cancellationToken);
     }
 }

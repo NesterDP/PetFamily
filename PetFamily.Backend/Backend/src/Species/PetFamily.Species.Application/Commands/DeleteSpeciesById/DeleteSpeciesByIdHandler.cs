@@ -20,7 +20,8 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
 
     public DeleteSpeciesByIdHandler(
         ISpeciesRepository speciesRepository,
-        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Species)]
+        IUnitOfWork unitOfWork,
         ILogger<DeleteSpeciesByIdHandler> logger,
         IRequestClient<SpeciesToPetExistenceEvent> client)
     {
@@ -35,7 +36,7 @@ public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdC
         CancellationToken cancellationToken)
     {
         var existenceEvent = new SpeciesToPetExistenceEvent(command.Id);
-        var checkResult =  await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
+        var checkResult = await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
         if (checkResult.Message.Text != DomainConstants.OK)
             return Errors.General.Conflict(checkResult.Message.Text).ToErrorList();
 

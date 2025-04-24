@@ -20,7 +20,8 @@ public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdComma
 
     public DeleteBreedByIdHandler(
         ISpeciesRepository speciesRepository,
-        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Species)]
+        IUnitOfWork unitOfWork,
         ILogger<DeleteBreedByIdHandler> logger,
         IRequestClient<BreedToPetExistenceEvent> client)
     {
@@ -35,20 +36,19 @@ public class DeleteBreedByIdHandler : ICommandHandler<Guid, DeleteBreedByIdComma
         CancellationToken cancellationToken)
     {
         var existenceEvent = new BreedToPetExistenceEvent(command.BreedId);
-        var checkResult =  await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
+        var checkResult = await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
         if (checkResult.Message.Text != DomainConstants.OK)
             return Errors.General.Conflict(checkResult.Message.Text).ToErrorList();
-        
+
         var speciesResult = await _speciesRepository.GetByIdAsync(command.SpeciesId, cancellationToken);
         if (speciesResult.IsFailure)
             return Errors.General.ValueNotFound().ToErrorList();
-        
+
         speciesResult.Value.RemoveBreedById(command.BreedId);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Successfully deleted breed with ID = {ID}", command.BreedId);
 
         return command.BreedId;
     }
-
 }

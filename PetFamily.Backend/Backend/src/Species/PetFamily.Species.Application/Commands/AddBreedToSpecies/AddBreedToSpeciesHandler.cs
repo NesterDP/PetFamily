@@ -23,7 +23,8 @@ public class AddBreedToSpeciesHandler : ICommandHandler<Guid, AddBreedToSpeciesC
         IValidator<AddBreedToSpeciesCommand> validator,
         ISpeciesRepository speciesRepository,
         ILogger<AddBreedToSpeciesHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Species)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Species)]
+        IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _speciesRepository = speciesRepository;
@@ -38,7 +39,6 @@ public class AddBreedToSpeciesHandler : ICommandHandler<Guid, AddBreedToSpeciesC
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-
 
         var speciesId = SpeciesId.Create(command.Id);
         var speciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);
