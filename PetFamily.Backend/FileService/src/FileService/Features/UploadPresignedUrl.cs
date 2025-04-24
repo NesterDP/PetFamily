@@ -1,4 +1,3 @@
-using FileService.API;
 using FileService.API.Endpoints;
 using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
@@ -50,11 +49,13 @@ public static class UploadPresignedUrl
 
     private static void CreateJobs(Guid fileId, string key, CancellationToken cancellationToken)
     {
-        var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
+        string? clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(
+            j =>
                 j.Execute(fileId, key, cancellationToken),
             TimeSpan.FromHours(24));
 
-        BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+        BackgroundJob.Schedule<ConfirmConsistencyJob>(
+            j =>
                 j.Execute(fileId, key, clearJobId, cancellationToken),
             TimeSpan.FromSeconds(60));
     }

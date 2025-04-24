@@ -14,7 +14,7 @@ public class FileHttpClient : IFileService
     {
         _httpClient = httpClient;
     }
-    
+
     public async Task<Result<GetFilesPresignedUrlsResponse, string>> GetFilesPresignedUrls(
         GetFilesPresignedUrlsRequest request,
         CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ public class FileHttpClient : IFileService
 
         return fileResponse!;
     }
-    
+
     public async Task<Result<StartMultipartUploadResponse, string>> StartMultipartUpload(
         StartMultipartUploadRequest request,
         CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ public class FileHttpClient : IFileService
 
         return fileResponse!;
     }
-    
+
     public async Task<Result<CompleteMultipartUploadResponse, string>> CompleteMultipartUpload(
         CompleteMultipartUploadRequest request,
         CancellationToken cancellationToken)
@@ -56,13 +56,13 @@ public class FileHttpClient : IFileService
 
         var fileResponse = await response.Content
             .ReadFromJsonAsync<CompleteMultipartUploadResponse>(cancellationToken);
-        
+
         if (fileResponse!.MultipartCompleteInfos.Count == 0)
             return "Failed to complete multipart upload";
 
         return fileResponse!;
     }
-    
+
     public async Task<Result<DeleteFilesByIdsResponse, string>> DeleteFilesByIds(
         DeleteFilesByIdsRequest request,
         CancellationToken cancellationToken)

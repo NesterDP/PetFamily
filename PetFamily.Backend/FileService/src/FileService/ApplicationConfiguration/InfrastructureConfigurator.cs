@@ -17,33 +17,31 @@ public static class InfrastructureConfigurator
             .AddScoped<IFilesProvider, FilesProvider>()
             .ConfigureS3Storage(configuration)
             .ConfigureMongoDb(configuration);
-        
+
         return services;
     }
-    
+
     private static IServiceCollection ConfigureS3Storage(this IServiceCollection services, IConfiguration configuration)
     {
         var s3StorageOptions = configuration.GetSection(MinioOptions.MINIO).Get<MinioOptions>()
                                ?? throw new ApplicationException("Missing minio configuration");
 
-        services.AddSingleton<IAmazonS3>(_ =>
-        {
-            var config = new AmazonS3Config
+        services.AddSingleton<IAmazonS3>(
+            _ =>
             {
-                ServiceURL = s3StorageOptions.Endpoint,
-                ForcePathStyle = true,
-                UseHttp = true
-            };
+                var config = new AmazonS3Config
+                {
+                    ServiceURL = s3StorageOptions.Endpoint, ForcePathStyle = true, UseHttp = true
+                };
 
-            return new AmazonS3Client(s3StorageOptions.AccessKey, s3StorageOptions.SecretKey, config);
-        });
-        
+                return new AmazonS3Client(s3StorageOptions.AccessKey, s3StorageOptions.SecretKey, config);
+            });
+
         return services;
     }
-    
-    private static IServiceCollection ConfigureMongoDb(this IServiceCollection services, IConfiguration configuration)
+
+    private static void ConfigureMongoDb(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMongoClient>(new MongoClient(configuration.GetConnectionString("MongoConnection")));
-        return services;
     }
 }

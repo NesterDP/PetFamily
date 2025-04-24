@@ -8,8 +8,9 @@ public static class LoggerConfigurator
     public static void Configure(IConfiguration configuration)
     {
         Log.Logger = new LoggerConfiguration()
-            .WriteTo.Seq(configuration.GetConnectionString("Seq")
-                         ?? throw new ArgumentNullException("Seq"))
+            .WriteTo.Seq(
+                configuration.GetConnectionString("Seq")
+                ?? throw new ArgumentNullException())
             .WriteTo.Console()
             .Enrich.WithMachineName()
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)

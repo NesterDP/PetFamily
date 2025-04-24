@@ -36,7 +36,7 @@ public class ConfirmConsistencyJob
             throw new Exception(result.Error.Message);
 
         BackgroundJob.Delete(deleteJobId);
-        
+
         _logger.LogInformation("End ConfirmConsistencyJob");
     }
 }

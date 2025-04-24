@@ -18,7 +18,8 @@ public static class TestHangfire
 
     private static IResult Handler(CancellationToken cancellationToken = default)
     {
-        var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+        string? jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(
+            j =>
                 j.Execute(Guid.NewGuid(), "key", "123", cancellationToken),
             TimeSpan.FromSeconds(5));
 

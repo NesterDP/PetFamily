@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FileService.Core;
 using FileService.Core.CustomErrors;
 using FileService.Core.Models;
 using FileService.Infrastructure.MongoDataAccess;
@@ -15,7 +14,7 @@ public class FilesRepository : IFilesRepository
     {
         _dbContext = dbContext;
     }
-    
+
     public async Task<Result<Guid, Error>> Add(FileData fileData, CancellationToken cancellationToken)
     {
         await _dbContext.Files.InsertOneAsync(fileData, cancellationToken: cancellationToken);
@@ -37,9 +36,10 @@ public class FilesRepository : IFilesRepository
 
     public async Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
     {
-        var existedCount = await _dbContext.Files.CountDocumentsAsync(f =>
-            fileIds.Contains(f.Id), cancellationToken: cancellationToken);
-        
+        long existedCount = await _dbContext.Files.CountDocumentsAsync(
+            f =>
+                fileIds.Contains(f.Id), cancellationToken: cancellationToken);
+
         var deleteResult = await _dbContext.Files
             .DeleteManyAsync(f => fileIds.Contains(f.Id), cancellationToken: cancellationToken);
 
@@ -48,7 +48,7 @@ public class FilesRepository : IFilesRepository
 
         return Result.Success<Error>();
     }
-    
+
     public async Task<Result<FileData, Error>> GetByKey(
         string key,
         CancellationToken cancellationToken)

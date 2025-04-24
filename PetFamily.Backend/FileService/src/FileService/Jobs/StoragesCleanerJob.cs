@@ -28,10 +28,10 @@ public class StoragesCleanerJob
     {
         _logger.LogInformation("Start ClearStoragesJob with fileId = {fileId} and Key = {key}", fileId, key);
 
-         await _filesRepository.DeleteMany([fileId], cancellationToken);
-         
-         await _filesProvider.DeleteFiles([key], cancellationToken);
-        
+        await _filesRepository.DeleteMany([fileId], cancellationToken);
+
+        await _filesProvider.DeleteFiles([key], cancellationToken);
+
         _logger.LogInformation("End ClearStoragesJob");
     }
 }

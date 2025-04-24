@@ -11,13 +11,14 @@ public static class FileServiceExtensions
         IConfiguration configuration)
     {
         services.Configure<FileServiceOptions>(configuration.GetSection(FileServiceOptions.FILE_SERVICE));
-        
-        services.AddHttpClient<IFileService, FileHttpClient>((sp, config) =>
-        {
-            var fileOption = sp.GetRequiredService<IOptions<FileServiceOptions>>().Value;
 
-            config.BaseAddress = new Uri(fileOption.Url);
-        });
+        services.AddHttpClient<IFileService, FileHttpClient>(
+            (sp, config) =>
+            {
+                var fileOption = sp.GetRequiredService<IOptions<FileServiceOptions>>().Value;
+
+                config.BaseAddress = new Uri(fileOption.Url);
+            });
 
         return services;
     }

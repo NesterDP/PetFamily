@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageId>FileService</PackageId>
-        <Version>1.0.4</Version>
+        <PackageId>FileService.Communication</PackageId>
+        <Version>1.0.5</Version>
         <Authors>NesterDP</Authors>
         <Company>NetserDP</Company>
         <PackageDescription>First nuget for FileService</PackageDescription>

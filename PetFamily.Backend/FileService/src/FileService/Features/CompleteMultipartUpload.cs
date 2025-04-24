@@ -19,7 +19,7 @@ public class CompleteMultipartUpload
             app.MapPost("files/complete-multipart", Handler);
         }
     }
-    
+
     private static async Task<IResult> Handler(
         CompleteMultipartUploadRequest request,
         IFilesProvider filesProvider,
@@ -29,13 +29,13 @@ public class CompleteMultipartUpload
     {
         var fileInfos = await filesProvider
             .GenerateCompeteMultipartUploadData(request.ClientInfos, cancellationToken);
-        
+
         var response = new CompleteMultipartUploadResponse([]);
 
         foreach (var fileInfo in fileInfos)
         {
             var fileId = Guid.NewGuid();
-            
+
             var fileData = new FileData
             {
                 Id = fileId,
@@ -44,29 +44,31 @@ public class CompleteMultipartUpload
                 ContentType = fileInfo.ContentType,
                 UploadDate = DateTime.UtcNow
             };
-            
-            var clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(j =>
+
+            string? clearJobId = BackgroundJob.Schedule<StoragesCleanerJob>(
+                j =>
                     j.Execute(fileId, fileInfo.Key, cancellationToken),
                 TimeSpan.FromHours(24));
 
             try
             {
                 await filesRepository.Add(fileData, cancellationToken);
-            
+
                 BackgroundJob.Delete(clearJobId);
-            
-                response.MultipartCompleteInfos.Add(new MultipartCompleteFileInfo(
-                    fileId,
-                    fileInfo.Key,
-                    fileInfo.ContentType,
-                    fileInfo.ContentLength));
+
+                response.MultipartCompleteInfos.Add(
+                    new MultipartCompleteFileInfo(
+                        fileId,
+                        fileInfo.Key,
+                        fileInfo.ContentType,
+                        fileInfo.ContentLength));
             }
             catch (Exception e)
             {
                 logger.LogError(e, e.Message);
             }
         }
-        
+
         // Вернет Id и метаданные загруженных файлов
         // Если не удалось загрузить ни одного файла - вернет пустой список
         return Results.Ok(response);

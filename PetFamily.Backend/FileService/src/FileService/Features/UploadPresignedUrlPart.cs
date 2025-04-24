@@ -1,4 +1,3 @@
-using FileService.API;
 using FileService.API.Endpoints;
 using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;

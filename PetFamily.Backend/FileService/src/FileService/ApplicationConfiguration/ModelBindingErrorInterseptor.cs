@@ -8,10 +8,11 @@ public static class ModelBindingErrorInterceptor
 {
     public static IMvcBuilder InterceptModelBindingError(this IMvcBuilder builder)
     {
-        builder.ConfigureApiBehaviorOptions(options =>
+        builder.ConfigureApiBehaviorOptions(
+            options =>
             {
                 options.SuppressModelStateInvalidFilter = false;
-                options.InvalidModelStateResponseFactory = actionContext =>
+                options.InvalidModelStateResponseFactory = _ =>
                 {
                     var responseError = Errors.General.Failure(
                         "model.binding.error", "failed to bind the received model");
