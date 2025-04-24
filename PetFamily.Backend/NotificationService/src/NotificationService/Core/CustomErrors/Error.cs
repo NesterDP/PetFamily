@@ -9,6 +9,8 @@ public record Error
     private string Message { get; }
 
     private ErrorType Type { get; }
+
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public string? InvalidField { get; }
 
     private Error(string code, string message, ErrorType type, string? invalidField = null)
@@ -35,13 +37,13 @@ public record Error
 
     public string Serialize()
     {
-        return string.Join(SEPARATOR, Code, Message, Type );
+        return string.Join(SEPARATOR, Code, Message, Type);
     }
 
     public static Error Deserialize(string serialized)
     {
         string[] parts = serialized.Split("||");
-        if(parts.Length < 3)
+        if (parts.Length < 3)
             throw new ArgumentException($"Invalid error format: {serialized}");
 
         if (Enum.TryParse<ErrorType>(parts[2], out var type) == false)

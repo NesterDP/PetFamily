@@ -1,3 +1,6 @@
+// ReSharper disable UnusedMember.Global
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace NotificationService.Core.Models;
 
 public class PagedList<T>

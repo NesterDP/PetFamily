@@ -28,7 +28,6 @@ public class NotificationsRepository : INotificationsRepository
         return settings.Id;
     }
 
-
     public Guid Delete(UserNotificationSettings settings, CancellationToken cancellationToken = default)
     {
         _context.UsersNotificationSettings.Remove(settings);
@@ -47,7 +46,7 @@ public class NotificationsRepository : INotificationsRepository
 
         return settings;
     }
-    
+
     public async Task<Result<UserNotificationSettings, Error>> GetByUserIdAsync(
         UserId id,
         CancellationToken cancellationToken = default)

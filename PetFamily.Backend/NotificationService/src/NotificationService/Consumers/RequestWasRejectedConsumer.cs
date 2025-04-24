@@ -26,13 +26,13 @@ public class RequestWasRejectedConsumer : IConsumer<VolunteerRequestWasRejectedE
         // получение данных от сервиса аккаунтов по http
         var userInfo = await _accountService
             .GetUserInfoById(context.Message.UserId, CancellationToken.None);
-        
+
         if (userInfo.IsFailure)
             throw new Exception(userInfo.Error);
 
         var adminInfo = await _accountService
             .GetUserInfoById(context.Message.AdminId, CancellationToken.None);
-        
+
         if (adminInfo.IsFailure)
             throw new Exception(userInfo.Error);
 
@@ -42,7 +42,8 @@ public class RequestWasRejectedConsumer : IConsumer<VolunteerRequestWasRejectedE
             adminInfo.Value,
             context.Message.RequestId);
 
-        _logger.LogInformation("Successfully notified user with ID = {Id} about rejected request",
+        _logger.LogInformation(
+            "Successfully notified user with ID = {Id} about rejected request",
             context.Message.UserId);
     }
 }

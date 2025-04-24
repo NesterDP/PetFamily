@@ -1,6 +1,4 @@
 using MassTransit;
-using Microsoft.Extensions.Options;
-using NotificationService.Core.Options;
 using NotificationService.Services;
 using PetFamily.Accounts.Communication;
 using PetFamily.Accounts.Contracts.Messaging;
@@ -39,7 +37,8 @@ public class UserWasRegisteredEventConsumer : IConsumer<UserWasRegisteredEvent>
         // формирование и отправка сообщения на почту
         await _emailService.SendConfirmationEmailAsync(userInfo.Value, context.Message.UserId.ToString(), token.Value);
 
-        _logger.LogInformation("Successfully notified user with ID = {Id} about email confirmation",
+        _logger.LogInformation(
+            "Successfully notified user with ID = {Id} about email confirmation",
             context.Message.UserId);
     }
 }

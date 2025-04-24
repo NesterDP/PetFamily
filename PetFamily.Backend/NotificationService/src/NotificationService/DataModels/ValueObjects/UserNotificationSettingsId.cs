@@ -9,16 +9,18 @@ public class UserNotificationSettingsId : ValueObject, IComparable<UserNotificat
     private UserNotificationSettingsId(Guid value) => Value = value;
 
     public static UserNotificationSettingsId NewId() => new(Guid.NewGuid());
+
     public static UserNotificationSettingsId EmptyId => new(Guid.Empty);
+
     public static UserNotificationSettingsId Create(Guid id) => new(id);
-    
+
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Value;
     }
-    
-    public static implicit operator UserNotificationSettingsId(Guid id) => new (id);
-    
+
+    public static implicit operator UserNotificationSettingsId(Guid id) => new(id);
+
     public static implicit operator Guid(UserNotificationSettingsId id) => id.Value;
 
     public int CompareTo(UserNotificationSettingsId? other)

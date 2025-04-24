@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Accounts.Contracts</PackageId>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Authors>NesterDP</Authors>
         <Company>NetserDP</Company>
         <PackageDescription>Nuget package for "Contracts" project of "Accounts" module</PackageDescription>

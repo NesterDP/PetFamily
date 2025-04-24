@@ -11,7 +11,7 @@ public static class EmailServiceConfigurator
     {
         services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.SMTP_OPTIONS));
         services.AddTransient<EmailService>();
-        
+
         return services;
     }
 }

@@ -4,9 +4,9 @@ namespace NotificationService.DataModels;
 
 public class UserNotificationSettings
 {
-    public UserNotificationSettingsId Id { get; private set; }
+    public UserNotificationSettingsId Id { get; private set; } = null!;
 
-    public UserId UserId { get; private set; }
+    public UserId UserId { get; private set; } = null!;
 
     public bool? SendToEmail { get; private set; }
 
@@ -48,5 +48,6 @@ public class UserNotificationSettings
     }
 
     // ef core
+    // ReSharper disable once UnusedMember.Local
     private UserNotificationSettings() { }
 }
