@@ -1,12 +1,10 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.CustomErrors;
-using PetFamily.Species.Contracts.Requests;
 using PetFamily.Volunteers.Application.Queries.CheckSpeciesToPetExistence;
 using PetFamily.Volunteers.Contracts;
 using PetFamily.Volunteers.Contracts.Requests;
 
 namespace PetFamily.Volunteers.Presentation.Contracts;
-
 
 public class SpeciesToPetExistenceContract : ISpeciesToPetExistenceContract
 {

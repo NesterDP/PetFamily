@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 

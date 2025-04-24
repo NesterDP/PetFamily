@@ -8,6 +8,7 @@ using PetFamily.Core.Dto.Pet;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Volunteers.Application.Queries.GetPetById;
+using PetFamily.Volunteers.Domain.Entities;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 

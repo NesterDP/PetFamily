@@ -11,8 +11,7 @@ public class SpeciesToPetExistenceEventConsumer : IConsumer<SpeciesToPetExistenc
 {
     private readonly ISpeciesToPetExistenceContract _contract;
 
-    public SpeciesToPetExistenceEventConsumer(
-        ISpeciesToPetExistenceContract contract)
+    public SpeciesToPetExistenceEventConsumer(ISpeciesToPetExistenceContract contract)
     {
         _contract = contract;
     }
@@ -23,7 +22,7 @@ public class SpeciesToPetExistenceEventConsumer : IConsumer<SpeciesToPetExistenc
 
         var result = await _contract.SpeciesToPetExistence(request);
 
-        string? response = DomainConstants.OK;
+        string response = DomainConstants.OK;
         if (result.IsFailure)
             response = result.Error.Message;
 

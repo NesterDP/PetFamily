@@ -1,5 +1,6 @@
 using PetFamily.Core.Abstractions;
 
+// ReSharper disable NotAccessedPositionalProperty.Global
 namespace PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPaginationDapper;
 
 public record GetFilteredPetsWithPaginationDapperQuery(

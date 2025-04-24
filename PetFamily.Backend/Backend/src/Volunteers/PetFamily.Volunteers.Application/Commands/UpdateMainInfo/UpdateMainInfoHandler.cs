@@ -22,15 +22,16 @@ public class UpdateMainInfoHandler : ICommandHandler<Guid, UpdateMainInfoCommand
     public UpdateMainInfoHandler(
         IVolunteersRepository volunteersRepository,
         ILogger<UpdateMainInfoHandler> logger,
-        IValidator<UpdateMainInfoCommand> validator ,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        IValidator<UpdateMainInfoCommand> validator,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         UpdateMainInfoCommand command,
         CancellationToken cancellationToken)
@@ -38,7 +39,7 @@ public class UpdateMainInfoHandler : ICommandHandler<Guid, UpdateMainInfoCommand
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
@@ -55,7 +56,6 @@ public class UpdateMainInfoHandler : ICommandHandler<Guid, UpdateMainInfoCommand
         var phone = Phone.Create(command.PhoneNumber).Value;
         volunteerResult.Value.UpdateMainInfo(fullName, email, description, experience, phone);
 
-        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Volunteer was updated (main info), his ID = {ID}", volunteerId.Value);

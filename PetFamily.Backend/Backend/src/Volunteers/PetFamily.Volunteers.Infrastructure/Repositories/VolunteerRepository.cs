@@ -4,7 +4,6 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Domain.Entities;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.Volunteers.Infrastructure.Repositories;
@@ -30,14 +29,14 @@ public class VolunteerRepository : IVolunteersRepository
         return volunteer.Id.Value;
     }
 
-
     public Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         _context.Volunteers.Remove(volunteer);
         return volunteer.Id.Value;
     }
 
-    public async Task<Result<Volunteer, Error>> GetByIdAsync(VolunteerId id,
+    public async Task<Result<Volunteer, Error>> GetByIdAsync(
+        VolunteerId id,
         CancellationToken cancellationToken = default)
     {
         var volunteer = await _context.Volunteers

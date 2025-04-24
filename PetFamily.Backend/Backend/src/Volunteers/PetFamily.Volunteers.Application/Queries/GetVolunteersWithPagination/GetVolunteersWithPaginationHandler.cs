@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Core.Extensions;
@@ -23,7 +22,6 @@ public class
         var volunteersQuery = _readDbContext.Volunteers;
 
         volunteersQuery = volunteersQuery.Where(v => v.IsDeleted == false);
-            //.Include(v => v.Pets);
 
         return await volunteersQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

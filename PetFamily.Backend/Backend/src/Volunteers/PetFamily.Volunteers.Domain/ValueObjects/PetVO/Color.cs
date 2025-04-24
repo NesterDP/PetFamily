@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
@@ -17,7 +16,7 @@ public record Color
             return Errors.General.ValueIsInvalid("color");
 
         var validColor = new Color(color);
-        
+
         return validColor;
     }
 }

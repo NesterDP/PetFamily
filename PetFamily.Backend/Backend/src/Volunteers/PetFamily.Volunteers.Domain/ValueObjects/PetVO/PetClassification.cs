@@ -6,6 +6,7 @@ namespace PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 public record PetClassification
 {
     public Guid SpeciesId { get; }
+
     public Guid BreedId { get; }
 
     private PetClassification(Guid speciesId, Guid breedId)
@@ -20,7 +21,7 @@ public record PetClassification
             return Errors.General.ValueIsInvalid("speciesId");
         if (breedId == Guid.Empty)
             return Errors.General.ValueIsInvalid("breedId");
-        
+
         var validPetClassification = new PetClassification(speciesId, breedId);
         return validPetClassification;
     }

@@ -11,8 +11,7 @@ public class BreedToPetExistenceEventConsumer : IConsumer<BreedToPetExistenceEve
 {
     private readonly IBreedToPetExistenceContract _contract;
 
-    public BreedToPetExistenceEventConsumer(
-       IBreedToPetExistenceContract contract)
+    public BreedToPetExistenceEventConsumer(IBreedToPetExistenceContract contract)
     {
         _contract = contract;
     }
@@ -23,7 +22,7 @@ public class BreedToPetExistenceEventConsumer : IConsumer<BreedToPetExistenceEve
 
         var result = await _contract.BreedToPetExistence(request);
 
-        string? response = DomainConstants.OK;
+        string response = DomainConstants.OK;
         if (result.IsFailure)
             response = result.Error.Message;
 

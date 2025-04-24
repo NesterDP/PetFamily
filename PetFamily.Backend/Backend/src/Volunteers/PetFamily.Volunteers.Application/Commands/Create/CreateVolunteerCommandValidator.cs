@@ -15,9 +15,8 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
         RuleFor(c => c.CreateVolunteerDto.Description).MustBeValueObject(Description.Create);
         RuleFor(c => c.CreateVolunteerDto.Experience).MustBeValueObject(Experience.Create);
         RuleFor(c => c.CreateVolunteerDto.PhoneNumber).MustBeValueObject(Phone.Create);
-        
+
         /*RuleFor(c => c.VolunteerCommandDto.Experience).Must(x => x >= 0 && x < 10)
             .WithError(Errors.General.ValueIsInvalid());*/
     }
 }
-    

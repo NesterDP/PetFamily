@@ -5,8 +5,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
 
-
-
 public class CompleteUploadPhotosToPetCommandValidator : AbstractValidator<CompleteUploadPhotosToPetCommand>
 {
     public CompleteUploadPhotosToPetCommandValidator()

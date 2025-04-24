@@ -22,11 +22,11 @@ public class StartUploadFileDtoValidator : AbstractValidator<StartUploadFileDto>
     public StartUploadFileDtoValidator()
     {
         RuleFor(u => u.FileName).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        
+
         RuleFor(u => u.Size)
-            .Must(c => c  < DomainConstants.MAX_FILE_SIZE_IN_BYTES)
+            .Must(c => c < DomainConstants.MAX_FILE_SIZE_IN_BYTES)
             .WithError(Errors.General.ValueIsInvalid("fileSize"));
-        
+
         RuleFor(u => u.ContentType)
             .Must(c => Photo.AllowedTypes.Contains(c))
             .WithError(Errors.General.ValueIsInvalid("contentType"));

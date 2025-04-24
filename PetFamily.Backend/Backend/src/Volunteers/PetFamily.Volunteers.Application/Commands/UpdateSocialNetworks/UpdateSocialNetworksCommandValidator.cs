@@ -2,7 +2,6 @@ using FluentValidation;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.ValueObjects;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdateSocialNetworks;
 
@@ -14,4 +13,4 @@ public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSoci
         RuleForEach(r => r.SocialNetworks)
             .MustBeValueObject(s => SocialNetwork.Create(s.Name, s.Link));
     }
-} 
+}

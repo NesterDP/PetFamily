@@ -10,7 +10,6 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
-
 namespace PetFamily.Volunteers.Application.Commands.DeletePet;
 
 public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
@@ -55,14 +54,14 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
             return Errors.General.ValueNotFound(command.PetId).ToErrorList();
 
         volunteerResult.Value.HardDeletePet(pet);
-        
+
         // межсерверное взаимодействие, удаление данных из Mongo и S3 хранилища
         var request = new DeleteFilesByIdsRequest(pet.PhotosList.Select(p => p.Id.Value).ToList());
-        
+
         var result = await _fileService.DeleteFilesByIds(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Pet was hard deleted, his ID = {ID}", pet.Id);

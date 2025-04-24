@@ -12,7 +12,7 @@ public record IsVaccinated
     public static Result<IsVaccinated, Error> Create(bool isVaccinated)
     {
         var validIsVaccinated = new IsVaccinated(isVaccinated);
-        
+
         return validIsVaccinated;
     }
 }

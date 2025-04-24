@@ -15,7 +15,7 @@ public record Height
             return Errors.General.ValueIsInvalid("height");
 
         var validHeight = new Height(height);
-        
+
         return validHeight;
     }
 }

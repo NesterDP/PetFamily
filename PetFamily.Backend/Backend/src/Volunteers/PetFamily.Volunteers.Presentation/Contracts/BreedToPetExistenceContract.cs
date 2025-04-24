@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.CustomErrors;
-using PetFamily.Species.Contracts.Requests;
 using PetFamily.Volunteers.Application.Queries.CheckBreedToPetExistence;
 using PetFamily.Volunteers.Contracts;
 using PetFamily.Volunteers.Contracts.Requests;

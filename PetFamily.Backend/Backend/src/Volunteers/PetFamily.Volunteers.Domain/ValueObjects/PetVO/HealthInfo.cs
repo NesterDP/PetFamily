@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
@@ -17,7 +16,7 @@ public record HealthInfo
             return Errors.General.ValueIsInvalid("healthInfo");
 
         var validHealthInfo = new HealthInfo(healthInfo);
-        
+
         return validHealthInfo;
     }
 }

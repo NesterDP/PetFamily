@@ -6,7 +6,6 @@ namespace PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 public record DateOfBirth
 {
     public DateTime Value { get; }
-    
 
     private DateOfBirth(DateTime value) => Value = value;
 
@@ -17,7 +16,7 @@ public record DateOfBirth
             return Errors.General.ValueIsInvalid("dateOfBirth");
 
         var validDateOfBirth = new DateOfBirth(dateOfBirth);
-        
+
         return validDateOfBirth;
     }
 }

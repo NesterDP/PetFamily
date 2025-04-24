@@ -9,42 +9,51 @@ namespace PetFamily.Volunteers.Domain.Entities;
 
 public sealed class Pet : SoftDeletableEntity<PetId>
 {
-    public Name Name { get; private set; }
-    public Description Description { get; private set; }
-    public PetClassification PetClassification { get; private set; }
-    public Color Color { get; private set; }
-    public HealthInfo HealthInfo { get; private set; }
-    public Address Address { get; private set; }
-    public Weight Weight { get; private set; }
-    public Height Height { get; private set; }
-    public Phone OwnerPhoneNumber { get; private set; }
-    public IsCastrated IsCastrated { get; private set; }
-    public DateOfBirth DateOfBirth { get; private set; }
-    public IsVaccinated IsVaccinated { get; private set; }
-    public HelpStatus HelpStatus { get; private set; }
-    
+    public Name Name { get; private set; } = null!;
+
+    public Description Description { get; private set; } = null!;
+
+    public PetClassification PetClassification { get; private set; } = null!;
+
+    public Color Color { get; private set; } = null!;
+
+    public HealthInfo HealthInfo { get; private set; } = null!;
+
+    public Address Address { get; private set; } = null!;
+
+    public Weight Weight { get; private set; } = null!;
+
+    public Height Height { get; private set; } = null!;
+
+    public Phone OwnerPhoneNumber { get; private set; } = null!;
+
+    public IsCastrated IsCastrated { get; private set; } = null!;
+
+    public DateOfBirth DateOfBirth { get; private set; } = null!;
+
+    public IsVaccinated IsVaccinated { get; private set; } = null!;
+
+    public HelpStatus HelpStatus { get; private set; } = null!;
+
     private List<TransferDetail> _transferDetails = [];
-    
+
     public IReadOnlyList<TransferDetail> TransferDetailsList
     {
         get => _transferDetails;
         private set => _transferDetails = value.ToList();
     }
-    
+
     private List<Photo> _photos = [];
 
     public IReadOnlyList<Photo> PhotosList
     {
         get => _photos;
-        private set => _photos = value.ToList();
+        set => _photos = value.ToList();
     }
-    
-    public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
-    public Position Position { get; private set; }
-    
 
-    // ef core
-    private Pet(PetId id) : base(id) { }
+    public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
+
+    public Position Position { get; private set; } = null!;
 
     public Pet(
         PetId id,
@@ -62,7 +71,8 @@ public sealed class Pet : SoftDeletableEntity<PetId>
         IsVaccinated isVaccinated,
         HelpStatus helpStatus,
         IEnumerable<TransferDetail> transferDetails,
-        IEnumerable<Photo> photos) : base(id)
+        IEnumerable<Photo> photos)
+        : base(id)
     {
         Name = name;
         PetClassification = petClassification;
@@ -80,68 +90,84 @@ public sealed class Pet : SoftDeletableEntity<PetId>
         TransferDetailsList = transferDetails.ToList();
         _photos = photos.ToList();
     }
-    
+
+    // ef core
+    // ReSharper disable once UnusedMember.Local
+    private Pet(PetId id)
+        : base(id)
+    {
+    }
+
     public void UpdateName(Name name)
     {
         Name = name;
     }
-    
+
     public void UpdateDescription(Description description)
     {
         Description = description;
     }
-    
+
     public void UpdatePetClassification(PetClassification petClassification)
     {
         PetClassification = petClassification;
     }
-    
+
     public void UpdateColor(Color color)
     {
         Color = color;
     }
+
     public void UpdateHealthInfo(HealthInfo healthInfo)
     {
         HealthInfo = healthInfo;
     }
+
     public void UpdateAddress(Address address)
     {
         Address = address;
     }
+
     public void UpdateWeight(Weight weight)
     {
         Weight = weight;
     }
+
     public void UpdateHeight(Height height)
     {
         Height = height;
     }
+
     public void UpdateOwnerPhoneNumber(Phone ownerPhoneNumber)
     {
         OwnerPhoneNumber = ownerPhoneNumber;
     }
+
     public void UpdateIsCastrated(IsCastrated isCastrated)
     {
         IsCastrated = isCastrated;
     }
+
     public void UpdateDateOfBirth(DateOfBirth dateOfBirth)
     {
         DateOfBirth = dateOfBirth;
     }
+
     public void UpdateIsVaccinated(IsVaccinated isVaccinated)
     {
         IsVaccinated = isVaccinated;
     }
+
     public void UpdateHelpStatus(HelpStatus helpStatus)
     {
         HelpStatus = helpStatus;
     }
+
     public void UpdateTransferDetails(IEnumerable<TransferDetail> transferDetails)
     {
         TransferDetailsList = transferDetails.ToList();
     }
-    
-    
+
     public void UpdatePhotos(IEnumerable<Photo> photos)
     {
         _photos = photos.ToList();
@@ -155,10 +181,11 @@ public sealed class Pet : SoftDeletableEntity<PetId>
             if (photo.Id != mainPhoto.Id)
                 updatedPhotosList.Add(photo.CreateCopy(false));
         }
+
         updatedPhotosList.Add(mainPhoto.CreateCopy(true));
         _photos = updatedPhotosList;
     }
-    
+
     public void SetPosition(Position position) => Position = position;
 
     public UnitResult<Error> MoveForward()
@@ -168,10 +195,10 @@ public sealed class Pet : SoftDeletableEntity<PetId>
             return newPosition.Error;
 
         Position = newPosition.Value;
-        
+
         return Result.Success<Error>();
     }
-    
+
     public UnitResult<Error> MoveBackward()
     {
         var newPosition = Position.Backward();
@@ -181,7 +208,7 @@ public sealed class Pet : SoftDeletableEntity<PetId>
         Position = newPosition.Value;
         return Result.Success<Error>();
     }
-    
+
     public void Move(Position newPosition)
     {
         Position = newPosition;

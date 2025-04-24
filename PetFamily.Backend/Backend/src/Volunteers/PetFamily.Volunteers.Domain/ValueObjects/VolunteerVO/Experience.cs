@@ -15,7 +15,7 @@ public record Experience
             return Errors.General.ValueIsInvalid("experience");
 
         var validExperience = new Experience(experience);
-        
+
         return validExperience;
     }
 }

@@ -29,7 +29,8 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         IValidator<AddPetCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<AddPetHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork,
         IRequestClient<BreedToSpeciesExistenceEvent> client)
     {
         _validator = validator;
@@ -46,7 +47,6 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-
 
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
@@ -112,6 +112,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             transferDetailsList.Add(result.Value);
         }
 
+        // ReSharper disable once CollectionNeverUpdated.Local
         var photosListResult = new List<Photo>();
 
         var pet = new Pet(
@@ -141,10 +142,10 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         CancellationToken cancellationToken)
     {
         var existenceEvent = new BreedToSpeciesExistenceEvent(clientSpeciesId, clientBreedId);
-        var checkResult =  await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
+        var checkResult = await _client.GetResponse<ResponseWrapper>(existenceEvent, cancellationToken);
         if (checkResult.Message.Text != DomainConstants.OK)
             return Errors.General.Conflict(checkResult.Message.Text);
-        
+
         return PetClassification.Create(clientSpeciesId, clientBreedId).Value;
     }
 }

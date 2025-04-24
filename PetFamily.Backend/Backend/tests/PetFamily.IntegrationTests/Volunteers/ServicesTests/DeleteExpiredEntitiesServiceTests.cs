@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application.Commands.DeletePet;
+using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Infrastructure.Services;
 
 namespace PetFamily.IntegrationTests.Volunteers.ServicesTests;

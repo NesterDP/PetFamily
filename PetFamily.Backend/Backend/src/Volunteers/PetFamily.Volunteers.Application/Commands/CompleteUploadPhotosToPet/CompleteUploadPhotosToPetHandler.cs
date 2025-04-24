@@ -15,7 +15,7 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
 
-public class CompleteUploadPhotosToPetHandler 
+public class CompleteUploadPhotosToPetHandler
     : ICommandHandler<CompleteMultipartUploadResponse, CompleteUploadPhotosToPetCommand>
 {
     private readonly IValidator<CompleteUploadPhotosToPetCommand> _validator;
@@ -59,10 +59,11 @@ public class CompleteUploadPhotosToPetHandler
 
         // создание данных для межпроцессного взаимодействия
         var clientInfos = command.FileInfos
-            .Select(f => new MultipartCompleteClientInfo(
-                f.Key,
-                f.UploadId,
-                f.Parts.Select(p => new PartETagInfo(p.PartNumber, p.ETag)).ToList()))
+            .Select(
+                f => new MultipartCompleteClientInfo(
+                    f.Key,
+                    f.UploadId,
+                    f.Parts.Select(p => new PartETagInfo(p.PartNumber, p.ETag)).ToList()))
             .ToList();
 
         var request = new CompleteMultipartUploadRequest(clientInfos);
@@ -71,7 +72,7 @@ public class CompleteUploadPhotosToPetHandler
         var result = await _fileService.CompleteMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
-        
+
         // из полученной коллекции создаем коллекцию value objects (фото)
         var photoFiles = result.Value.MultipartCompleteInfos
             .Select(fileInfo => Photo.Create(FileId.Create(fileInfo.FileId).Value, fileInfo.ContentType).Value);

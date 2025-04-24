@@ -8,7 +8,6 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdatePetStatus;
 
@@ -18,20 +17,18 @@ public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpSta
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdatePetHelpStatusHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IReadDbContext _readDbContext;
 
     public UpdatePetHelpStatusHandler(
         IValidator<UpdatePetHelpStatusCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetHelpStatusHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
-        IReadDbContext readDbContext)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _readDbContext = readDbContext;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -42,12 +39,11 @@ public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpSta
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
-        
+
         Enum.TryParse(command.HelpStatus, out PetStatus status);
         var helpStatus = HelpStatus.Create(status).Value;
 

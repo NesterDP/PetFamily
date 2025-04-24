@@ -12,17 +12,17 @@ public record HelpStatus
     public static Result<HelpStatus, Error> Create(PetStatus helpStatus)
     {
         var validHelpStatus = new HelpStatus(helpStatus);
-        
+
         return validHelpStatus;
     }
-    
+
     public static Result<HelpStatus, Error> Create(string helpStatus)
     {
         bool result = Enum.TryParse(helpStatus, out PetStatus myStatus);
 
         if (!result)
-           return  Errors.General.ValueIsInvalid("helpStatus");
-        
+            return Errors.General.ValueIsInvalid("helpStatus");
+
         return new HelpStatus(myStatus);
     }
 }

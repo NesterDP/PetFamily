@@ -11,14 +11,15 @@ public static class DapperExtensions
         string? sortBy,
         string? sortDirection)
     {
-        string? sortingParameter = sortBy?.ToLower() ?? "id";
-        string? sortingDirection = sortDirection?.ToUpper() ?? "DESC";
+        string sortingParameter = sortBy?.ToLower() ?? "id";
+        string sortingDirection = sortDirection?.ToUpper() ?? "DESC";
         sqlBuilder.Append($"\nORDER BY {sortingParameter} {sortingDirection}");
-        //parameters.Add("@orderBy", orderBy?.ToLower() ?? "id");
-        //parameters.Add("@SortDirection", sortDirection?.ToUpper() ?? "DESC");
-        //sqlBuilder.Append("ORDER BY name DESC");
-        //sqlBuilder.Append(" ORDER BY @sortBy ");
-        //sqlBuilder.Append("@SortDirection");
+
+        // parameters.Add("@orderBy", orderBy?.ToLower() ?? "id");
+        // parameters.Add("@SortDirection", sortDirection?.ToUpper() ?? "DESC");
+        // sqlBuilder.Append("ORDER BY name DESC");
+        // sqlBuilder.Append(" ORDER BY @sortBy ");
+        // sqlBuilder.Append("@SortDirection");
     }
 
     public static void ApplyPagination(

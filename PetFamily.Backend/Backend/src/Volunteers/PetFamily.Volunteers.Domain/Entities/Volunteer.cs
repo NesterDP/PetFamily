@@ -10,14 +10,18 @@ namespace PetFamily.Volunteers.Domain.Entities;
 
 public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
-    public FullName FullName { get; private set; }
-    public Email Email { get; private set; }
-    public Description Description { get; private set; }
-    public Experience Experience { get; private set; }
+    public FullName FullName { get; private set; } = null!;
 
-    public Phone PhoneNumber { get; private set; }
-    
+    public Email Email { get; private set; } = null!;
+
+    public Description Description { get; private set; } = null!;
+
+    public Experience Experience { get; private set; } = null!;
+
+    public Phone PhoneNumber { get; private set; } = null!;
+
     private readonly List<Pet> _pets = [];
+
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
     public int PetsFoundHome() => AllOwnedPets
@@ -29,24 +33,27 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
     public int PetsUnderMedicalTreatment() => AllOwnedPets
         .Count(p => p.HelpStatus.Value == PetStatus.UnderMedicalTreatment);
 
-    // ef core
-    private Volunteer(VolunteerId id) : base(id)
-    {
-    }
-
     public Volunteer(
         VolunteerId id,
         FullName fullName,
         Email email,
         Description description,
         Experience experience,
-        Phone phoneNumber) : base(id)
+        Phone phoneNumber)
+        : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
+    }
+
+    // ef core
+    // ReSharper disable once UnusedMember.Local
+    private Volunteer(VolunteerId id)
+        : base(id)
+    {
     }
 
     public static Result<Volunteer, Error> Create(
@@ -79,7 +86,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         Experience = experience;
         PhoneNumber = phoneNumber;
     }
-    
+
     public void UpdatePetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var chosenPet = _pets.FirstOrDefault(p => p.Id.Value == petId.Value);
@@ -96,7 +103,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         var photo = chosenPet.PhotosList.FirstOrDefault(p => p.Id == id);
         if (photo == null)
             return Errors.General.ValueNotFound();
-        
+
         chosenPet.UpdateMainPhoto(photo);
         return UnitResult.Success<Error>();
     }
@@ -150,7 +157,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
 
         return UnitResult.Success<Error>();
     }
-    
+
     public Result<Pet, Error> GetPetById(PetId id)
     {
         var pet = _pets.FirstOrDefault(p => p.Id.Value == id.Value);
@@ -170,7 +177,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         _pets.Add(pet);
         return Result.Success<Error>();
     }
-    
+
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
         var currentPosition = pet.Position;
@@ -193,50 +200,6 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         return Result.Success<Error>();
     }
 
-    private UnitResult<Error> AdjustPositionWithinBorders(Position newPosition, Position currentPosition)
-    {
-        if (newPosition.Value < currentPosition.Value)
-        {
-            var petsToMove = _pets.Where(p => p.Position.Value >= newPosition.Value
-                                              && p.Position.Value < currentPosition.Value);
-
-            foreach (var petToMove in petsToMove)
-            {
-                var result = petToMove.MoveForward();
-                if (result.IsFailure)
-                    return result.Error;
-            }
-        }
-
-        else if (newPosition.Value > currentPosition.Value)
-        {
-            var petsToMove = _pets.Where(p => p.Position.Value > currentPosition.Value
-                                              && p.Position.Value <= newPosition.Value);
-
-            foreach (var petToMove in petsToMove)
-            {
-                var result = petToMove.MoveBackward();
-                if (result.IsFailure)
-                    return result.Error;
-            }
-        }
-
-        return Result.Success<Error>();
-    }
-
-    private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
-    {
-        if (newPosition.Value <= _pets.Count)
-            return newPosition;
-
-
-        var lastPosition = Position.Create(_pets.Count);
-        if (lastPosition.IsFailure)
-            return lastPosition.Error;
-
-        return lastPosition.Value;
-    }
-    
     public override void Delete()
     {
         base.Delete();
@@ -262,8 +225,22 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         _pets.Remove(pet);
         foreach (var p in _pets.Where(p => p.Position.Value > pet.Position.Value))
         {
-            var newPosition = (Position.Create(p.Position.Value - 1).Value);
+            var newPosition = Position.Create(p.Position.Value - 1).Value;
             p.SetPosition(newPosition);
+        }
+    }
+
+    public void DeleteExpiredPets(int lifetimeAfterDeletion)
+    {
+        var petsToDelete = _pets.Where(
+                pet =>
+                    pet.DeletionDate != null &&
+                    DateTime.UtcNow >= pet.DeletionDate.Value.AddDays(lifetimeAfterDeletion))
+            .ToList();
+
+        foreach (var pet in petsToDelete)
+        {
+            HardDeletePet(pet);
         }
     }
 
@@ -272,17 +249,47 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         pet.Delete();
     }
 
-    public void DeleteExpiredPets(int lifetimeAfterDeletion)
+    private UnitResult<Error> AdjustPositionWithinBorders(Position newPosition, Position currentPosition)
     {
-        var petsToDelete = _pets.Where(pet => 
-                pet.DeletionDate != null && 
-                DateTime.UtcNow >= pet.DeletionDate.Value.AddDays(lifetimeAfterDeletion))
-                //DateTime.UtcNow >= pet.DeletionDate.Value.AddMinutes(lifetimeAfterDeletion))
-            .ToList();
-
-        foreach (var pet in petsToDelete)
+        if (newPosition.Value < currentPosition.Value)
         {
-            HardDeletePet(pet);
+            var petsToMove = _pets.Where(
+                p => p.Position.Value >= newPosition.Value
+                     && p.Position.Value < currentPosition.Value);
+
+            foreach (var petToMove in petsToMove)
+            {
+                var result = petToMove.MoveForward();
+                if (result.IsFailure)
+                    return result.Error;
+            }
         }
+        else if (newPosition.Value > currentPosition.Value)
+        {
+            var petsToMove = _pets.Where(
+                p => p.Position.Value > currentPosition.Value
+                     && p.Position.Value <= newPosition.Value);
+
+            foreach (var petToMove in petsToMove)
+            {
+                var result = petToMove.MoveBackward();
+                if (result.IsFailure)
+                    return result.Error;
+            }
+        }
+
+        return Result.Success<Error>();
+    }
+
+    private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
+    {
+        if (newPosition.Value <= _pets.Count)
+            return newPosition;
+
+        var lastPosition = Position.Create(_pets.Count);
+        if (lastPosition.IsFailure)
+            return lastPosition.Error;
+
+        return lastPosition.Value;
     }
 }

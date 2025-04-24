@@ -5,7 +5,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Volunteers.Application.Queries.CheckBreedToPetExistence;
 
-
 public class CheckBreedToPetExistenceHandler : IQueryHandler<UnitResult<Error>, CheckBreedToPetExistenceQuery>
 {
     private readonly IReadDbContext _readDbContext;
@@ -19,9 +18,11 @@ public class CheckBreedToPetExistenceHandler : IQueryHandler<UnitResult<Error>, 
         CheckBreedToPetExistenceQuery query,
         CancellationToken cancellationToken)
     {
-        var isUsed = await _readDbContext.Pets.
-            FirstOrDefaultAsync(p => p.BreedId == query.BreedId, cancellationToken);
-        
+        var isUsed = await _readDbContext.Pets.FirstOrDefaultAsync(
+            p =>
+                p.BreedId == query.BreedId,
+            cancellationToken);
+
         if (isUsed != null)
             return Errors.General.Conflict($"pets with BreedId = {query.BreedId} are still in database");
 

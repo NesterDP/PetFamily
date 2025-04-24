@@ -2,10 +2,8 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
-using PetFamily.Volunteers.Application.Queries.CheckBreedToPetExistence;
 
 namespace PetFamily.Volunteers.Application.Queries.CheckSpeciesToPetExistence;
-
 
 public class CheckSpeciesToPetExistenceHandler : IQueryHandler<UnitResult<Error>, CheckSpeciesToPetExistenceQuery>
 {
@@ -20,9 +18,9 @@ public class CheckSpeciesToPetExistenceHandler : IQueryHandler<UnitResult<Error>
         CheckSpeciesToPetExistenceQuery query,
         CancellationToken cancellationToken)
     {
-        var isUsed = await _readDbContext.Pets.
-            FirstOrDefaultAsync(p => p.SpeciesId == query.SpeciesId, cancellationToken);
-        
+        var isUsed = await _readDbContext.Pets.FirstOrDefaultAsync(
+            p => p.SpeciesId == query.SpeciesId, cancellationToken);
+
         if (isUsed != null)
             return Errors.General.Conflict($"pets with SpeciesId = {query.SpeciesId} are still in database");
 

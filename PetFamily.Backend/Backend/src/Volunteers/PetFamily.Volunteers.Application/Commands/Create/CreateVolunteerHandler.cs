@@ -24,7 +24,8 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         IVolunteersRepository volunteersRepository,
         ILogger<CreateVolunteerHandler> logger,
         IValidator<CreateVolunteerCommand> validator,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
@@ -39,7 +40,7 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fullNameCreateResult = FullName.Create(
@@ -55,7 +56,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
 
         var phoneNumberCreateResult = Phone.Create(command.CreateVolunteerDto.PhoneNumber);
 
-        
         var volunteer = Volunteer.Create(
             volunteerId,
             fullNameCreateResult.Value,
@@ -67,9 +67,8 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         await _volunteersRepository.AddAsync(volunteer.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Created volunteer with ID = {id}", volunteerId.Value);
-        
+        _logger.LogInformation("Created volunteer with ID = {id}", volunteerId.Value);
+
         return volunteer.Value.Id.Value;
     }
 }

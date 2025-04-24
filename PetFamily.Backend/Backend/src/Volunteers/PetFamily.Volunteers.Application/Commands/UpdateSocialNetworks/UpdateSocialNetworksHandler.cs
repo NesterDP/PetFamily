@@ -8,7 +8,6 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdateSocialNetworks;
 
@@ -23,7 +22,8 @@ public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNet
         IVolunteersRepository volunteersRepository,
         ILogger<UpdateSocialNetworksHandler> logger,
         IValidator<UpdateSocialNetworksCommand> validator,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
@@ -38,7 +38,7 @@ public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNet
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
@@ -53,11 +53,9 @@ public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNet
         }
 
         // volunteerResult.Value.UpdateSocialNetworks(socialNetworksList);
-        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Volunteer was updated (social networks), his ID = {ID}", volunteerId.Value);
+        _logger.LogInformation("Volunteer was updated (social networks), his ID = {ID}", volunteerId.Value);
 
         return volunteerId.Value;
     }

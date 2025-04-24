@@ -24,7 +24,7 @@ public record GetFilteredPetsWithPaginationRequest(
     string? SortBy,
     string? SortDirection)
 {
-    public GetFilteredPetsWithPaginationQuery ToQuery() =>  new GetFilteredPetsWithPaginationQuery(
+    public GetFilteredPetsWithPaginationQuery ToQuery() => new(
         Page,
         PageSize,
         OwnerId,
@@ -44,8 +44,8 @@ public record GetFilteredPetsWithPaginationRequest(
         HelpStatus,
         SortBy,
         SortDirection);
-    
-    public GetFilteredPetsWithPaginationDapperQuery ToDapperQuery() =>  new GetFilteredPetsWithPaginationDapperQuery(
+
+    public GetFilteredPetsWithPaginationDapperQuery ToDapperQuery() => new(
         Page,
         PageSize,
         OwnerId,

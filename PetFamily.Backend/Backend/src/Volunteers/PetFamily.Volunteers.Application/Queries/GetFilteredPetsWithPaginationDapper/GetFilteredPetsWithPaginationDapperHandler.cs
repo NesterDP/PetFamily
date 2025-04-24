@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using Dapper;
-using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
@@ -14,14 +13,10 @@ public class GetFilteredPetsWithPaginationDapperHandler : IQueryHandler<
     GetFilteredPetsWithPaginationDapperQuery>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
-    private readonly ILogger<GetFilteredPetsWithPaginationDapperHandler> _logger;
 
-    public GetFilteredPetsWithPaginationDapperHandler(
-        ISqlConnectionFactory sqlConnectionFactory,
-        ILogger<GetFilteredPetsWithPaginationDapperHandler> logger)
+    public GetFilteredPetsWithPaginationDapperHandler(ISqlConnectionFactory sqlConnectionFactory)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
-        _logger = logger;
     }
 
     public async Task<PagedList<PetDto>> HandleAsync(
@@ -38,11 +33,11 @@ public class GetFilteredPetsWithPaginationDapperHandler : IQueryHandler<
 
         var selector = new Selector();
 
-        sql.Append("""
-                   SELECT *
-                   FROM pets
-                   """);
-
+        sql.Append(
+            """
+            SELECT *
+            FROM pets
+            """);
 
         if (!string.IsNullOrWhiteSpace(query.Name))
         {
@@ -58,53 +53,48 @@ public class GetFilteredPetsWithPaginationDapperHandler : IQueryHandler<
 
         sql.ApplySorting(parameters, query.SortBy, query.SortDirection);
         sql.ApplyPagination(parameters, query.Page, query.PageSize);
-        //var test = sql.ToString();
 
         var result = await connection.QueryAsync<dynamic>(sql.ToString(), parameters);
 
-        var pets = result.Select(row =>
-        {
-            var pet = new PetDto
+        var pets = result.Select(
+            row =>
             {
-                Id = row.id,
-                Name = row.name,
-                OwnerId = row.volunteer_id,
-                Description = row.description,
-                SpeciesId = row.species_id,
-                BreedId = row.breed_id,
-                Color = row.color,
-                HealthInfo = row.health_info,
-                City = row.city,
-                House = row.house,
-                Apartment = row.apartment,
-                Weight = row.weight_info,
-                Height = row.height_info,
-                OwnerPhoneNumber = row.owner_phone.ToString(),
-                IsCastrated = row.is_castrated,
-                DateOfBirth = row.date_of_birth,
-                IsVaccinated = row.is_vaccinated,
-                HelpStatus = row.help_status.ToString(),
-                CreationDate = row.creation_date,
-                Position = row.position,
-                TransferDetails = JsonSerializer.Deserialize<TransferDetailDto[]>(row.transfer_details),
-                Photos = JsonSerializer.Deserialize<PhotoDto[]>(row.photos)
-            };
-            return pet;
-        }).ToList();
+                var pet = new PetDto
+                {
+                    Id = row.id,
+                    Name = row.name,
+                    OwnerId = row.volunteer_id,
+                    Description = row.description,
+                    SpeciesId = row.species_id,
+                    BreedId = row.breed_id,
+                    Color = row.color,
+                    HealthInfo = row.health_info,
+                    City = row.city,
+                    House = row.house,
+                    Apartment = row.apartment,
+                    Weight = row.weight_info,
+                    Height = row.height_info,
+                    OwnerPhoneNumber = row.owner_phone.ToString(),
+                    IsCastrated = row.is_castrated,
+                    DateOfBirth = row.date_of_birth,
+                    IsVaccinated = row.is_vaccinated,
+                    HelpStatus = row.help_status.ToString(),
+                    CreationDate = row.creation_date,
+                    Position = row.position,
+                    TransferDetails = JsonSerializer.Deserialize<TransferDetailDto[]>(row.transfer_details),
+                    Photos = JsonSerializer.Deserialize<PhotoDto[]>(row.photos)
+                };
+                return pet;
+            }).ToList();
 
         foreach (var pet in pets)
         {
             pet.Photos = pet.Photos.OrderByDescending(p => p.Main).ToArray();
         }
-        
-        // TODO: здесь должен быть вызов FileService, который создаст URL для всех фото питомца
 
         return new PagedList<PetDto>()
         {
-            Items = pets.ToList(),
-            PageSize = query.PageSize,
-            TotalCount = totalCount,
-            Page = query.PageSize
+            Items = pets.ToList(), PageSize = query.PageSize, TotalCount = totalCount, Page = query.PageSize
         };
     }
 }

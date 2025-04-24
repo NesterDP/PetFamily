@@ -25,7 +25,8 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
         ILogger<HardDeleteVolunteerHandler> logger,
         IValidator<DeleteVolunteerCommand> validator,
         IFileService fileService,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
@@ -41,7 +42,7 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-        
+
         var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
@@ -51,15 +52,15 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
         foreach (var pet in volunteerResult.Value.AllOwnedPets)
         {
             var request = new DeleteFilesByIdsRequest(pet.PhotosList.Select(p => p.Id.Value).ToList());
-        
+
             var deleteResult = await _fileService.DeleteFilesByIds(request, cancellationToken);
             if (deleteResult.IsFailure)
                 return Errors.General.Failure(deleteResult.Error).ToErrorList();
         }
-        
+
         _volunteersRepository.Delete(volunteerResult.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Volunteer was hard deleted, his ID = {ID}", volunteerId.Value);
 
         return volunteerId.Value;

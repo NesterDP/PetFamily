@@ -11,7 +11,6 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Contracts;
 using PetFamily.Species.Contracts.Requests;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
 
@@ -27,7 +26,8 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
         IValidator<UpdatePetInfoCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetInfoHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork,
         IBreedToSpeciesExistenceContract contract)
     {
         _validator = validator;
@@ -44,7 +44,6 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-
 
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
@@ -116,7 +115,6 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
 
         return command.PetId;
     }
-
 
     private async Task<Result<PetClassification, Error>> GetPetClassification(
         Guid clientSpeciesId,

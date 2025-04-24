@@ -1,6 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Species.Contracts;
-using PetFamily.Volunteers.Application.Queries.CheckBreedToPetExistence;
 using PetFamily.Volunteers.Contracts;
 using PetFamily.Volunteers.Presentation.Contracts;
 

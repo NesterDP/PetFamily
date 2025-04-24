@@ -4,7 +4,6 @@ using PetFamily.Framework.Authorization;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.ChangePetPosition;
 using PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
-using PetFamily.Volunteers.Application.Commands.Create;
 using PetFamily.Volunteers.Application.Commands.Delete;
 using PetFamily.Volunteers.Application.Commands.DeletePet;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
@@ -18,7 +17,6 @@ using PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 using PetFamily.Volunteers.Presentation.Volunteers.Requests;
 
 namespace PetFamily.Volunteers.Presentation.Volunteers;
-
 
 public class VolunteersController : ApplicationController
 {
@@ -40,10 +38,10 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-    
+
     [Permission("volunteers.GetVolunteerById")]
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Guid>>  GetById(
+    public async Task<ActionResult<Guid>> GetById(
         [FromRoute] Guid id,
         [FromServices] GetVolunteerByIdHandler handler,
         CancellationToken cancellationToken)
@@ -52,7 +50,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-    
+
     [Permission("volunteers.AddPet")]
     [HttpPost("pet")]
     public async Task<ActionResult<Guid>> AddPet(
@@ -77,7 +75,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.CompleteUploadPhotosToPet")]
     [HttpPost("pet/{petId:guid}/photos-complete")]
     public async Task<ActionResult<Guid>> CompleteUploadPhotosToPet(
@@ -128,7 +126,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }*/
-    
+
     [Permission("volunteers.ChangePetPosition")]
     [HttpPut("pet/{petId:guid}/position")]
     public async Task<ActionResult<Guid>> ChangePetPosition(
@@ -141,7 +139,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.UpdatePetInfo")]
     [HttpPut("pet/{petId:guid}/info")]
     public async Task<ActionResult<Guid>> PetInfo(
@@ -154,7 +152,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.UpdatePetStatus")]
     [HttpPut("pet/{petId:guid}/help-status")]
     public async Task<ActionResult<Guid>> PetHelpStatus(
@@ -167,7 +165,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.UpdatePetMainPhoto")]
     [HttpPut("pet/{petId:guid}/main-photo")]
     public async Task<ActionResult<Guid>> MainPhoto(
@@ -192,7 +190,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.Delete")]
     [HttpDelete("{id:guid}/soft")]
     public async Task<ActionResult<Guid>> DeleteVolunteerSoft(
@@ -204,8 +202,8 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Permission( "volunteers.DeletePetPhotos")]
+
+    [Permission("volunteers.DeletePetPhotos")]
     [HttpDelete("pet/{petId:guid}/photos")]
     public async Task<ActionResult<Guid>> DeletePetPhotos(
         [FromRoute] Guid petId,
@@ -217,7 +215,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.DeletePet")]
     [HttpDelete("pet/{petId:guid}/soft")]
     public async Task<ActionResult<Guid>> Delete(
@@ -229,7 +227,7 @@ public class VolunteersController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.DeletePet")]
     [HttpDelete("pet/{petId:guid}/hard")]
     public async Task<ActionResult<Guid>> Delete(

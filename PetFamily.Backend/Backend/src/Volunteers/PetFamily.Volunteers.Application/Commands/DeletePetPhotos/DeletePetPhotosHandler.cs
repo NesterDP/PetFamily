@@ -43,7 +43,6 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
@@ -62,10 +61,11 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, updateList);
 
         // межпроцессное взаимодействие, удаление из данных из Mongo и S3 хранилища
-        var result = await _fileService.DeleteFilesByIds(new DeleteFilesByIdsRequest(command.PhotosIds), cancellationToken);
+        var result = await _fileService.DeleteFilesByIds(
+            new DeleteFilesByIdsRequest(command.PhotosIds), cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();
-        
+
         // сохранение изменений в БД модуля
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

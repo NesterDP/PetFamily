@@ -8,7 +8,6 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Application.Commands.ChangePetPosition;
 
@@ -23,7 +22,8 @@ public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionC
         IValidator<ChangePetPositionCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<ChangePetPositionHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
@@ -57,8 +57,11 @@ public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionC
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("volunteer with Id = {ID} moved pet with ID = {PID} to position = {P}",
-            volunteerId.Value, petId.Value, position.Value);
+        _logger.LogInformation(
+            "volunteer with Id = {ID} moved pet with ID = {PID} to position = {P}",
+            volunteerId.Value,
+            petId.Value,
+            position.Value);
 
         return petId.Value;
     }

@@ -15,7 +15,7 @@ public record Weight
             return Errors.General.ValueIsInvalid("weight");
 
         var validWeight = new Weight(weight);
-        
+
         return validWeight;
     }
 }

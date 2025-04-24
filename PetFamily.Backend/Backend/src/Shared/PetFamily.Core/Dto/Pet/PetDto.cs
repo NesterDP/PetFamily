@@ -43,7 +43,7 @@ public class PetDto
 
     public TransferDetailDto[] TransferDetails { get; init; } = [];
 
-    public PhotoDto[] Photos { get; init; } = [];
+    public PhotoDto[] Photos { get; set; } = [];
 
     public DateTime CreationDate { get; init; }
 

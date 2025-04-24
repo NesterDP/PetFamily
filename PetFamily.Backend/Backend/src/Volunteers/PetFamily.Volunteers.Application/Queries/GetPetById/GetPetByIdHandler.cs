@@ -18,7 +18,7 @@ public class GetPetByIdHandler : IQueryHandler<Result<PetDto, ErrorList>, GetPet
         _readDbContext = readDbContext;
         _fileService = fileService;
     }
-    
+
     public async Task<Result<PetDto, ErrorList>> HandleAsync(
         GetPetByIdQuery query,
         CancellationToken cancellationToken)
@@ -28,9 +28,9 @@ public class GetPetByIdHandler : IQueryHandler<Result<PetDto, ErrorList>, GetPet
 
         if (result is null)
             return Errors.General.ValueNotFound(query.Id).ToErrorList();
-       
+
         result.Photos = result.Photos.OrderByDescending(p => p.Main).ToArray();
-        
+
         var request = new GetFilesPresignedUrlsRequest(result.Photos.Select(p => p.Id).ToList());
         var photosData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
         if (photosData.IsFailure)
@@ -38,7 +38,7 @@ public class GetPetByIdHandler : IQueryHandler<Result<PetDto, ErrorList>, GetPet
 
         foreach (var photoDto in result.Photos)
             photoDto.Url = photosData.Value.FilesInfos.FirstOrDefault(d => d.Id == photoDto.Id)!.Url;
-        
+
         return result;
     }
 }

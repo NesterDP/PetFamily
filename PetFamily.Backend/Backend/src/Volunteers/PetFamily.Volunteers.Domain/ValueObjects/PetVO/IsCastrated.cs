@@ -12,7 +12,7 @@ public record IsCastrated
     public static Result<IsCastrated, Error> Create(bool isCastrated)
     {
         var validIsCastrated = new IsCastrated(isCastrated);
-        
+
         return validIsCastrated;
     }
 }

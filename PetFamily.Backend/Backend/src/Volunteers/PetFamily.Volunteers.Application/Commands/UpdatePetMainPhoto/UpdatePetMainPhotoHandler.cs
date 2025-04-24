@@ -21,7 +21,8 @@ public class UpdatePetMainPhotoHandler : ICommandHandler<Guid, UpdatePetMainPhot
         IValidator<UpdatePetMainPhotoCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetMainPhotoHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
@@ -37,7 +38,6 @@ public class UpdatePetMainPhotoHandler : ICommandHandler<Guid, UpdatePetMainPhot
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
@@ -46,7 +46,7 @@ public class UpdatePetMainPhotoHandler : ICommandHandler<Guid, UpdatePetMainPhot
         var updateResult = volunteerResult.Value.UpdatePetMainPhoto(command.PetId, command.MainPhotoId);
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Successfully updated main photo of pet with ID = {ID}", command.PetId);

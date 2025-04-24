@@ -1,4 +1,3 @@
-using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
 using PetFamily.Volunteers.Application.Commands.Create;
 

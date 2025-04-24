@@ -26,23 +26,23 @@ public class DeleteExpiredEntitiesBackgroundService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("DeleteExpiredEntitiesBackgroundService is starting to work");
-        
+
         while (!cancellationToken.IsCancellationRequested)
         {
             await using var scope = _scopeFactory.CreateAsyncScope();
-            
+
             var deleteExpiredEntitiesService = scope.ServiceProvider
                 .GetRequiredService<DeleteExpiredEntitiesService>();
-            
+
             _logger.LogInformation("DeleteExpiredEntitiesBackgroundService is deleting expired entities");
-            
+
             await deleteExpiredEntitiesService.Process(_options.EntityExpiredDaysTime, cancellationToken);
-            
+
             await Task.Delay(TimeSpan.FromHours(_options.WorkHoursInterval), cancellationToken);
-            
-            //await Task.Delay(TimeSpan.FromMinutes(_options.WorkHoursInterval), cancellationToken);
+
+            // await Task.Delay(TimeSpan.FromMinutes(_options.WorkHoursInterval), cancellationToken);
         }
-        
+
         _logger.LogInformation("DeleteExpiredEntitiesBackgroundService is stopping to work");
     }
 }

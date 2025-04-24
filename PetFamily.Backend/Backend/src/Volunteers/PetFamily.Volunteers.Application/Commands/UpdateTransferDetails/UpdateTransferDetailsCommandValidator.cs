@@ -13,4 +13,4 @@ public class UpdateTransferDetailsCommandValidator : AbstractValidator<UpdateTra
         RuleForEach(r => r.TransferDetailDtos)
             .MustBeValueObject(t => TransferDetail.Create(t.Name, t.Description));
     }
-} 
+}

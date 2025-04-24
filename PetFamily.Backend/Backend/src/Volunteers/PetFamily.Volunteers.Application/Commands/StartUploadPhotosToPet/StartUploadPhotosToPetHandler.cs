@@ -12,7 +12,8 @@ using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 
-public class StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploadResponse, StartUploadPhotosToPetCommand>
+public class
+    StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploadResponse, StartUploadPhotosToPetCommand>
 {
     private readonly IValidator<StartUploadPhotosToPetCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
@@ -39,7 +40,6 @@ public class StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploa
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetByIdAsync(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
@@ -49,14 +49,14 @@ public class StartUploadPhotosToPetHandler : ICommandHandler<StartMultipartUploa
         var pet = volunteerResult.Value.GetPetById(petId);
         if (pet.IsFailure)
             return pet.Error.ToErrorList();
-        
+
         // межсерверное взаимодействие, получение ссылок на загрузку в S3 хранилище
         var clientInfos = command.FileInfos
             .Select(f => new MultipartStartClientInfo(f.FileName, f.ContentType))
             .ToList();
-        
+
         var request = new StartMultipartUploadRequest(clientInfos);
-        
+
         var result = await _fileService.StartMultipartUpload(request, cancellationToken);
         if (result.IsFailure)
             return Errors.General.Failure(result.Error).ToErrorList();

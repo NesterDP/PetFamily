@@ -6,14 +6,15 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.Volunteers.Infrastructure.Services;
 
-public class DeleteExpiredEntitiesService 
+public class DeleteExpiredEntitiesService
 {
     private readonly WriteDbContext _dbContext;
     private readonly IUnitOfWork _unitOfWork;
 
     public DeleteExpiredEntitiesService(
         WriteDbContext dbContext,
-        [FromKeyedServices(UnitOfWorkSelector.Volunteers)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
+        IUnitOfWork unitOfWork)
     {
         _dbContext = dbContext;
         _unitOfWork = unitOfWork;
@@ -27,15 +28,14 @@ public class DeleteExpiredEntitiesService
         {
             if (volunteer.DeletionDate != null &&
                 DateTime.UtcNow >= volunteer.DeletionDate.Value.AddDays(lifetimeAfterDeletion))
-                //DateTime.UtcNow >= volunteer.DeletionDate.Value.AddMinutes(lifetimeAfterDeletion))
             {
                 _dbContext.Volunteers.Remove(volunteer);
                 continue;
             }
-            
+
             volunteer.DeleteExpiredPets(lifetimeAfterDeletion);
         }
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

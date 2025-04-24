@@ -21,8 +21,8 @@ public class PetsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Permission( "volunteers.GetPetById")]
+
+    [Permission("volunteers.GetPetById")]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,
@@ -33,7 +33,7 @@ public class PetsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("volunteers.GetFilteredPetsWithPaginationDapper")]
     [HttpGet("/dapper")]
     public async Task<ActionResult> GetAllPetsDapper(
