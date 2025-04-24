@@ -9,15 +9,13 @@ public class AdminId : ValueObject, IComparable<AdminId>
     private AdminId(Guid value) => Value = value;
 
     public static AdminId NewAdminId() => new(Guid.NewGuid());
+
     public static AdminId EmptyAdminId => new(Guid.Empty);
+
     public static AdminId Create(Guid id) => new(id);
-    
-    protected override IEnumerable<IComparable> GetEqualityComponents()
-    {
-        yield return Value;
-    }
-    
+
     public static implicit operator AdminId(Guid adminId) => new (adminId);
+
     public static implicit operator Guid(AdminId adminId) => adminId.Value;
 
     public int CompareTo(AdminId? other)
@@ -25,5 +23,10 @@ public class AdminId : ValueObject, IComparable<AdminId>
         if (other == null)
             throw new Exception("AdminId cannot be null");
         return Value.CompareTo(other.Value);
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

@@ -8,22 +8,26 @@ namespace PetFamily.Framework;
 public class UserScopedData
 {
     public Guid UserId { get; private set; }
+
     public List<string> Roles { get; } = [];
 
     public void LoadFromClaims(IEnumerable<Claim> claims)
     {
-        var claimId = claims.FirstOrDefault(c => c.Type == CustomClaims.Id);
-        
+        // ReSharper disable once PossibleMultipleEnumeration
+        var claimId = claims.FirstOrDefault(c => c.Type == CustomClaims.ID);
+
         if (claimId != null && Guid.TryParse(claimId.Value, out var userId))
             UserId = userId;
         else
             UserId = Guid.Empty;
-        
-        Roles.AddRange(claims
-            .Where(c => c.Type == CustomClaims.Role)
+
+        // ReSharper disable once PossibleMultipleEnumeration
+        Roles.AddRange(
+            claims
+            .Where(c => c.Type == CustomClaims.ROLE)
             .Select(c => c.Value));
     }
-    
+
     public UnitResult<Error> ConfirmRoleExlusivity(string roleName)
     {
         if (Roles.Any(r => r == roleName) && Roles.Count == 1)

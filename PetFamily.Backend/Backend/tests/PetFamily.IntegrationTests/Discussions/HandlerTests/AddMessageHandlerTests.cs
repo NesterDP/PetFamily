@@ -21,8 +21,8 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_success_should_add_message_to_discussion_without_messages()
     {
         // arrange
-        var USER_COUNT = 2;
-        var MESSAGE_TEXT = "Test text";
+        int USER_COUNT = 2;
+        string? MESSAGE_TEXT = "Test text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
 
         var command = new AddMessageCommand(discussion.RelationId, discussion.UserIds[0], MESSAGE_TEXT);
@@ -42,9 +42,9 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_success_should_add_message_to_discussion_that_already_have_messages()
     {
         // arrange
-        var USER_COUNT = 2;
-        var MESSAGE_TEXT1 = "Test text2";
-        var MESSAGE_TEXT2 = "Test text2";
+        int USER_COUNT = 2;
+        string? MESSAGE_TEXT1 = "Test text2";
+        string? MESSAGE_TEXT2 = "Test text2";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message1 = DataGenerator.CreateMessage(discussion.UserIds[0], MESSAGE_TEXT1);
         discussion.Messages.Add(message1);
@@ -68,8 +68,8 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_failure_should_not_add_message_because_sender_is_not_a_member_of_discssuion()
     {
         // arrange
-        var USER_COUNT = 2;
-        var MESSAGE_TEXT = "Test text";
+        int USER_COUNT = 2;
+        string? MESSAGE_TEXT = "Test text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
 
         var command = new AddMessageCommand(discussion.RelationId, Guid.NewGuid(), MESSAGE_TEXT);

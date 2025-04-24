@@ -18,8 +18,8 @@ public static class TestFeature
         EmailService emailService)
     {
         var fullNameDto = new FullNameDto("TestFirstName", "TestLastName", "TestSurname");
-        var userId = "f82894ed-cef5-4026-9cd5-9094c6610ce5";
-        var token = "testToken";
+        string? userId = "f82894ed-cef5-4026-9cd5-9094c6610ce5";
+        string? token = "testToken";
         
         var userInfo = new UserInfoDto()
         {

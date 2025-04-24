@@ -32,7 +32,7 @@ public class GetFilteredPetsWithPaginationDapperHandler : IQueryHandler<
 
         var parameters = new DynamicParameters();
 
-        var totalCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM pets");
+        int totalCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM pets");
 
         var sql = new StringBuilder();
 

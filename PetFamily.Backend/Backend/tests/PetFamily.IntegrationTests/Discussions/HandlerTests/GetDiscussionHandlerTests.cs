@@ -24,10 +24,10 @@ public class GetDiscussionHandlerTests : DiscussionsTestsBase
     public async Task GetDiscussion_success_should_return_discussion_with_all_its_messages()
     {
         // arrange
-        var USER_COUNT = 2;
-        var TEXT_1 = "First test message";
-        var TEXT_2 = "Second test message";
-        var TEXT_3 = "Third test message";
+        int USER_COUNT = 2;
+        string? TEXT_1 = "First test message";
+        string? TEXT_2 = "Second test message";
+        string? TEXT_3 = "Third test message";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message1 = DataGenerator.CreateMessage(discussion.UserIds[0], TEXT_1);
         var message2 = DataGenerator.CreateMessage(discussion.UserIds[1], TEXT_2);

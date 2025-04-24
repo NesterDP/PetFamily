@@ -2,12 +2,19 @@ namespace PetFamily.Core.Dto.VolunteerRequest;
 
 public class VolunteerRequestDto
 {
-    public Guid Id { get; set; }
-    public Guid? AdminId { get; set; }
-    public Guid UserId { get; set; }
-    public string VolunteerInfo { get; set; }
-    public string Status { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? RevisionComment { get; set; }
-    public DateTime? RejectedAt { get; set; }
+    public Guid Id { get; init; }
+
+    public Guid? AdminId { get; init; }
+
+    public Guid UserId { get; init; }
+
+    public string VolunteerInfo { get; init; } = null!;
+
+    public string Status { get; init; } = null!;
+
+    public DateTime CreatedAt { get; init; }
+
+    public string? RevisionComment { get; init; }
+
+    public DateTime? RejectedAt { get; init; }
 }

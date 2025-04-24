@@ -22,10 +22,10 @@ public class RegisterUserHandlerTests : AccountsTestsBase
     public async Task RegisterUser_success_should_return_success_message_string()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
-        var SUCCESS_MESSAGE = "Successfully registered";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
+        string? SUCCESS_MESSAGE = "Successfully registered";
         var command = new RegisterUserCommand(EMAIL, USERNAME, PASSWORD);
         
         // act
@@ -46,10 +46,10 @@ public class RegisterUserHandlerTests : AccountsTestsBase
     public async Task RegisterUser_failure_should_return_failure_because_user_with_such_email_already_exists()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
-        var SUCCESS_MESSAGE = "Successfully registered";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
+        string? SUCCESS_MESSAGE = "Successfully registered";
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
         var command = new RegisterUserCommand(EMAIL, USERNAME, PASSWORD);
@@ -64,10 +64,10 @@ public class RegisterUserHandlerTests : AccountsTestsBase
     public async Task RegisterUser_failure_should_return_failure_because_of_incorrect_email()
     {
         // arrange
-        var EMAIL = "testmail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
-        var SUCCESS_MESSAGE = "Successfully registered";
+        string? EMAIL = "testmail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
+        string? SUCCESS_MESSAGE = "Successfully registered";
         var command = new RegisterUserCommand(EMAIL, USERNAME, PASSWORD);
         
         // act

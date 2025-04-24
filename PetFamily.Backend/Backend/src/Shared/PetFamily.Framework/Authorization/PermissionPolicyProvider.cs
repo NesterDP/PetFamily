@@ -8,7 +8,7 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {
         if (string.IsNullOrEmpty(policyName))
             return Task.FromResult<AuthorizationPolicy?>(null);
-        
+
         var policy = new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .AddRequirements(new PermissionAttribute(policyName))
@@ -19,7 +19,8 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
 
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
     {
-        return Task.FromResult(new AuthorizationPolicyBuilder()
+        return Task.FromResult(
+            new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .Build());
     }

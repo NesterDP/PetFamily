@@ -8,8 +8,8 @@ public class Selector
 
     public string Select(string filter)
     {
-        var head = " " + (counter == 0 ? WHERE : AND) +"(";
-        var body = filter + ")";
+        string? head = " " + (counter == 0 ? WHERE : AND) +"(";
+        string? body = filter + ")";
         counter++;
         return head + body;
     }

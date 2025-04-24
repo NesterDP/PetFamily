@@ -17,9 +17,9 @@ public static class TokenValidationParametersFactory
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
         };
-    
+
     public static TokenValidationParameters CreateWithoutLifeTime(JwtOptions jwtOptions) =>
         new()
         {
@@ -31,6 +31,6 @@ public static class TokenValidationParametersFactory
             ValidateAudience = true,
             ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
         };
 }

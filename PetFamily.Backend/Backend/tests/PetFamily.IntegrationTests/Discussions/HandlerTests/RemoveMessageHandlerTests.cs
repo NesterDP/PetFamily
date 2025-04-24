@@ -21,7 +21,7 @@ public class RemoveMessageHandlerTests : DiscussionsTestsBase
     public async Task RemoveMessage_success_should_remove_message()
     {
         // arrange
-        var USER_COUNT = 2;
+        int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message1 = DataGenerator.CreateMessage(discussion.UserIds[0]);
         var message2 = DataGenerator.CreateMessage(discussion.UserIds[0]);
@@ -48,7 +48,7 @@ public class RemoveMessageHandlerTests : DiscussionsTestsBase
     public async Task RemoveMessage_failure_should_return_error_because_deleter_is_not_creator_of_message()
     {
         // arrange
-        var USER_COUNT = 2;
+        int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message1 = DataGenerator.CreateMessage(discussion.UserIds[0]);
         var message2 = DataGenerator.CreateMessage(discussion.UserIds[0]);

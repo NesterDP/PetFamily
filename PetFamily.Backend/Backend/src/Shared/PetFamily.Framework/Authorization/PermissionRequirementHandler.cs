@@ -9,6 +9,7 @@ namespace PetFamily.Framework.Authorization;
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
     private readonly IServiceScopeFactory _scopeFactory;
+
     public PermissionRequirementHandler(
         IServiceScopeFactory scopeFactory)
     {
@@ -21,16 +22,16 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
     {
         using var scope = _scopeFactory.CreateScope();
         var contract = scope.ServiceProvider.GetRequiredService<IGetUserPermissionCodesContract>();
-        
-        var userIdString = context.User.Claims
-            .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
+
+        string? userIdString = context.User.Claims
+            .FirstOrDefault(claim => claim.Type == CustomClaims.ID)?.Value;
 
         if (!Guid.TryParse(userIdString, out var userId))
         {
             context.Fail();
             return;
         }
-        
+
         var request = new GetUserPermissionCodesRequest(userId);
         var permissionCodes = await contract.GetUserPermissionCodes(request);
 

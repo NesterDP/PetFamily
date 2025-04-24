@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 
 public static class ReadOnlyListToJsonConverter
-{ 
+{
     public static PropertyBuilder<IReadOnlyList<TValueObject>> CustomJsonCollectionConverter<TValueObject, TDto>(
         this PropertyBuilder<IReadOnlyList<TValueObject>> builder,
         Func<TValueObject, TDto> toDtoSelector,
@@ -24,7 +24,7 @@ public static class ReadOnlyListToJsonConverter
         Func<TValueObject, TDto> selector)
     {
         var dtos = valueObjects.Select(selector);
-        
+
         return JsonSerializer.Serialize(dtos, JsonSerializerOptions.Default);
     }
 
@@ -35,7 +35,7 @@ public static class ReadOnlyListToJsonConverter
 
         return dtos.Select(selector).ToList();
     }
-    
+
     private static ValueComparer<IReadOnlyList<T>> CreateCollectionValueComparer<T>()
     {
         return new ValueComparer<IReadOnlyList<T>>(
@@ -43,5 +43,4 @@ public static class ReadOnlyListToJsonConverter
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
             c => c.ToList());
     }
-    
-}   
+}

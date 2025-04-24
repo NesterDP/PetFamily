@@ -2,5 +2,5 @@ namespace NotificationService.Core.Structs;
 
 public enum UnitOfWorkSelector
 {
-    UsersNotificationSettings = 0
+    UsersNotificationSettings = 0,
 }

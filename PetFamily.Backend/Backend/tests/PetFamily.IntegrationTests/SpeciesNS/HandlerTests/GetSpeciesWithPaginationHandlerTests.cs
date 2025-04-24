@@ -20,9 +20,9 @@ public class GetSpeciesWithPaginationHandlerTests : SpeciesTestsBase
     public async Task GetSpeciesWithPagination_returns_all_species()
     {
         // arrange
-        var SPECIES_COUNT = 3;
-        var PAGE = 1;
-        var PAGE_SIZE = 10;
+        int SPECIES_COUNT = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 10;
         var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var species3 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -39,9 +39,9 @@ public class GetSpeciesWithPaginationHandlerTests : SpeciesTestsBase
     public async Task GetSpeciesWithPagination_returns_empty_items_list_if_there_are_no_species()
     {
         // arrange
-        var SPECIES_COUNT = 3;
-        var PAGE = 1;
-        var PAGE_SIZE = 10;
+        int SPECIES_COUNT = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 10;
         
         var query = new GetSpeciesWithPaginationQuery(PAGE, PAGE_SIZE);
         // act

@@ -4,7 +4,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.SharedKernel.ValueObjects;
 
-
 public record Name
 {
     public string Value { get; }
@@ -17,7 +16,7 @@ public record Name
             return Errors.General.ValueIsInvalid("name");
 
         var validName = new Name(name);
-        
+
         return validName;
     }
 }

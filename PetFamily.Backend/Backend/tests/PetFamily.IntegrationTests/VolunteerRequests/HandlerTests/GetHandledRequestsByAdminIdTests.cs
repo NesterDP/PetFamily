@@ -24,8 +24,8 @@ public class GetHandledRequestsByAdminIdTests : VolunteerRequestsTestsBase
     public async Task GetHandledRequestsByAdminId_should_return_1_request_because_of_default_filtration()
     {
         // arrange
-        var PAGE = 1;
-        var PAGE_SIZE = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 3;
         
         var adminId1 = Guid.NewGuid();
         var adminId2 = Guid.NewGuid();
@@ -59,8 +59,8 @@ public class GetHandledRequestsByAdminIdTests : VolunteerRequestsTestsBase
     public async Task GetHandledRequestsByAdminId_should_return_only_2_requests_because_of_filtration()
     {
         // arrange
-        var PAGE = 1;
-        var PAGE_SIZE = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 3;
         
         var adminId1 = Guid.NewGuid();
         var adminId2 = Guid.NewGuid();

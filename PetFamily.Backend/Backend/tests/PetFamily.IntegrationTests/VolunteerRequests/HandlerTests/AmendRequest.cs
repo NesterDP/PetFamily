@@ -23,8 +23,8 @@ public class AmendRequest : VolunteerRequestsTestsBase
     public async Task AmendRequest_success_should_set_request_status_to_submitted_and_change_request_info()
     {
         // arrange
-        var REVISION_TEXT = "REVISION TEXT";
-        var UPDATED_INFO = "UPDATED INFO";
+        string? REVISION_TEXT = "REVISION TEXT";
+        string? UPDATED_INFO = "UPDATED INFO";
         var adminId = Guid.NewGuid();
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
         

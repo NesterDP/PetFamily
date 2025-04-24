@@ -22,8 +22,8 @@ public class DeleteExpiredEntitiesServiceTests : VolunteerTestsBase
     public async Task SoftDeletePet_success_should_delete_2_pets_that_were_soft_deleted_with_expired_lifetime()
     {
         // arrange
-        var PET_COUNT = 5;
-        var DAYS_BEFORE_DELETION = 0; // should be deleted immediately
+        int PET_COUNT = 5;
+        int DAYS_BEFORE_DELETION = 0; // should be deleted immediately
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet1 = volunteer.AllOwnedPets[0];
         var pet2 = volunteer.AllOwnedPets[3];
@@ -43,9 +43,9 @@ public class DeleteExpiredEntitiesServiceTests : VolunteerTestsBase
     public async Task SoftDeletePet_success_should_delete_only_1_pet_from_2_soft_deleted_because_of_their_lifetime()
     {
         // arrange
-        var PET_COUNT = 5;
-        var DAYS_BEFORE_DELETION = 3;
-        var PRIVATE_PROPERTY_NAME = "DeletionDate";
+        int PET_COUNT = 5;
+        int DAYS_BEFORE_DELETION = 3;
+        string? PRIVATE_PROPERTY_NAME = "DeletionDate";
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet1 = volunteer.AllOwnedPets[0];
         var pet2 = volunteer.AllOwnedPets[3];
@@ -67,9 +67,9 @@ public class DeleteExpiredEntitiesServiceTests : VolunteerTestsBase
     public async Task SoftDeletePet_success_should_delete_volunteer_with_expired_lifetime_and_all_its_pets()
     {
         // arrange
-        var PET_COUNT = 3;
-        var DAYS_BEFORE_DELETION = 3;
-        var PRIVATE_PROPERTY_NAME = "DeletionDate";
+        int PET_COUNT = 3;
+        int DAYS_BEFORE_DELETION = 3;
+        string? PRIVATE_PROPERTY_NAME = "DeletionDate";
         var volunteer1 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var volunteer2 = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         volunteer1.Delete();

@@ -23,7 +23,7 @@ public class BreedToPetExistenceEventConsumer : IConsumer<BreedToPetExistenceEve
 
         var result = await _contract.BreedToPetExistence(request);
 
-        var response = DomainConstants.OK;
+        string? response = DomainConstants.OK;
         if (result.IsFailure)
             response = result.Error.Message;
 

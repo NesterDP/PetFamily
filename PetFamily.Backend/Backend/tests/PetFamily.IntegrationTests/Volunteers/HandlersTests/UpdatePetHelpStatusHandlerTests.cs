@@ -23,7 +23,7 @@ public class UpdatePetHelpStatusHandlerTests : VolunteerTestsBase
     public async Task UpdatePetHelpStatus_success_should_change_help_status_of_pet_to_UnderMedicalTreatment()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
@@ -50,7 +50,7 @@ public class UpdatePetHelpStatusHandlerTests : VolunteerTestsBase
     public async Task UpdatePetHelpStatus_success_should_change_help_status_of_pet_to_InSearchOfHome()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
@@ -79,7 +79,7 @@ public class UpdatePetHelpStatusHandlerTests : VolunteerTestsBase
     public async Task UpdatePetHelpStatus_failure_should_return_error_because_of_not_passing_validation()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);

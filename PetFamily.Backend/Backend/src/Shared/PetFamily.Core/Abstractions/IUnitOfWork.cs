@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace PetFamily.Core.Abstractions;

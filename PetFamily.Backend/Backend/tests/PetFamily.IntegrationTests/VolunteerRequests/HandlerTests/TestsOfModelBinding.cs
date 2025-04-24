@@ -33,8 +33,8 @@ public class TestsOfModelBinding : VolunteerRequestsTestsBase
     public async Task Test_should_add_request_to_database_with_all_its_fields_being_non_null()
     {
         // Arrange
-        var DEFAULT_TEXT = "default text";
-        var REVISION_TEXT = "revision text";
+        string? DEFAULT_TEXT = "default text";
+        string? REVISION_TEXT = "revision text";
         var userId = UserId.NewUserId();
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var adminId = AdminId.NewAdminId();

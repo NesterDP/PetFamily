@@ -21,8 +21,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
     public async Task HardDelete_success_should_hard_delete_pet_who_has_first_position()
     {
         // arrange
-        var PET_COUNT = 5;
-        var POSITION_OF_DELETED = 1;
+        int PET_COUNT = 5;
+        int POSITION_OF_DELETED = 1;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == POSITION_OF_DELETED);
         var secondPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 2);
@@ -54,8 +54,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
     public async Task HardDelete_success_should_hard_delete_pet_who_has_last_position()
     {
         // arrange
-        var PET_COUNT = 5;
-        var POSITION_OF_DELETED = 5;
+        int PET_COUNT = 5;
+        int POSITION_OF_DELETED = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == POSITION_OF_DELETED);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);
@@ -87,8 +87,8 @@ public class HardDeletePetHandlerTests : VolunteerTestsBase
     public async Task HardDelete_success_should_hard_delete_pet_who_is_not_in_border_position()
     {
         // arrange
-        var PET_COUNT = 5;
-        var POSITION_OF_DELETED = 3;
+        int PET_COUNT = 5;
+        int POSITION_OF_DELETED = 3;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == POSITION_OF_DELETED);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);

@@ -7,6 +7,7 @@ public record PetClassificationDto
         SpeciesId = speciesId;
         BreedId = breedId;
     }
+
     public Guid SpeciesId { get; set; }
     public Guid BreedId { get; set; }
-};
+}

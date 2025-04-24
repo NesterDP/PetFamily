@@ -21,7 +21,7 @@ public class CreateSpeciesHandlerTests : SpeciesTestsBase
     public async Task CreateSpecies_success_should_return_guid_of_created_species()
     {
         // arrange
-        var SPECIES_NAME = "Test Specie";
+        string? SPECIES_NAME = "Test Specie";
         var command = new CreateSpeciesCommand(SPECIES_NAME);
 
         // act

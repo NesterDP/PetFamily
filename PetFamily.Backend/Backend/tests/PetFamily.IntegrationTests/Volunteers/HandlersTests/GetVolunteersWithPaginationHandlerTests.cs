@@ -23,9 +23,9 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_return_all_volunteers()
     {
         // arrange
-        var VOLUNTEERS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int VOLUNTEERS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var volunteersIds = volunteers.Select(v => v.Id.Value).ToHashSet();
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
@@ -44,9 +44,9 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_return_only_1_non_soft_deleted_volunteer()
     {
         // arrange
-        var VOLUNTEERS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int VOLUNTEERS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         
         // all previously seeded volunteers are being soft deleted
@@ -72,8 +72,8 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_return_empty_items_list_if_there_are_no_volunteers()
     {
         // arrange
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -89,9 +89,9 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_return_has_no_previous_page_and_has_next_page()
     {
         // arrange
-        var VOLUNTEERS_COUNT = 16;
-        var PAGE_SIZE = 8;
-        var PAGE = 1;
+        int VOLUNTEERS_COUNT = 16;
+        int PAGE_SIZE = 8;
+        int PAGE = 1;
         var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
@@ -108,9 +108,9 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_have_both_previous_page_and_next_page()
     {
         // arrange
-        var VOLUNTEERS_COUNT = 16;
-        var PAGE_SIZE = 4;
-        var PAGE = 3;
+        int VOLUNTEERS_COUNT = 16;
+        int PAGE_SIZE = 4;
+        int PAGE = 3;
         var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 
@@ -126,9 +126,9 @@ public class GetVolunteersWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerWithPagination_should_have_only_previous_page()
     {
         // arrange
-        var VOLUNTEERS_COUNT = 16;
-        var PAGE_SIZE = 4;
-        var PAGE = 4;
+        int VOLUNTEERS_COUNT = 16;
+        int PAGE_SIZE = 4;
+        int PAGE = 4;
         var volunteers = await DataGenerator.SeedVolunteers(VolunteersWriteDbContext, VOLUNTEERS_COUNT);
         var query = new GetVolunteersWithPaginationQuery(PAGE, PAGE_SIZE);
 

@@ -21,9 +21,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_failure_new_position_is_below_1()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 0;
-        var OLD_POSITION = 1;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 0;
+        int OLD_POSITION = 1;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var command = new ChangePetPositionCommand(volunteer.Id, pet.Id, NEW_PET_POSITION);
@@ -39,9 +39,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_success_new_position_is_higher_than_amount_of_pets()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 100;
-        var OLD_POSITION = 1;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 100;
+        int OLD_POSITION = 1;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);
@@ -74,9 +74,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_success_new_position_is_same_as_former()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 3;
-        var OLD_POSITION = 3;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 3;
+        int OLD_POSITION = 3;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);
@@ -109,9 +109,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_success_from_lower_non_border_to_higher_non_border()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 4;
-        var OLD_POSITION = 2;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 4;
+        int OLD_POSITION = 2;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);
@@ -145,9 +145,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_success_from_higher_non_border_to_lower_non_border()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 2;
-        var OLD_POSITION = 4;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 2;
+        int OLD_POSITION = 4;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);
@@ -180,9 +180,9 @@ public class ChangePetPositionHandlerTests : VolunteerTestsBase
     public async Task ChangePosition_success_from_highest_position_to_lowest()
     {
         // arrange
-        var PET_COUNT = 5;
-        var NEW_PET_POSITION = 1;
-        var OLD_POSITION = 5;
+        int PET_COUNT = 5;
+        int NEW_PET_POSITION = 1;
+        int OLD_POSITION = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == OLD_POSITION);
         var firstPet = volunteer.AllOwnedPets.FirstOrDefault(p => p.Position.Value == 1);

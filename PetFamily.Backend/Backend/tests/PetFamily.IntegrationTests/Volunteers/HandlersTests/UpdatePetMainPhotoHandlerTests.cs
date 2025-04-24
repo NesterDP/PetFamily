@@ -30,7 +30,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
         ];
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);
@@ -64,7 +64,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
         ];
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);
@@ -98,7 +98,7 @@ public class UpdatePetMainPhotoHandlerTests : VolunteerTestsBase
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value,
         ];
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         pet.UpdatePhotos(photos);

@@ -39,8 +39,8 @@ public class ApproveRequestTests : VolunteerRequestsTestsBase
         var harness = Factory.Services.GetTestHarness();
         
         var fullname = FullName.Create("FirstName", "LastName", "Surname").Value;
-        var USER_NAME = "TestUser";
-        var EMAIL = "test@test.com";
+        string? USER_NAME = "TestUser";
+        string? EMAIL = "test@test.com";
         var role = await RoleManager.FindByNameAsync(DomainConstants.PARTICIPANT);
         var user = User.CreateParticipant(USER_NAME, EMAIL, fullname, role).Value;
         var creationResult = await UserManager.CreateAsync(user);

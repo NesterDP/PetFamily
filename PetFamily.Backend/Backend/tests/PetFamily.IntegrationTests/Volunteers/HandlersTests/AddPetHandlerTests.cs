@@ -51,7 +51,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
     public async Task AddPet_success_should_add_pet_to_non_petless_volunteer()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -83,7 +83,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
     public async Task AddPet_failure_should_get_error_while_trying_to_add_pet_with_unknown_speciesId()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -109,7 +109,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
     public async Task AddPet_failure_should_get_error_while_trying_to_add_pet_with_unknown_breedId()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -135,7 +135,7 @@ public class AddPetHandlerTests : VolunteerTestsBase
     public async Task AddPet_failure_should_get_error_while_trying_to_add_pet_with_known_but_unmatching_petClassification()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var addressDto = new AddressDto("Moscow", "Lenina 14", "123");
         
         var species1 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);

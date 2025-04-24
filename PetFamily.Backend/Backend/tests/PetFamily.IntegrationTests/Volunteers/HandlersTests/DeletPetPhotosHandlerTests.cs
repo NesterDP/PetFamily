@@ -27,7 +27,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
         List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
 
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
@@ -65,7 +65,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
     public async Task DeletePhotos_failure_should_not_remove_selected_photos_from_database_and_return_error()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
         List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
 

@@ -29,7 +29,7 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
     {
         var response = new StartMultipartUploadResponse([]);
 
-        for (var i = 0; i < filesAmount; i++)
+        for (int i = 0; i < filesAmount; i++)
         {
             var startMultipartProviderInfo = new MultipartStartProviderInfo("key" + i, "uploadId" + i);
 
@@ -52,7 +52,7 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
     {
         var response = new CompleteMultipartUploadResponse([]);
 
-        for (var i = 0; i < fileIds.Count; i++)
+        for (int i = 0; i < fileIds.Count; i++)
         {
             var completeMultipartFileInfo = new MultipartCompleteFileInfo(
                 fileIds[i],
@@ -79,7 +79,7 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
     {
         var response = new GetFilesPresignedUrlsResponse([]);
 
-        for (var i = 0; i < fileIds.Count; i++)
+        for (int i = 0; i < fileIds.Count; i++)
         {
             var extendedFileInfo = new ExtendedFileInfo(
                 fileIds[i],
@@ -108,9 +108,9 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
     {
         var response = new DeleteFilesByIdsResponse([]);
 
-        for (var i = 0; i < fileIds.Count; i++)
+        for (int i = 0; i < fileIds.Count; i++)
         {
-            var key = "key" + i;
+            string? key = "key" + i;
 
             response.Keys.Add(key);
         }

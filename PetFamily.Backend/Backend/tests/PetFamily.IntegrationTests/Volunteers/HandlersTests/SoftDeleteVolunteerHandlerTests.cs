@@ -21,7 +21,7 @@ public class SoftDeleteVolunteerHandlerTests : VolunteerTestsBase
     public async Task SoftDeleteVolunteer_success_should_soft_delete_volunteer_and_all_his_pets()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var command = new DeleteVolunteerCommand(volunteer.Id);
         

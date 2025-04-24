@@ -2,10 +2,13 @@ namespace PetFamily.Core.Dto.Discussion;
 
 public class MessageDto
 {
-    public Guid Id { get; set; }
-    public string Text { get; set; } = string.Empty;
-    public Guid UserId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public bool IsEdited { get; set; }
-}
+    public Guid Id { get; init; }
 
+    public string Text { get; init; } = string.Empty;
+
+    public Guid UserId { get; init; }
+
+    public DateTime CreatedAt { get; init; }
+
+    public bool IsEdited { get; init; }
+}

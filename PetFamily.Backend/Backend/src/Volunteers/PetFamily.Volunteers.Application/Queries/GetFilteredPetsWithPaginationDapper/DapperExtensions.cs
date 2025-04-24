@@ -11,8 +11,8 @@ public static class DapperExtensions
         string? sortBy,
         string? sortDirection)
     {
-        var sortingParameter = sortBy?.ToLower() ?? "id";
-        var sortingDirection = sortDirection?.ToUpper() ?? "DESC";
+        string? sortingParameter = sortBy?.ToLower() ?? "id";
+        string? sortingDirection = sortDirection?.ToUpper() ?? "DESC";
         sqlBuilder.Append($"\nORDER BY {sortingParameter} {sortingDirection}");
         //parameters.Add("@orderBy", orderBy?.ToLower() ?? "id");
         //parameters.Add("@SortDirection", sortDirection?.ToUpper() ?? "DESC");

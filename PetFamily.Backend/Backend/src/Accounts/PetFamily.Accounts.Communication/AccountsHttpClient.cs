@@ -25,7 +25,7 @@ public class AccountsHttpClient : IAccountsService
         if (response.StatusCode != HttpStatusCode.OK)
             return "Failed to get user info";
 
-        var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        string? responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
         using var doc = JsonDocument.Parse(responseJson);
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
@@ -53,13 +53,13 @@ public class AccountsHttpClient : IAccountsService
         if (response.StatusCode != HttpStatusCode.OK)
             return Result.Failure<string, string>("Failed to get email confirmation token");
 
-        var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        string? responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
         using var doc = JsonDocument.Parse(responseJson);
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
             return Result.Failure<string, string>("Response format invalid: missing 'result' property");
 
-        var confirmationToken = JsonSerializer.Deserialize<string>(resultElement.GetRawText());
+        string? confirmationToken = JsonSerializer.Deserialize<string>(resultElement.GetRawText());
         if (confirmationToken == null)
             return Result.Failure<string, string>("Failed to parse token");
 

@@ -22,7 +22,7 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
     public async Task CloseDiscussion_success_should_close_discussion()
     {
         // arrange
-        var USER_COUNT = 2;
+        int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         
         var command = new CloseDiscussionCommand(discussion.RelationId, discussion.UserIds[0]);
@@ -41,7 +41,7 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
     public async Task CloseDiscussion_failure_should_return_error_because_user_is_not_a_member_of_discussion()
     {
         // arrange
-        var USER_COUNT = 2;
+        int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         
         var command = new CloseDiscussionCommand(discussion.RelationId, Guid.NewGuid());

@@ -27,9 +27,9 @@ public class GetUserInfoByIdTests : AccountsTestsBase
     public async Task GetUserInfoById_success_should_return_user_info_with_correct_fields()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
         var avatarId = Guid.NewGuid();
         
         var user = await DataGenerator.SeedUserAsync(
@@ -65,9 +65,9 @@ public class GetUserInfoByIdTests : AccountsTestsBase
     public async Task GetUserInfoById_failure_should_should_return_error_because_of_no_user_with_such_id()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
         
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
@@ -90,7 +90,7 @@ public class GetUserInfoByIdTests : AccountsTestsBase
     public async Task GetUserInfoById_success_admin_should_have_only_admin_account()
     {
         // arrange
-        var EMAIL = "admin@admin.com";
+        string? EMAIL = "admin@admin.com";
         
         var user = await UserManager.FindByEmailAsync(EMAIL);
 

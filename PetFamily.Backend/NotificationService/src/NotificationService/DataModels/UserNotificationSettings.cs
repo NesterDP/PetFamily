@@ -5,13 +5,14 @@ namespace NotificationService.DataModels;
 public class UserNotificationSettings
 {
     public UserNotificationSettingsId Id { get; private set; }
-    public UserId UserId { get; private set; }
-    public bool? SendToEmail { get; private set; }
-    public bool? SendToTelegram { get; private set; }
-    public bool SendToWebsite { get; private set; }
 
-    // ef core
-    public UserNotificationSettings() { }
+    public UserId UserId { get; private set; }
+
+    public bool? SendToEmail { get; private set; }
+
+    public bool? SendToTelegram { get; private set; }
+
+    public bool SendToWebsite { get; private set; }
 
     public UserNotificationSettings(
         UserId userId,
@@ -45,4 +46,7 @@ public class UserNotificationSettings
     {
         SendToWebsite = sendToWebsite;
     }
+
+    // ef core
+    private UserNotificationSettings() { }
 }

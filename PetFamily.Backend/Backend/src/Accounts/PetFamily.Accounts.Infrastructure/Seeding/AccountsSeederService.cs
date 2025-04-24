@@ -51,7 +51,7 @@ public class AccountsSeederService
     {
         _logger.LogInformation("Seeding accounts...");
 
-        string json = await File.ReadAllTextAsync(FilePaths.Accounts);
+        string json = await File.ReadAllTextAsync(FilePaths.ACCOUNTS);
 
         var seedData = JsonSerializer.Deserialize<RolePermissionOptions>(json)
                        ?? throw new ApplicationException("Could not deserialize role permission config");

@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
@@ -15,7 +14,8 @@ public static class SingleObjectToJsonConverter
         return builder.HasConversion(
                 valueObject => SerializeObjectToJson(valueObject, toDtoSelector),
                 json => DeserializeObjectFromJson(json, toValueObjectSelector))
-                //CreateValueObjectComparer<TValueObject>())
+
+                // CreateValueObjectComparer<TValueObject>())
             .HasColumnType("jsonb");
     }
 
@@ -32,24 +32,24 @@ public static class SingleObjectToJsonConverter
         Func<TDto, TValueObject> selector)
     {
         var dto = JsonSerializer.Deserialize<TDto>(json, JsonSerializerOptions.Default);
-        return selector(dto);
+        return selector(dto!);
     }
-    
-    private static ValueComparer<T> CreateValueObjectComparer<T>()
+
+    /*private static ValueComparer<T> CreateValueObjectComparer<T>()
     {
         return new ValueComparer<T>(
             (c1, c2) => Serialize(c1) == Serialize(c2),
-            c => Serialize(c).GetHashCode(), 
+            c => Serialize(c).GetHashCode(),
             c => c);
-    }
-    
-    private static string Serialize<T>(T value)
+    }*/
+
+    /*private static string Serialize<T>(T value)
     {
         return JsonSerializer.Serialize(value);
-    }
+    }*/
 
-    private static T Deserialize<T>(string json)
+    /*private static T Deserialize<T>(string json)
     {
-        return JsonSerializer.Deserialize<T>(json);
-    }
+        return JsonSerializer.Deserialize<T>(json)!;
+    }*/
 }

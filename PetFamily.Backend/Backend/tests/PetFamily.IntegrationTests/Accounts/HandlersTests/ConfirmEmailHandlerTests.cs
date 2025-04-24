@@ -20,13 +20,13 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
     public async Task ConfirmEmail_success_should_return_token()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
 
-        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        string? token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         
         var command = new ConfirmEmailCommand(user.Id, token);
         
@@ -42,9 +42,9 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
     public async Task ConfirmEmail_failure_should_return_failure_because_token_is_invalid()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
@@ -63,13 +63,13 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
     public async Task ConfirmEmail_failure_should_return_failure_because_of_no_user_with_such_id_exist()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
-        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        string? token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         
         var command = new ConfirmEmailCommand(Guid.NewGuid(), token);
         

@@ -269,7 +269,7 @@ public static class DataGenerator
     public static async Task<VolunteerRequest> SeedVolunteerRequest(
         VolunteerRequestsWriteDbContext dbContext, Guid? optionalId = null)
     {
-        var DEFAULT_TEXT = "default text";
+        string? DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
         
         if (optionalId.HasValue)
@@ -296,7 +296,7 @@ public static class DataGenerator
     public static async Task<Discussion> SeedDiscussion(DiscussionsWriteDbContext dbContext, int userCount)
     {
         var users = new List<UserId>();
-        for (var i = 0; i < userCount; i++)
+        for (int i = 0; i < userCount; i++)
             users.Add(UserId.NewUserId());
 
         var relationId = RelationId.NewRelationId();

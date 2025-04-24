@@ -23,7 +23,7 @@ public class SpeciesToPetExistenceEventConsumer : IConsumer<SpeciesToPetExistenc
 
         var result = await _contract.SpeciesToPetExistence(request);
 
-        var response = DomainConstants.OK;
+        string? response = DomainConstants.OK;
         if (result.IsFailure)
             response = result.Error.Message;
 

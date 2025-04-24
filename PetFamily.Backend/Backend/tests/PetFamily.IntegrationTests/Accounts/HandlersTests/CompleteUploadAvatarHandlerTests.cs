@@ -26,9 +26,9 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
     public async Task CompleteUploadAvatar_success_should_add_avatar_to_user_without_avatar()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
         var newAvatarId = Guid.NewGuid();
         
         var user = await DataGenerator.SeedUserAsync(
@@ -60,9 +60,9 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
     public async Task CompleteUploadAvatar_success_should_replace_avatar_of_user_database()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
         var newAvatarId = Guid.NewGuid();
         var oldAvatarId = Guid.NewGuid();
         
@@ -99,9 +99,9 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
     public async Task CompleteUploadAvatar_failure_should_return_error_while_not_affecting_database()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
         var oldAvatarId = Guid.NewGuid();
         
         var user = await DataGenerator.SeedUserAsync(

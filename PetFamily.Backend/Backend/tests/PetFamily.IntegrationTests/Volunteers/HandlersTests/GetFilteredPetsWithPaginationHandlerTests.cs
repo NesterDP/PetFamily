@@ -21,9 +21,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_all_pets()
     {
         // arrange
-        var PETS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var volunteer2 =
@@ -44,9 +44,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_filtered_pets()
     {
         // arrange
-        var PETS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var volunteer2 =
@@ -80,9 +80,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value
         ];
 
-        var PETS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var volunteer2 =
@@ -130,9 +130,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_pets_sorted_by_name_ascending_order()
     {
         // arrange
-        var PETS_COUNT = 3;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 3;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
@@ -158,9 +158,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_pets_sorted_by_name_descending_order()
     {
         // arrange
-        var PETS_COUNT = 3;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 3;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
@@ -186,9 +186,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_1_pet_the_rest_are_soft_deleted()
     {
         // arrange
-        var PETS_COUNT = 3;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
+        int PETS_COUNT = 3;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].Delete();
@@ -212,12 +212,12 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_1_pet_that_passed_all_possible_filters()
     {
         // arrange
-        var PETS_COUNT = 16;
-        var PAGE_SIZE = 16;
-        var PAGE = 1;
-        var MAX_AGE = 5;
-        var MAX_WEIGHT = 30;
-        var MAX_HEIGHT = 30;
+        int PETS_COUNT = 16;
+        int PAGE_SIZE = 16;
+        int PAGE = 1;
+        int MAX_AGE = 5;
+        int MAX_WEIGHT = 30;
+        int MAX_HEIGHT = 30;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         var volunteer2 =

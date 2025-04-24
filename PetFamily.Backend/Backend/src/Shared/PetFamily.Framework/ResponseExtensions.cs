@@ -10,54 +10,56 @@ public static class ResponseExtensions
 {
     public static ActionResult ToResponse(this Error error)
     {
-        var statusCode = GetStatusCodeForErrorType(error.Type);
-        
+        int statusCode = GetStatusCodeForErrorType(error.Type);
+
         var envelope = Envelope.Error(error.ToErrorList());
 
         return new ObjectResult(envelope)
         {
-            StatusCode = statusCode
+            StatusCode = statusCode,
         };
     }
-    
+
     public static ActionResult ToResponse(this ErrorList errors)
     {
         if (!errors.Any())
+        {
             return new ObjectResult(null)
             {
-                StatusCode = StatusCodes.Status500InternalServerError
+                StatusCode = StatusCodes.Status500InternalServerError,
             };
-        
+        }
+
         var distinctErrorTypes = errors
             .Select(x => x.Type)
             .Distinct()
             .ToList();
 
-        var statusCode = distinctErrorTypes.Count > 1
+        int statusCode = distinctErrorTypes.Count > 1
             ? StatusCodes.Status500InternalServerError
             : GetStatusCodeForErrorType(distinctErrorTypes.First());
-        
+
         var envelope = Envelope.Error(errors);
-        
+
         return new ObjectResult(envelope)
         {
-            StatusCode = statusCode
+            StatusCode = statusCode,
         };
     }
-    
-    public static ActionResult ToResponse<T>(this Result<T,ErrorList> result)
+
+    public static ActionResult ToResponse<T>(this Result<T, ErrorList> result)
     {
-        var statusCode = StatusCodes.Status200OK;
+        const int statusCode = StatusCodes.Status200OK;
 
         var envelope = Envelope.Ok(result.Value);
 
         return new ObjectResult(envelope)
         {
-            StatusCode = statusCode
+            StatusCode = statusCode,
         };
     }
-    
-    private static int GetStatusCodeForErrorType(ErrorType errorType) => 
+
+    private static int GetStatusCodeForErrorType(ErrorType errorType) =>
      errorType switch
     {
         ErrorType.Validation => StatusCodes.Status400BadRequest,

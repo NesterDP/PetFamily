@@ -29,11 +29,11 @@ public class EmailService
         message.To.Add(new MailboxAddress("", userInfo.Email));
         message.Subject = "Подтверждение почты";
         
-        var getLink = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_GET_ADDRESS}" +
-                      $"?userId={userId}" +
-                      $"&token={Uri.EscapeDataString(token)}";
+        string? getLink = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_GET_ADDRESS}" +
+                          $"?userId={userId}" +
+                          $"&token={Uri.EscapeDataString(token)}";
         
-        var postUrl = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_POST_ADDRESS}";
+        string? postUrl = $"{_accountsOptions.Url}/{AccountsServiceConstants.EMAIL_CONFIRMATION_POST_ADDRESS}";
     
         var bodyBuilder = new BodyBuilder
         {

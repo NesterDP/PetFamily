@@ -21,9 +21,9 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
     public async Task EditMessage_success_should_edit_message()
     {
         // arrange
-        var USER_COUNT = 2;
-        var EDITED_TEXT = "Edited text";
-        var INITIAL_TEXT = "Initial text";
+        int USER_COUNT = 2;
+        string? EDITED_TEXT = "Edited text";
+        string? INITIAL_TEXT = "Initial text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message = DataGenerator.CreateMessage(discussion.UserIds[0], INITIAL_TEXT);
         discussion.Messages.Add(message);
@@ -49,9 +49,9 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
     [Fact] public async Task EditMessage_failure_should_return_error_because_editor_is_not_creator_of_message()
     {
         // arrange
-        var USER_COUNT = 2;
-        var EDITED_TEXT = "Edited text";
-        var INITIAL_TEXT = "Initial text";
+        int USER_COUNT = 2;
+        string? EDITED_TEXT = "Edited text";
+        string? INITIAL_TEXT = "Initial text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message = DataGenerator.CreateMessage(discussion.UserIds[0], INITIAL_TEXT);
         discussion.Messages.Add(message);

@@ -18,7 +18,7 @@ public record HelpStatus
     
     public static Result<HelpStatus, Error> Create(string helpStatus)
     {
-        var result = Enum.TryParse(helpStatus, out PetStatus myStatus);
+        bool result = Enum.TryParse(helpStatus, out PetStatus myStatus);
 
         if (!result)
            return  Errors.General.ValueIsInvalid("helpStatus");

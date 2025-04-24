@@ -189,9 +189,9 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     private static void LoadSettingFromFiles(IWebHostBuilder builder)
     {
-        var workingDirectory = Environment.CurrentDirectory;
-        var projectRootDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-        var configPath = Path.Combine(projectRootDirectory, @"etc\testsettings.json");
+        string? workingDirectory = Environment.CurrentDirectory;
+        string? projectRootDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+        string? configPath = Path.Combine(projectRootDirectory, @"etc\testsettings.json");
         // DotNetEnv.Env.Load(configPath);
 
         builder.ConfigureAppConfiguration((context, config) => { config.AddJsonFile(configPath); });

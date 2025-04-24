@@ -16,7 +16,7 @@ public record Description
             return Errors.General.ValueIsInvalid("description");
 
         var validDescription = new Description(description);
-        
+
         return validDescription;
     }
 }

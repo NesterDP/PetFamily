@@ -11,9 +11,9 @@ public record SocialNetworkDto
     public string Name { get; set; } = string.Empty;
     public string Link { get; set; } = string.Empty;
 
-    public void Deconstruct(out string Name, out string Link)
+    public void Deconstruct(out string name, out string link)
     {
-        Name = this.Name;
-        Link = this.Link;
+        name = Name;
+        link = Link;
     }
 }

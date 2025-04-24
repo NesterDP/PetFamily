@@ -24,8 +24,8 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
     public async Task GetRequestsByUserId_should_return_3_requests()
     {
         // arrange
-        var PAGE = 1;
-        var PAGE_SIZE = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 3;
         
         var adminId = Guid.NewGuid();
         var seededRequest1 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
@@ -59,8 +59,8 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
     public async Task GetRequestsByUserId_should_return_2_requests_because_of_filtration()
     {
         // arrange
-        var PAGE = 1;
-        var PAGE_SIZE = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 3;
         
         var adminId = Guid.NewGuid();
         var seededRequest1 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);

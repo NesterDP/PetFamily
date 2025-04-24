@@ -9,15 +9,13 @@ public class RelationId : ValueObject, IComparable<RelationId>
     private RelationId(Guid value) => Value = value;
 
     public static RelationId NewRelationId() => new(Guid.NewGuid());
+
     public static RelationId EmptyRelationId => new(Guid.Empty);
+
     public static RelationId Create(Guid id) => new(id);
-    
-    protected override IEnumerable<IComparable> GetEqualityComponents()
-    {
-        yield return Value;
-    }
-    
+
     public static implicit operator RelationId(Guid relationId) => new (relationId);
+
     public static implicit operator Guid(RelationId relationId) => relationId.Value;
 
     public int CompareTo(RelationId? other)
@@ -25,5 +23,10 @@ public class RelationId : ValueObject, IComparable<RelationId>
         if (other == null)
             throw new Exception("RelationId cannot be null");
         return Value.CompareTo(other.Value);
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

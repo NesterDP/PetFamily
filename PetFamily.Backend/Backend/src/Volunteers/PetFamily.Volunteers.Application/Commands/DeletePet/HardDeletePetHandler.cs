@@ -4,15 +4,12 @@ using FileService.Contracts.Requests;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
-using PetFamily.Volunteers.Domain.Entities;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
-using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
+
 
 namespace PetFamily.Volunteers.Application.Commands.DeletePet;
 

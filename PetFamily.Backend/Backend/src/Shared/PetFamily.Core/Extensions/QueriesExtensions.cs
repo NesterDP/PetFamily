@@ -12,23 +12,23 @@ public static class QueriesExtensions
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var totalCount = await source.CountAsync(cancellationToken);
-        
+        int totalCount = await source.CountAsync(cancellationToken);
+
         var items = await source
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-        
+
         var result = new PagedList<T>
         {
             Items = items,
             PageSize = pageSize,
             Page = page,
-            TotalCount = totalCount
+            TotalCount = totalCount,
         };
         return result;
     }
-    
+
     public static IQueryable<T> WhereIf<T>(
         this IQueryable<T> source,
         bool condition,

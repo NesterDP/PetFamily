@@ -24,7 +24,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_success_should_update_all_matching_fields_from_updatePetInfo()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
@@ -101,7 +101,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_breedId_validation()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
@@ -121,7 +121,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_speciesId_validation()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
@@ -142,7 +142,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_unmatching_breedId_and_species_id()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
@@ -164,7 +164,7 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_unmatching_breedId_and_species_id_reverse()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);

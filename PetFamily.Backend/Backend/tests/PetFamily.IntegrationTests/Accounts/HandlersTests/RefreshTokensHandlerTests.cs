@@ -24,9 +24,9 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
     public async Task RefreshTokens_success_should_return_new_access_and_refresh_tokens()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
@@ -49,7 +49,7 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         
         // refresh session was filled with data returned from handler
         var userClaims = await TokenProvider.GetUserClaims(result.Value.AccessToken);
-        var userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti).Value;
+        string? userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI).Value;
         
         var record = await AccountsDbContext.RefreshSessions.FirstOrDefaultAsync(
             rs => rs.UserId == user.Id &&
@@ -64,9 +64,9 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
     public async Task RefreshTokens_failure_should_return_error_because_refresh_token_lifetime_is_expired()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
@@ -91,9 +91,9 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
     public async Task RefreshTokens_failure_should_return_error_because_jti_doesnt_match()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);

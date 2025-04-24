@@ -42,14 +42,14 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         if (userClaims.IsFailure)
             return userClaims.Error.ToErrorList();
 
-        string userIdString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
+        string userIdString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.ID)!.Value;
         if (!Guid.TryParse(userIdString, out var userId))
             return Errors.General.ValueNotFound("user id").ToErrorList();
 
         if (oldRefreshSession.Value.UserId != userId)
             return Errors.General.InvalidToken().ToErrorList();
 
-        string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti)!.Value;
+        string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI)!.Value;
         if (!Guid.TryParse(userJtiString, out var userJtiGuid))
             return Errors.General.ValueNotFound("user jti").ToErrorList();
 

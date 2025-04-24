@@ -42,16 +42,16 @@ public class JwtTokenProvider : ITokenProvider
             .Include(u => u.Roles) // surpass lazy loading
             .Where(u => u.Id == user.Id)
             .SelectMany(u => u.Roles)
-            .Select(r => new Claim(CustomClaims.Role, r.Name!))
+            .Select(r => new Claim(CustomClaims.ROLE, r.Name!))
             .ToListAsync(cancellationToken);
 
         var jti = Guid.NewGuid();
 
         var claims = new[]
         {
-            new Claim(CustomClaims.Id, user.Id.ToString()),
-            new Claim(CustomClaims.Jti, jti.ToString()),
-            new Claim(CustomClaims.Email, user.Email ?? string.Empty),
+            new Claim(CustomClaims.ID, user.Id.ToString()),
+            new Claim(CustomClaims.JTI, jti.ToString()),
+            new Claim(CustomClaims.EMAIL, user.Email ?? string.Empty),
         };
 
         claims = claims.Concat(roleClaims).ToArray();

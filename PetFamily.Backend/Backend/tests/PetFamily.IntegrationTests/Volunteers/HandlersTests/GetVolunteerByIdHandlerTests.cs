@@ -23,7 +23,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     public async Task GetVolunteerById_returns_info_about_volunteer()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
         await VolunteersWriteDbContext.SaveChangesAsync();
         var anotherVolunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
@@ -49,7 +49,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     public async Task GetPetById_returns_null_for_soft_deleted_volunteer()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         volunteer.Delete();
         await VolunteersWriteDbContext.SaveChangesAsync();
@@ -66,7 +66,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
     public async Task GetPetById_returns_null_for_volunteer_that_does_not_exist()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetVolunteerByIdQuery(Guid.NewGuid());
 

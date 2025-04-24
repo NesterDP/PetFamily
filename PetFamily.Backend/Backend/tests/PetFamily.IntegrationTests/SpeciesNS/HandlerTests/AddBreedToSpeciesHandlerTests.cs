@@ -21,7 +21,7 @@ public class AddBreedToSpeciesHandlerTests : SpeciesTestsBase
     public async Task CreateSpecies_success_should_return_guid_of_created_species()
     {
         // arrange
-        var BREED_NAME = "Test Breed";
+        string? BREED_NAME = "Test Breed";
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var existedBred = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var command = new AddBreedToSpeciesCommand(species.Id, BREED_NAME);

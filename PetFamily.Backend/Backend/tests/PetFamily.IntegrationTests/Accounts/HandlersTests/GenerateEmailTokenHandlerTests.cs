@@ -20,9 +20,9 @@ public class GenerateEmailTokenHandlerTests : AccountsTestsBase
     public async Task GenerateEmailToken_success_should_return_token()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
@@ -40,9 +40,9 @@ public class GenerateEmailTokenHandlerTests : AccountsTestsBase
     public async Task GenerateEmailToken_failure_should_return_failure_because_of_no_user_with_such_id_exist()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         

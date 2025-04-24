@@ -12,7 +12,6 @@ using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
 using PetFamily.Volunteers.Infrastructure.Services;
 using PetFamily.Volunteers.Infrastructure.TransactionServices;
-using FileInfo = PetFamily.Core.Files.FilesData.FileInfo;
 
 namespace PetFamily.Volunteers.Infrastructure;
 

@@ -216,7 +216,7 @@ public class DiscussionsTests
     public static Result<Discussion, Error> CreateDiscussion(int userCount)
     {
         var users = new List<UserId>();
-        for (var i = 0; i < userCount; i++)
+        for (int i = 0; i < userCount; i++)
             users.Add(UserId.NewUserId());
         
         var relationId = RelationId.NewRelationId();

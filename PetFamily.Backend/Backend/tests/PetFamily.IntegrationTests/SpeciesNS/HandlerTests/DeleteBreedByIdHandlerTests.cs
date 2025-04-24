@@ -47,7 +47,7 @@ public class DeleteBreedByIdHandlerTests : SpeciesTestsBase
     public async Task DeleteBreedById_failure_should_not_delete_breed_from_database_because_of_pet_with_such_breed()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var command = new DeleteBreedByIdCommand(species.Id, breed.Id);

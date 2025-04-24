@@ -52,7 +52,7 @@ public class DeleteSpeciesByIdHandlerTests : SpeciesTestsBase
     public async Task DeleteSpeciesById_failure_should_not_delete_species_and_any_of_its_breeds_from_database()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         species.AddBreed(new Breed(Guid.NewGuid(), Name.Create("test breed 1").Value));
         species.AddBreed(new Breed(Guid.NewGuid(), Name.Create("test breed 2").Value));

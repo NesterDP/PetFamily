@@ -41,7 +41,7 @@ public class CreateDiscussionHandlerTests : DiscussionsTestsBase
     public async Task CreateDiscussion_failure_should_return_error_because_discussion_with_such_relationId_already_exists()
     {
         // arrange
-        var USER_COUNT = 2;
+        int USER_COUNT = 2;
         var existedDiscussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         List<Guid> userIds = [Guid.NewGuid(), Guid.NewGuid()];
         

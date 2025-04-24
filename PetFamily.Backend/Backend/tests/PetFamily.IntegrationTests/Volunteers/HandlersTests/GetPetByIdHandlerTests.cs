@@ -23,7 +23,7 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
     [Fact]
     public async Task GetPetById_Success_returns_info_about_non_soft_deleted_pet_with_correct_photo_order()
     {
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         // arrange
         List<TransferDetail> transferDetails =
         [
@@ -97,7 +97,7 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
     public async Task GetPetById_failure_returns_error_for_soft_deleted_pet()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         volunteer.SoftDeletePet(pet);
@@ -115,7 +115,7 @@ public class GetPetByIdHandlerTests : VolunteerTestsBase
     public async Task GetPetById_returns_error_for_pet_that_does_not_exist()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var query = new GetPetByIdQuery(Guid.NewGuid());
         

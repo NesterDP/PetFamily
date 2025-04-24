@@ -24,7 +24,7 @@ public class StartUploadPhotosToPetHandlerTests : VolunteerTestsBase
     public async Task StartUploadPhotos_success_should_generate_starting_multipart_upload_data()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
 
@@ -50,7 +50,7 @@ public class StartUploadPhotosToPetHandlerTests : VolunteerTestsBase
     public async Task StartUploadPhotos_failure_should_return_error()
     {
         // arrange
-        var PET_COUNT = 5;
+        int PET_COUNT = 5;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         var startUploadFileDto = new StartUploadFileDto("fileName1", "image/gif", 123);

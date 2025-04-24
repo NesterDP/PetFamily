@@ -19,8 +19,8 @@ public class AccountsSeedingTests : AccountsTestsBase
     public async Task AdminSeeding_success_should_find_admin_account()
     {
         // arrange
-        var EMAIL = "admin@admin.com";
-        var USERNAME = "admin";
+        string? EMAIL = "admin@admin.com";
+        string? USERNAME = "admin";
         
         // act
         var result = await UserManager.FindByEmailAsync(EMAIL);
@@ -33,7 +33,7 @@ public class AccountsSeedingTests : AccountsTestsBase
     public async Task PermissionsSeeding_success_permissions_from_database_and_file_should_be_the_same()
     {
         // arrange
-        var json = await File.ReadAllTextAsync(FilePaths.Accounts);
+        string? json = await File.ReadAllTextAsync(FilePaths.ACCOUNTS);
         var seedData = JsonSerializer.Deserialize<RolePermissionOptions>(json)
                        ?? throw new ApplicationException("Could not deserialize role permission config");
         var permissions = seedData.Permissions
@@ -52,7 +52,7 @@ public class AccountsSeedingTests : AccountsTestsBase
     public async Task RolesSeeding_success_roles_from_database_and_file_should_be_the_same()
     {
         // arrange
-        var json = await File.ReadAllTextAsync(FilePaths.Accounts);
+        string? json = await File.ReadAllTextAsync(FilePaths.ACCOUNTS);
         var seedData = JsonSerializer.Deserialize<RolePermissionOptions>(json)
                        ?? throw new ApplicationException("Could not deserialize role permission config");
         var roles = seedData.Roles.Keys.ToList();

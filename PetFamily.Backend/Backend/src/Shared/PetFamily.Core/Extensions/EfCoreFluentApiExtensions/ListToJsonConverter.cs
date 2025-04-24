@@ -24,7 +24,7 @@ public static class ListToJsonConverter
         Func<TValueObject, TDto> selector)
     {
         var dtos = valueObjects.Select(selector);
-        
+
         return JsonSerializer.Serialize(dtos, JsonSerializerOptions.Default);
     }
 
@@ -35,7 +35,7 @@ public static class ListToJsonConverter
 
         return dtos.Select(selector).ToList();
     }
-    
+
     private static ValueComparer<List<T>> CreateListCollectionValueComparer<T>()
     {
         return new ValueComparer<List<T>>(

@@ -11,7 +11,7 @@ public record Envelope
     private Envelope(object? result, ErrorList? errors)
     {
         Result = result;
-        if (errors != null) 
+        if (errors != null)
             Errors = errors.ToList();
         TimeGenerated = DateTime.Now;
     }

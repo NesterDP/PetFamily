@@ -24,9 +24,9 @@ public class LoginUserHandlerTests : AccountsTestsBase
     public async Task LoginUser_success_should_return_access_and_refresh_tokens()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         
@@ -43,7 +43,7 @@ public class LoginUserHandlerTests : AccountsTestsBase
         
         // returned JTI
         var userClaims = await TokenProvider.GetUserClaims(result.Value.AccessToken);
-        var userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.Jti).Value;
+        string? userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI).Value;
         
         // refresh session was created and filled with correct data
         var record = await AccountsDbContext.RefreshSessions.FirstOrDefaultAsync(
@@ -57,9 +57,9 @@ public class LoginUserHandlerTests : AccountsTestsBase
     public async Task Login_failure_should_return_failure_because_of_no_user_exist_with_such_login_data()
     {
         // arrange
-        var EMAIL = "test@mail.com";
-        var USERNAME = "testUserName";
-        var PASSWORD = "Password121314s.";
+        string? EMAIL = "test@mail.com";
+        string? USERNAME = "testUserName";
+        string? PASSWORD = "Password121314s.";
 
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         

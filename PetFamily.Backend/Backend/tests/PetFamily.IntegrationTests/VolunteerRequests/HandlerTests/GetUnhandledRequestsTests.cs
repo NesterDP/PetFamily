@@ -24,8 +24,8 @@ public class GetUnhandledRequestsTests : VolunteerRequestsTestsBase
     public async Task GetUnhandledRequests_should_return_3_unhandled_requests()
     {
         // arrange
-        var PAGE = 1;
-        var PAGE_SIZE = 3;
+        int PAGE = 1;
+        int PAGE_SIZE = 3;
         var seededRequest1 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         var seededRequest2 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         var seededRequest3 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);

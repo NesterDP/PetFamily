@@ -1,9 +1,8 @@
 using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
-
+using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.SharedKernel.ValueObjects;
 
@@ -12,17 +11,17 @@ public record Photo
     public static readonly string[] AllowedTypes = [DomainConstants.PNG, DomainConstants.JPG, DomainConstants.WEBP];
 
     public FileId Id { get; }
-    public bool Main { get; } = false;
-    
+    public bool Main { get; }
+
     private Photo(FileId id) => Id = id;
-    
+
     [JsonConstructor]
     private Photo(FileId id, bool main)
     {
         Id = id;
         Main = main;
     }
-    
+
     public static Result<Photo, Error> Create(Guid fileId, string fileType)
     {
         if (!AllowedTypes.Contains(fileType))
@@ -30,7 +29,7 @@ public record Photo
 
         return new Photo(fileId);
     }
-    
+
     public static Result<Photo, Error> Create(Guid fileId, bool main, string fileType)
     {
         if (!AllowedTypes.Contains(fileType))
@@ -38,17 +37,17 @@ public record Photo
 
         return new Photo(fileId, main);
     }
-    
+
     public Photo CreateCopy(bool main)
     {
         return new Photo(Id, main);
     }
-    
+
     public Photo CreateCopy()
     {
         return new Photo(Id, Main);
     }
-    
+
     public int CompareTo(object? o)
     {
         if(o is Photo photo) return Id.CompareTo(photo.Id);

@@ -40,7 +40,7 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
     {
         // arrange
         var userId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
+        string? VOLUNTEER_INFO = "test info";
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);
         
@@ -61,7 +61,7 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
         // arrange
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
+        string? VOLUNTEER_INFO = "test info";
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);
         seededRequest.SetOnReview(adminId);
@@ -84,8 +84,8 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
         // arrange
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
-        var REVISION_TEXT = "revision text";
+        string? VOLUNTEER_INFO = "test info";
+        string? REVISION_TEXT = "revision text";
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);
         var revisionComment = RevisionComment.Create(REVISION_TEXT).Value;
@@ -110,7 +110,7 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
         // arrange
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
+        string? VOLUNTEER_INFO = "test info";
         const int DAYS = -10;
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);
@@ -140,7 +140,7 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
         // arrange
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
+        string? VOLUNTEER_INFO = "test info";
         const int DAYS = 10;
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);
@@ -166,7 +166,7 @@ public class CreateVolunteerRequestTests : VolunteerRequestsTestsBase
         // arrange
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var VOLUNTEER_INFO = "test info";
+        string? VOLUNTEER_INFO = "test info";
         const int DAYS = 10;
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext, userId);

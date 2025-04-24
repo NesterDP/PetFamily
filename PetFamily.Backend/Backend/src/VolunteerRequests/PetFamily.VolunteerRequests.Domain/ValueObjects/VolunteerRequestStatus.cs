@@ -18,7 +18,7 @@ public record VolunteerRequestStatus
     
     public static Result<VolunteerRequestStatus, Error> Create(string volunteerRequestStatus)
     {
-        var result = Enum.TryParse(volunteerRequestStatus, out VolunteerRequestStatusEnum validStatus);
+        bool result = Enum.TryParse(volunteerRequestStatus, out VolunteerRequestStatusEnum validStatus);
 
         if (!result)
             return  Errors.General.ValueIsInvalid("volunteerRequestStatus");

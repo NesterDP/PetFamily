@@ -22,7 +22,7 @@ public class RequireRevisionTests : VolunteerRequestsTestsBase
     public async Task RequireRevision_success_should_set_request_status_to_RequireRevision_and_create_comment()
     {
         // arrange
-        var REVISION_TEXT = "REVISION TEXT";
+        string? REVISION_TEXT = "REVISION TEXT";
         var adminId = Guid.NewGuid();
         
         var seededRequest = await DataGenerator.SeedVolunteerRequest(WriteDbContext);

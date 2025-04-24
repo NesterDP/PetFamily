@@ -19,7 +19,7 @@ public record DiscussionStatus
     
     public static Result<DiscussionStatus, Error> Create(string discussionStatus)
     {
-        var result = Enum.TryParse(discussionStatus, out DiscussionStatusEnum validStatus);
+        bool result = Enum.TryParse(discussionStatus, out DiscussionStatusEnum validStatus);
 
         if (!result)
             return  Errors.General.ValueIsInvalid("DiscussionStatus");

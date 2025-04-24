@@ -6,5 +6,5 @@ public enum UnitOfWorkSelector
     Species = 1,
     Accounts = 2,
     VolunteerRequests = 3,
-    Discussions = 4
+    Discussions = 4,
 }

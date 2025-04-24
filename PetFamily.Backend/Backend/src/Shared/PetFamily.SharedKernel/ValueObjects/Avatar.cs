@@ -7,9 +7,9 @@ namespace PetFamily.SharedKernel.ValueObjects;
 
 public record Avatar
 {
-    public static readonly string[] AllowedTypes =  [DomainConstants.PNG, DomainConstants.JPG, DomainConstants.WEBP];
-    public FileId? Id { get; } = null; // null, если пользователь не загрузил фото
-    
+    public static readonly string[] AllowedTypes = [DomainConstants.PNG, DomainConstants.JPG, DomainConstants.WEBP];
+    public FileId? Id { get; } // null, если пользователь не загрузил фото
+
     private Avatar(FileId id) => Id = id;
 
     public static Result<Avatar, Error> Create(Guid fileId, string fileType)

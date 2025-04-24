@@ -26,8 +26,8 @@ public class CompleteUploadPhotosToPetHandlerTests : VolunteerTestsBase
     public async Task CompleteUploadPhotos_success_should_add_photos_to_photoless_pet_in_database()
     {
         // arrange
-        var PET_COUNT = 5;
-        var UPLOADED_PHOTOS_COUNT = 4;
+        int PET_COUNT = 5;
+        int UPLOADED_PHOTOS_COUNT = 4;
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
         
@@ -59,8 +59,8 @@ public class CompleteUploadPhotosToPetHandlerTests : VolunteerTestsBase
     {
         // arrange
         List<Guid> petPhotos = [Guid.NewGuid(), Guid.NewGuid()];
-        var PET_COUNT = 5;
-        var UPLOADED_PHOTOS_COUNT = 4;
+        int PET_COUNT = 5;
+        int UPLOADED_PHOTOS_COUNT = 4;
 
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
@@ -103,8 +103,8 @@ public class CompleteUploadPhotosToPetHandlerTests : VolunteerTestsBase
     {
         // arrange
         List<Guid> petPhotos = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
-        var PET_COUNT = 5;
-        var UPLOADED_PHOTOS_COUNT = 4;
+        int PET_COUNT = 5;
+        int UPLOADED_PHOTOS_COUNT = 4;
 
         var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
