@@ -35,7 +35,8 @@ public class AccountsSeederService
         IAccountManager accountManager,
         IOptions<AdminOptions> adminOptions,
         ILogger<AccountsSeederService> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Accounts)]
+        IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -99,14 +100,13 @@ public class AccountsSeederService
         }
         catch (Exception e)
         {
-           await transaction.RollbackAsync();
-           _logger.LogError(e, "Failed to seed admin");
-           throw;
+            await transaction.RollbackAsync();
+            _logger.LogError(e, "Failed to seed admin");
+            throw;
         }
     }
 
-    private async Task SeedRolePermissions(
-        RolePermissionOptions seedData)
+    private async Task SeedRolePermissions(RolePermissionOptions seedData)
     {
         foreach (string roleName in seedData.Roles.Keys)
         {

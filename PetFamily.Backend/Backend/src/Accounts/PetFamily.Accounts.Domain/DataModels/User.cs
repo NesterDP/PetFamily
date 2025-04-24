@@ -35,10 +35,7 @@ public class User : IdentityUser<Guid>
 
         var admin = new User()
         {
-            UserName = userName,
-            Email = email,
-            FullName = fullname,
-            _roles = [role],
+            UserName = userName, Email = email, FullName = fullname, _roles = [role],
         };
 
         return admin;
@@ -55,10 +52,7 @@ public class User : IdentityUser<Guid>
 
         var participant = new User()
         {
-            UserName = userName,
-            Email = email,
-            FullName = fullname,
-            _roles = [role],
+            UserName = userName, Email = email, FullName = fullname, _roles = [role],
         };
         return participant;
     }

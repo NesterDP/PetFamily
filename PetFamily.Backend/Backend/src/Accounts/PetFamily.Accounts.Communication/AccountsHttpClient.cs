@@ -25,16 +25,13 @@ public class AccountsHttpClient : IAccountsService
         if (response.StatusCode != HttpStatusCode.OK)
             return "Failed to get user info";
 
-        string? responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        string responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
         using var doc = JsonDocument.Parse(responseJson);
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))
             return "Response format invalid: missing 'result' property";
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        };
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
 
         var userInfo = JsonSerializer.Deserialize<UserInfoDto>(resultElement.GetRawText(), options);
         if (userInfo == null)
@@ -53,7 +50,7 @@ public class AccountsHttpClient : IAccountsService
         if (response.StatusCode != HttpStatusCode.OK)
             return Result.Failure<string, string>("Failed to get email confirmation token");
 
-        string? responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        string responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
         using var doc = JsonDocument.Parse(responseJson);
 
         if (!doc.RootElement.TryGetProperty("result", out var resultElement))

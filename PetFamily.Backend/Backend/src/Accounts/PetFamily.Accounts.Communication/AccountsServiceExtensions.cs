@@ -10,15 +10,17 @@ public static class AccountsServiceExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<AccountsServiceOptions>(configuration
-            .GetSection(AccountsServiceOptions.ACCOUNTS_SERVICE));
+        services.Configure<AccountsServiceOptions>(
+            configuration
+                .GetSection(AccountsServiceOptions.ACCOUNTS_SERVICE));
 
-        services.AddHttpClient<IAccountsService, AccountsHttpClient>((sp, config) =>
-        {
-            var accountsOptions = sp.GetRequiredService<IOptions<AccountsServiceOptions>>().Value;
+        services.AddHttpClient<IAccountsService, AccountsHttpClient>(
+            (sp, config) =>
+            {
+                var accountsOptions = sp.GetRequiredService<IOptions<AccountsServiceOptions>>().Value;
 
-            config.BaseAddress = new Uri(accountsOptions.Url);
-        });
+                config.BaseAddress = new Uri(accountsOptions.Url);
+            });
 
         return services;
     }

@@ -28,7 +28,8 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         IAccountManager accountManager,
         IOutboxRepository outboxRepository,
         ILogger<RegisterUserHandler> logger,
-        [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Accounts)]
+        IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -43,7 +44,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         CancellationToken cancellationToken)
     {
         var participantRole = await _roleManager.FindByNameAsync(DomainConstants.PARTICIPANT)
-                        ?? throw new ApplicationException("Could not find participant role");
+                              ?? throw new ApplicationException("Could not find participant role");
 
         var participant = User.CreateParticipant(
             command.UserName,
@@ -77,7 +78,6 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
             var errors = result.Errors
                 .Select(e => Errors.General.Failure(e.Code, e.Description)).ToList();
             return new ErrorList(errors);
-
         }
         catch (Exception e)
         {

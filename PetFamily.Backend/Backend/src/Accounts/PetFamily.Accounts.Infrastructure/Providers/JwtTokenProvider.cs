@@ -30,7 +30,6 @@ public class JwtTokenProvider : ITokenProvider
         _jwtOptions = jwtOptions.Value;
         _refreshSessionOptions = refreshSessionOptions.Value;
         _dbContext = dbContext;
-
     }
 
     public async Task<JwtTokenResult> GenerateAccessToken(User user, CancellationToken cancellationToken)
@@ -49,8 +48,7 @@ public class JwtTokenProvider : ITokenProvider
 
         var claims = new[]
         {
-            new Claim(CustomClaims.ID, user.Id.ToString()),
-            new Claim(CustomClaims.JTI, jti.ToString()),
+            new Claim(CustomClaims.ID, user.Id.ToString()), new Claim(CustomClaims.JTI, jti.ToString()),
             new Claim(CustomClaims.EMAIL, user.Email ?? string.Empty),
         };
 
@@ -97,6 +95,5 @@ public class JwtTokenProvider : ITokenProvider
             return Errors.General.InvalidToken();
 
         return validationResult.ClaimsIdentity.Claims.ToList();
-
     }
 }

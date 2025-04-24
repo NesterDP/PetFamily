@@ -25,7 +25,8 @@ public class PermissionManager
             if (isPermissionExist)
                 continue;
 
-            await _accountsDbContext.Permissions.AddAsync(new Permission() { Code = permissionCode }, cancellationToken);
+            await _accountsDbContext.Permissions.AddAsync(
+                new Permission() { Code = permissionCode }, cancellationToken);
         }
 
         await _accountsDbContext.SaveChangesAsync(cancellationToken);

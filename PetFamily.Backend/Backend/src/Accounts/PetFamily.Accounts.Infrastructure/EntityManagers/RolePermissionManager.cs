@@ -30,11 +30,7 @@ public class RolePermissionManager
                 continue;
 
             await _accountsDbContext.RolePermissions.AddAsync(
-                new RolePermission
-                {
-                    RoleId = roleId,
-                    PermissionId = permission!.Id,
-                });
+                new RolePermission { RoleId = roleId, PermissionId = permission!.Id, });
         }
 
         await _accountsDbContext.SaveChangesAsync();

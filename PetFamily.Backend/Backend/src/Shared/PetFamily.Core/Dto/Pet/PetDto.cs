@@ -49,5 +49,6 @@ public class PetDto
 
     public int Position { get; init; }
 
-    [JsonIgnore] public bool IsDeleted { get; init; }
+    [JsonIgnore]
+    public bool IsDeleted { get; init; }
 }

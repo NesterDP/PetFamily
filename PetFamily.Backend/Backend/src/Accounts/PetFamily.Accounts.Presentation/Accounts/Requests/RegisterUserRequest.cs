@@ -4,5 +4,5 @@ namespace PetFamily.Accounts.Presentation.Accounts.Requests;
 
 public record RegisterUserRequest(string Email, string UserName, string Password)
 {
-    public RegisterUserCommand ToCommand() => new RegisterUserCommand(Email, UserName, Password);
+    public RegisterUserCommand ToCommand() => new(Email, UserName, Password);
 }

@@ -84,8 +84,7 @@ public class CompleteUploadAvatarHandler
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Successfully changed photo of user with ID = {ID}", userResult.Value.Id);
+        _logger.LogInformation("Successfully changed photo of user with ID = {ID}", userResult.Value.Id);
 
         return uploadResult.Value;
     }

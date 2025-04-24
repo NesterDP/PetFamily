@@ -18,7 +18,8 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
     public RefreshTokensHandler(
         IRefreshSessionManager refreshSessionManager,
         ITokenProvider tokenProvider,
-        [FromKeyedServices(UnitOfWorkSelector.Accounts)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(UnitOfWorkSelector.Accounts)]
+        IUnitOfWork unitOfWork)
     {
         _refreshSessionManager = refreshSessionManager;
         _tokenProvider = tokenProvider;
