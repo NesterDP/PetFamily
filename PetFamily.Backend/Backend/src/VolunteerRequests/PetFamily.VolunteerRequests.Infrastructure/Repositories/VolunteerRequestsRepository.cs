@@ -29,7 +29,6 @@ public class VolunteerRequestsRepository : IVolunteerRequestsRepository
         return volunteerRequest.Id.Value;
     }
 
-
     public Guid Delete(VolunteerRequest volunteerRequest, CancellationToken cancellationToken = default)
     {
         _context.VolunteerRequests.Remove(volunteerRequest);

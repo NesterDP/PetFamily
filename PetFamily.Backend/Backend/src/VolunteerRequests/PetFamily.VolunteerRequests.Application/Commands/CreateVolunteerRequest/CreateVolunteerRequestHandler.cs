@@ -15,11 +15,11 @@ namespace PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerReques
 
 public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunteerRequestCommand>
 {
+    private const int BAN_DURATION_IN_DAYS = 7;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly ILogger<CreateVolunteerRequestHandler> _logger;
     private readonly IValidator<CreateVolunteerRequestCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly int BAN_DURATION_IN_DAYS = 7;
 
     public CreateVolunteerRequestHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository,
@@ -58,26 +58,24 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
         await _volunteerRequestsRepository.AddAsync(volunteerRequest, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Created VolunteerRequest with ID = {id}", volunteerRequest.Id.Value);
+        _logger.LogInformation("Created VolunteerRequest with ID = {id}", volunteerRequest.Id.Value);
 
         return volunteerRequest.Id.Value;
     }
 
-    private UnitResult<Error> CheckExistedRequests(
-        List<VolunteerRequest> requests)
+    private UnitResult<Error> CheckExistedRequests(List<VolunteerRequest> requests)
     {
         var forbiddenStatuses = new[]
         {
-            VolunteerRequestStatusEnum.Submitted,
-            VolunteerRequestStatusEnum.OnReview,
+            VolunteerRequestStatusEnum.Submitted, VolunteerRequestStatusEnum.OnReview,
             VolunteerRequestStatusEnum.RevisionRequired
         };
 
         if (requests.Any(r => forbiddenStatuses.Contains(r.Status.Value)))
+        {
             return Errors.General.AlreadyExist(
                 $"Active volunteer request for user with Id = {requests[0].UserId.Value}");
-
+        }
 
         if (!requests.Any(r => r.RejectedAt.HasValue))
         {
@@ -86,8 +84,10 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
 
         var banEndDate = requests.Max(r => r.RejectedAt!.Value).AddDays(BAN_DURATION_IN_DAYS);
         if (banEndDate > DateTime.UtcNow)
+        {
             return Errors.General.Conflict(
                 $"User with Id = {requests[0].UserId.Value} isn't allowed to submit new requests until {banEndDate}");
+        }
 
         return UnitResult.Success<Error>();
     }

@@ -12,17 +12,17 @@ public record VolunteerRequestStatus
     public static Result<VolunteerRequestStatus, Error> Create(VolunteerRequestStatusEnum volunteerRequestStatus)
     {
         var validVolunteerRequestStatus = new VolunteerRequestStatus(volunteerRequestStatus);
-        
+
         return validVolunteerRequestStatus;
     }
-    
+
     public static Result<VolunteerRequestStatus, Error> Create(string volunteerRequestStatus)
     {
         bool result = Enum.TryParse(volunteerRequestStatus, out VolunteerRequestStatusEnum validStatus);
 
         if (!result)
-            return  Errors.General.ValueIsInvalid("volunteerRequestStatus");
-        
+            return Errors.General.ValueIsInvalid("volunteerRequestStatus");
+
         return new VolunteerRequestStatus(validStatus);
     }
 }

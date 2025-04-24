@@ -23,7 +23,7 @@ public class VolunteerRequestsController : ApplicationController
     {
         _userData = userData;
     }
-    
+
     [Permission("volunteerRequests.GetUnhandledRequests")]
     [HttpGet("unhandled-requests")]
     public async Task<ActionResult<Guid>> GetUnhandledRequests(
@@ -59,7 +59,7 @@ public class VolunteerRequestsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return Ok(result);
     }
-    
+
     [Permission("volunteerRequests.CreateRequest")]
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateRequest(

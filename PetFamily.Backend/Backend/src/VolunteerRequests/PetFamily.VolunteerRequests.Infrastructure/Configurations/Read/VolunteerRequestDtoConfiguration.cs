@@ -15,7 +15,7 @@ public class VolunteerRequestDtoConfiguration : IEntityTypeConfiguration<Volunte
         builder.Property(v => v.Id)
             .IsRequired()
             .HasColumnName("id");
-        
+
         builder.Property(v => v.AdminId)
             .IsRequired(false)
             .HasColumnName("admin_id");
@@ -27,7 +27,7 @@ public class VolunteerRequestDtoConfiguration : IEntityTypeConfiguration<Volunte
         builder.Property(v => v.VolunteerInfo)
             .IsRequired()
             .HasColumnName("volunteer_info");
-        
+
         builder.Property(s => s.Status)
             .IsRequired()
             .HasColumnName("status");
@@ -35,11 +35,11 @@ public class VolunteerRequestDtoConfiguration : IEntityTypeConfiguration<Volunte
         builder.Property(v => v.CreatedAt)
             .IsRequired()
             .HasColumnName("created_at");
-        
+
         builder.Property(v => v.RejectedAt)
             .IsRequired(false)
             .HasColumnName("rejected_at");
-        
+
         builder.Property(v => v.RevisionComment)
             .IsRequired(false)
             .HasColumnName("revision_comment");

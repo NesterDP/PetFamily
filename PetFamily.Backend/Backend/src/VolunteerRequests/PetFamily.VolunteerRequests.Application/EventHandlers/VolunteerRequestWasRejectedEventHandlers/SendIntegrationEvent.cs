@@ -1,4 +1,3 @@
-using MassTransit;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,10 +31,10 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasReje
             domainEvent.UserId,
             domainEvent.AdminId,
             domainEvent.RequestId);
-        
+
         await _outboxRepository.Add(integrationEvent, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Integration event \"VolunteerRequestWasRejectedEvent\" was saved in database");
     }
 }

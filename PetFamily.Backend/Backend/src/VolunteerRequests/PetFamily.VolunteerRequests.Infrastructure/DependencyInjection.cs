@@ -32,17 +32,18 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>(_ =>
-            new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<WriteDbContext>(
+            _ =>
+                new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
 
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<IReadDbContext, ReadDbContext>(
+            _ =>
+                new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
 
         return services;
     }
 
-    private static IServiceCollection AddTransactionManagement(
-        this IServiceCollection services)
+    private static IServiceCollection AddTransactionManagement(this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.VolunteerRequests);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
@@ -51,8 +52,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddRepositories(
-        this IServiceCollection services)
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
         services.AddScoped<ITestEntitiesRepository, TestEntitiesRepository>();
@@ -60,36 +60,36 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddMediatrService(
-        this IServiceCollection services)
+    private static IServiceCollection AddMediatrService(this IServiceCollection services)
     {
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(TestEntityCreationWithTrueStatus).Assembly);
-        });
+        services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(TestEntityCreationWithTrueStatus).Assembly);
+            });
 
         return services;
     }
 
-    private static IServiceCollection AddOutbox(this IServiceCollection services)
+    private static void AddOutbox(this IServiceCollection services)
     {
         services.AddScoped<ProcessOutboxMessagesService>();
 
-        services.AddQuartz(configure =>
-        {
-            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+        services.AddQuartz(
+            configure =>
+            {
+                var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
 
-            configure
-                .AddJob<ProcessOutboxMessagesJob>(jobKey)
-                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
-                    schedule => schedule.WithIntervalInSeconds(
-                            InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS)
-                        .RepeatForever()));
-        });
+                configure
+                    .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                    .AddTrigger(
+                        trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                            schedule => schedule.WithIntervalInSeconds(
+                                    InfrastructureConstants.OUTBOX_TASK_WORKING_INTERVAL_IN_SECONDS)
+                                .RepeatForever()));
+            });
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-        return services;
     }
 }

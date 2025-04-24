@@ -20,10 +20,10 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
                 value => VolunteerRequestId.Create(value))
             .IsRequired()
             .HasColumnName("id");
-        
+
         builder.Property(v => v.AdminId)
             .HasConversion(
-                id => id.Value,
+                id => id!.Value,
                 value => AdminId.Create(value))
             .IsRequired(false)
             .HasColumnName("admin_id");
@@ -35,32 +35,36 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
             .IsRequired()
             .HasColumnName("user_id");
 
-        builder.ComplexProperty(v => v.VolunteerInfo, vb =>
-        {
-            vb.Property(v => v.Value)
-                .IsRequired()
-                .HasColumnName("volunteer_info");
-        });
-        
-        builder.ComplexProperty(v => v.Status, sb =>
-        {
-            sb.Property(s => s.Value)
-                .IsRequired()
-                .HasConversion<string>()
-                .HasColumnName("status");
-        });
+        builder.ComplexProperty(
+            v => v.VolunteerInfo,
+            vb =>
+            {
+                vb.Property(v => v.Value)
+                    .IsRequired()
+                    .HasColumnName("volunteer_info");
+            });
+
+        builder.ComplexProperty(
+            v => v.Status,
+            sb =>
+            {
+                sb.Property(s => s.Value)
+                    .IsRequired()
+                    .HasConversion<string>()
+                    .HasColumnName("status");
+            });
 
         builder.Property(v => v.CreatedAt)
             .IsRequired()
             .HasColumnName("created_at");
-        
+
         builder.Property(v => v.RejectedAt)
             .IsRequired(false)
             .HasColumnName("rejected_at");
-        
+
         builder.Property(v => v.RevisionComment)
             .HasConversion(
-                revisionComment => revisionComment.Value,
+                revisionComment => revisionComment!.Value,
                 value => RevisionComment.Create(value).Value)
             .IsRequired(false)
             .HasColumnName("revision_comment");

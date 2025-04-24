@@ -11,7 +11,7 @@ public class RequireRevisionCommandValidator : AbstractValidator<RequireRevision
     {
         RuleFor(c => c.RequestId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RequestId"));
-        
+
         RuleFor(c => c.AdminId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("AdminId"));
 

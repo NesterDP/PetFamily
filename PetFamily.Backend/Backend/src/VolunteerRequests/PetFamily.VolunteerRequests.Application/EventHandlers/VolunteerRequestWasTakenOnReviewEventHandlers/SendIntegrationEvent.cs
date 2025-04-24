@@ -1,4 +1,3 @@
-using MassTransit;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,7 +31,7 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasTake
             domainEvent.UserId,
             domainEvent.AdminId,
             domainEvent.RequestId);
-        
+
         await _outboxRepository.Add(integrationEvent, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

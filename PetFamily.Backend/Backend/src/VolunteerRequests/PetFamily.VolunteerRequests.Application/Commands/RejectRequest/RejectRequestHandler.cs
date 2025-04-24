@@ -47,7 +47,7 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
         var requestId = VolunteerRequestId.Create(command.RequestId);
 
         var adminId = AdminId.Create(command.AdminId);
-        
+
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -61,13 +61,13 @@ public class RejectRequestHandler : ICommandHandler<Guid, RejectRequestCommand>
             var result = request.Value.SetRejected(adminId);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
-        
+
             _logger.LogInformation(
                 "Admin with ID = {ID1} rejected request with ID = {ID2}", adminId.Value, requestId.Value);
 

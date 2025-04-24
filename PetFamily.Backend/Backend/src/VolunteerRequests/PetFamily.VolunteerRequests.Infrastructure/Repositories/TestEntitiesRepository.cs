@@ -12,7 +12,7 @@ public class TestEntitiesRepository : ITestEntitiesRepository
     {
         _context = dbContext;
     }
-    
+
     public async Task<Guid> AddAsync(TestEntity testEntity, CancellationToken cancellationToken = default)
     {
         await _context.TestEntities.AddAsync(testEntity, cancellationToken);

@@ -4,5 +4,5 @@ namespace PetFamily.VolunteerRequests.Presentation.VolunteerRequests.Requests;
 
 public record GetUnhandledRequestsRequest(int Page, int PageSize)
 {
-    public GetUnhandledRequestsQuery ToQuery() => new (Page, PageSize);
+    public GetUnhandledRequestsQuery ToQuery() => new(Page, PageSize);
 }

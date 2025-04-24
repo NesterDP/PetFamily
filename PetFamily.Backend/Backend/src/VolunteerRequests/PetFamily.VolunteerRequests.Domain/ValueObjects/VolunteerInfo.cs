@@ -17,7 +17,7 @@ public record VolunteerInfo
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length > DomainConstants.MAX_HIGH_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("VolunteerInfo");
-        
+
         return new VolunteerInfo(value);
     }
 }

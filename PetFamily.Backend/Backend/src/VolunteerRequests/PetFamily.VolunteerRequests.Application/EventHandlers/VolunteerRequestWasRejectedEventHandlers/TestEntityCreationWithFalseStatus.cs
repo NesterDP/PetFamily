@@ -9,7 +9,6 @@ using PetFamily.VolunteerRequests.Domain.Events;
 
 namespace PetFamily.VolunteerRequests.Application.EventHandlers.VolunteerRequestWasRejectedEventHandlers;
 
-
 public class TestEntityCreationWithFalseStatus : INotificationHandler<VolunteerRequestWasRejectedEvent>
 {
     private readonly ITestEntitiesRepository _repository;

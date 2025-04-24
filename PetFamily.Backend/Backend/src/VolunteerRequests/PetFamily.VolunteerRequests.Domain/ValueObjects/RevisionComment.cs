@@ -17,7 +17,7 @@ public record RevisionComment
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length > DomainConstants.MAX_MEDIUM_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("RejectionComment");
-        
+
         return new RevisionComment(value);
     }
 }

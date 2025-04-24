@@ -10,22 +10,32 @@ namespace PetFamily.VolunteerRequests.Domain.Entities;
 public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 {
     public AdminId? AdminId { get; private set; }
-    public UserId UserId { get; private set; }
-    public VolunteerInfo VolunteerInfo { get; private set; }
-    public VolunteerRequestStatus Status { get; private set; }
+
+    public UserId UserId { get; private set; } = null!;
+
+    public VolunteerInfo VolunteerInfo { get; private set; } = null!;
+
+    public VolunteerRequestStatus Status { get; private set; } = null!;
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-    public RevisionComment? RevisionComment { get; private set; }
-    
-    public DateTime? RejectedAt { get; private set; }
-    
-    private VolunteerRequest(VolunteerRequestId id) : base(id) { } // ef core
 
-    public VolunteerRequest(VolunteerRequestId id, UserId userId, VolunteerInfo volunteerInfo) : base(id)
+    public RevisionComment? RevisionComment { get; private set; }
+
+    public DateTime? RejectedAt { get; private set; }
+
+    public VolunteerRequest(VolunteerRequestId id, UserId userId, VolunteerInfo volunteerInfo)
+        : base(id)
     {
         UserId = userId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
         VolunteerInfo = volunteerInfo;
+    }
+
+    // ef core
+    // ReSharper disable once UnusedMember.Local
+    private VolunteerRequest(VolunteerRequestId id)
+        : base(id)
+    {
     }
 
     public UnitResult<Error> SetSubmitted(VolunteerInfo volunteerInfo)
@@ -39,7 +49,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Submitted).Value;
         VolunteerInfo = volunteerInfo;
-        
+
         // добавляем доменное событие - заявка была исправлена
         if (RevisionComment is not null)
             AddDomainEvent(new VolunteerRequestWasAmendedEvent(UserId, AdminId!.Value, Id));
@@ -57,7 +67,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
 
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.OnReview).Value;
-        
+
         // добавляем доменное событие - заявка взята на рассмотрение
         AddDomainEvent(new VolunteerRequestWasTakenOnReviewEvent(UserId, AdminId, Id));
 
@@ -75,7 +85,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.RevisionRequired).Value;
         RevisionComment = revisionComment;
-        
+
         // добавляем доменное событие - заявка отправлена на доработку
         AddDomainEvent(new VolunteerRequestRequiredRevisionEvent(UserId, adminId, Id));
 
@@ -93,7 +103,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         AdminId = adminId;
         Status = VolunteerRequestStatus.Create(VolunteerRequestStatusEnum.Rejected).Value;
         RejectedAt = DateTime.UtcNow;
-        
+
         // добавляем доменное событие - заявка отклонена
         AddDomainEvent(new VolunteerRequestWasRejectedEvent(UserId, AdminId, Id));
 

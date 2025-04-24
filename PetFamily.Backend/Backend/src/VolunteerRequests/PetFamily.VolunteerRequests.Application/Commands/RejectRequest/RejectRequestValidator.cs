@@ -10,7 +10,7 @@ public class RejectRequestCommandValidator : AbstractValidator<RejectRequestComm
     {
         RuleFor(c => c.RequestId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RequestId"));
-        
+
         RuleFor(c => c.AdminId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("AdminId"));
     }

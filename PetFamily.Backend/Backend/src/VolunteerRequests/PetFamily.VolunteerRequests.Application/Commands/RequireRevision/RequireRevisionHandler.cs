@@ -48,9 +48,9 @@ public class RequireRevisionHandler : ICommandHandler<Guid, RequireRevisionComma
         var requestId = VolunteerRequestId.Create(command.RequestId);
 
         var adminId = AdminId.Create(command.AdminId);
-        
+
         var revisionComment = RevisionComment.Create(command.RevisionComment).Value;
-        
+
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -64,7 +64,7 @@ public class RequireRevisionHandler : ICommandHandler<Guid, RequireRevisionComma
             var result = request.Value.SetRevisionRequired(adminId, revisionComment);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
-        
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);

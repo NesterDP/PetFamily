@@ -61,7 +61,7 @@ public class ApproveRequestHandler : ICommandHandler<Guid, ApproveRequestCommand
             var result = request.Value.SetApproved(adminId);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
-            
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _publisher.PublishDomainEvents(request.Value, cancellationToken);

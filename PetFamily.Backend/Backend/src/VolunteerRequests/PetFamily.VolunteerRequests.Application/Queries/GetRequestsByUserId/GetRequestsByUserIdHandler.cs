@@ -22,12 +22,13 @@ public class GetRequestsByUserIdHandler
     {
         var volunteerRequestsQuery = _readDbContext.VolunteerRequests;
 
-        volunteerRequestsQuery = volunteerRequestsQuery.Where(v =>
-            v.UserId == query.UserId);
-        
+        volunteerRequestsQuery = volunteerRequestsQuery.Where(
+            v =>
+                v.UserId == query.UserId);
+
         volunteerRequestsQuery = volunteerRequestsQuery.WhereIf(
             query.Status != null,
-            p => (p.Status == query.Status!));
+            p => p.Status == query.Status!);
 
         return await volunteerRequestsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

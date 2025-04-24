@@ -1,4 +1,3 @@
-using MassTransit;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +13,6 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasAppr
     private readonly ILogger<SendIntegrationEvent> _logger;
     private readonly IOutboxRepository _outboxRepository;
     private readonly IUnitOfWork _unitOfWork;
-
 
     public SendIntegrationEvent(
         ILogger<SendIntegrationEvent> logger,
@@ -33,10 +31,10 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestWasAppr
             domainEvent.UserId,
             domainEvent.AdminId,
             domainEvent.RequestId);
-        
+
         await _outboxRepository.Add(integrationEvent, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Integration event \"VolunteerRequestWasApprovedEvent\" was saved in database");
     }
 }

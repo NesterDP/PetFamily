@@ -14,7 +14,6 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestRequire
     private readonly IOutboxRepository _outboxRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-
     public SendIntegrationEvent(
         ILogger<SendIntegrationEvent> logger,
         IOutboxRepository outboxRepository,
@@ -32,10 +31,10 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestRequire
             domainEvent.UserId,
             domainEvent.AdminId,
             domainEvent.RequestId);
-        
+
         await _outboxRepository.Add(integrationEvent, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Integration event \"VolunteerRequestRequiredRevisionEvent\" was saved in database");
     }
 }

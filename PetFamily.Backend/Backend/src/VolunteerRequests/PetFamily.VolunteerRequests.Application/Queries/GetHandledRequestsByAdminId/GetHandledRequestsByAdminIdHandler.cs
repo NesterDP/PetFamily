@@ -22,9 +22,10 @@ public class GetHandledRequestsByAdminIdHandler
     {
         var volunteerRequestsQuery = _readDbContext.VolunteerRequests;
 
-        volunteerRequestsQuery = volunteerRequestsQuery.Where(v =>
-            v.AdminId == query.AdminId &&
-            v.Status == query.Status);
+        volunteerRequestsQuery = volunteerRequestsQuery.Where(
+            v =>
+                v.AdminId == query.AdminId &&
+                v.Status == query.Status);
 
         return await volunteerRequestsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

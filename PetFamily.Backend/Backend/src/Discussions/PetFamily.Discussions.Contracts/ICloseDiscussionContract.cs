@@ -4,7 +4,6 @@ using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Discussions.Contracts;
 
-
 public interface ICloseDiscussionContract
 {
     public Task<Result<Guid, ErrorList>> CloseDiscussion(

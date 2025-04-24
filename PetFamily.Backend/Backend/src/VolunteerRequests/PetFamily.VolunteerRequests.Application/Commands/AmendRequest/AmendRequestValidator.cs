@@ -11,7 +11,7 @@ public class ReviseRequestCommandValidator : AbstractValidator<AmendRequestComma
     {
         RuleFor(c => c.RequestId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RequestId"));
-        
+
         RuleFor(c => c.UserId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("UserId"));
 

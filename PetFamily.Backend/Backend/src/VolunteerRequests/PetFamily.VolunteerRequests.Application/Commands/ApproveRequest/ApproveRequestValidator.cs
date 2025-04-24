@@ -10,7 +10,7 @@ public class ApproveRequestCommandValidator : AbstractValidator<ApproveRequestCo
     {
         RuleFor(c => c.RequestId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RequestId"));
-        
+
         RuleFor(c => c.AdminId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("AdminId"));
     }
