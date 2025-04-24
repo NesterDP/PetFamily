@@ -10,8 +10,7 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public PermissionRequirementHandler(
-        IServiceScopeFactory scopeFactory)
+    public PermissionRequirementHandler(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }

@@ -13,14 +13,14 @@ public static class ValidationExtensions
     {
         return ruleBuilder.Custom(
             (value, context) =>
-        {
-            Result<TValueObject, Error> result = factoryMethod(value);
+            {
+                Result<TValueObject, Error> result = factoryMethod(value);
 
-            if(result.IsSuccess)
-                return;
+                if (result.IsSuccess)
+                    return;
 
-            context.AddFailure(result.Error.Serialize());
-        });
+                context.AddFailure(result.Error.Serialize());
+            });
     }
 
     public static IRuleBuilderOptions<T, TElement> WithError<T, TElement>(

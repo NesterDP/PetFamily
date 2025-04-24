@@ -9,6 +9,7 @@ public record SocialNetworkDto
     }
 
     public string Name { get; set; } = string.Empty;
+
     public string Link { get; set; } = string.Empty;
 
     public void Deconstruct(out string name, out string link)

@@ -14,7 +14,7 @@ public class UserId : ValueObject, IComparable<UserId>
 
     public static UserId Create(Guid id) => new(id);
 
-    public static implicit operator UserId(Guid userId) => new (userId);
+    public static implicit operator UserId(Guid userId) => new(userId);
 
     public static implicit operator Guid(UserId userId) => userId.Value;
 

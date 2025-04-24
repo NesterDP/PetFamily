@@ -14,7 +14,7 @@ public class AdminId : ValueObject, IComparable<AdminId>
 
     public static AdminId Create(Guid id) => new(id);
 
-    public static implicit operator AdminId(Guid adminId) => new (adminId);
+    public static implicit operator AdminId(Guid adminId) => new(adminId);
 
     public static implicit operator Guid(AdminId adminId) => adminId.Value;
 

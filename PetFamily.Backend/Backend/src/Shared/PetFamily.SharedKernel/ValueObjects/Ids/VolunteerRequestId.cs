@@ -14,7 +14,7 @@ public class VolunteerRequestId : ValueObject, IComparable<VolunteerRequestId>
 
     public static VolunteerRequestId Create(Guid id) => new(id);
 
-    public static implicit operator VolunteerRequestId(Guid volunteerRequestId) => new (volunteerRequestId);
+    public static implicit operator VolunteerRequestId(Guid volunteerRequestId) => new(volunteerRequestId);
 
     public static implicit operator Guid(VolunteerRequestId volunteerRequestId) => volunteerRequestId.Value;
 

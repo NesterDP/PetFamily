@@ -24,8 +24,8 @@ public class UserScopedData
         // ReSharper disable once PossibleMultipleEnumeration
         Roles.AddRange(
             claims
-            .Where(c => c.Type == CustomClaims.ROLE)
-            .Select(c => c.Value));
+                .Where(c => c.Type == CustomClaims.ROLE)
+                .Select(c => c.Value));
     }
 
     public UnitResult<Error> ConfirmRoleExlusivity(string roleName)

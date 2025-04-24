@@ -32,6 +32,5 @@ public class FullName
 
         var validFullname = new FullName(firstName, lastName, surname);
         return validFullname;
-
     }
 }

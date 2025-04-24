@@ -21,8 +21,8 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {
         return Task.FromResult(
             new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build());
+                .RequireAuthenticatedUser()
+                .Build());
     }
 
     public Task<AuthorizationPolicy?> GetFallbackPolicyAsync()

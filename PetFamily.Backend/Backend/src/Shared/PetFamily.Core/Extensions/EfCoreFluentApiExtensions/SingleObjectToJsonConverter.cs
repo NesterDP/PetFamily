@@ -15,7 +15,7 @@ public static class SingleObjectToJsonConverter
                 valueObject => SerializeObjectToJson(valueObject, toDtoSelector),
                 json => DeserializeObjectFromJson(json, toValueObjectSelector))
 
-                // CreateValueObjectComparer<TValueObject>())
+            // CreateValueObjectComparer<TValueObject>())
             .HasColumnType("jsonb");
     }
 

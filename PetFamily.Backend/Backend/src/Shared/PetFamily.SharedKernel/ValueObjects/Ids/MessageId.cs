@@ -14,7 +14,7 @@ public class MessageId : ValueObject, IComparable<MessageId>
 
     public static MessageId Create(Guid id) => new(id);
 
-    public static implicit operator MessageId(Guid messageId) => new (messageId);
+    public static implicit operator MessageId(Guid messageId) => new(messageId);
 
     public static implicit operator Guid(MessageId messageId) => messageId.Value;
 

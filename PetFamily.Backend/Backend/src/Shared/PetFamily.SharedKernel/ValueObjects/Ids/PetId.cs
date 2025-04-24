@@ -14,7 +14,7 @@ public class PetId : ValueObject, IComparable<PetId>
 
     public static PetId Create(Guid id) => new(id);
 
-    public static implicit operator PetId(Guid petId) => new (petId);
+    public static implicit operator PetId(Guid petId) => new(petId);
 
     public static implicit operator Guid(PetId petId) => petId.Value;
 

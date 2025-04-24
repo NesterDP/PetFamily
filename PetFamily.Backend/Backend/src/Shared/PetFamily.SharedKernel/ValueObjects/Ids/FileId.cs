@@ -14,7 +14,7 @@ public class FileId : ValueObject, IComparable<FileId>
 
     public static FileId Create(Guid id) => new(id);
 
-    public static implicit operator FileId(Guid fileId) => new (fileId);
+    public static implicit operator FileId(Guid fileId) => new(fileId);
 
     public static implicit operator Guid(FileId fileId) => fileId.Value;
 

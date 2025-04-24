@@ -17,7 +17,7 @@ public class FilePath
     public static Result<FilePath, Error> Create(Guid path, string extension)
     {
         // if (string.IsNullOrWhiteSpace(extension) || extension.Length > Constants.MAX_EXTENSION_LENGTH)
-            // return Result.Failure<FilePath, Error>(Errors.General.ValueIsInvalid("file extension"));
+        // return Result.Failure<FilePath, Error>(Errors.General.ValueIsInvalid("file extension"));
         string? fullPath = path + extension;
 
         return new FilePath(fullPath);

@@ -3,8 +3,11 @@ namespace PetFamily.SharedKernel.CustomErrors;
 public record Error
 {
     private const string SEPARATOR = "||";
+
     public string Code { get; }
+
     public string Message { get; }
+
     public ErrorType Type { get; }
 
     // ReSharper disable once UnusedMember.Global
@@ -35,13 +38,13 @@ public record Error
 
     public string Serialize()
     {
-        return string.Join(SEPARATOR, Code, Message, Type );
+        return string.Join(SEPARATOR, Code, Message, Type);
     }
 
     public static Error Deserialize(string serialized)
     {
         string[] parts = serialized.Split("||");
-        if(parts.Length < 3)
+        if (parts.Length < 3)
             throw new ArgumentException($"Invalid error format: {serialized}");
 
         if (Enum.TryParse<ErrorType>(parts[2], out var type) == false)

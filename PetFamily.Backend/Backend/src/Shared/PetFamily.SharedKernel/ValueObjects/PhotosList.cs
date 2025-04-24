@@ -6,6 +6,7 @@ namespace PetFamily.SharedKernel.ValueObjects;
 public record PhotosList
 {
     private readonly List<Photo> _photos = null!;
+
     public IReadOnlyList<Photo> Photos => _photos;
 
     // ef core

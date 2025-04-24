@@ -10,7 +10,9 @@ public abstract class SoftDeletableEntity<TId> : Entity<TId>
     public DateTime? DeletionDate { get; private set; }
 
     protected SoftDeletableEntity(TId id)
-        : base(id) { }
+        : base(id)
+    {
+    }
 
     public virtual void Delete()
     {

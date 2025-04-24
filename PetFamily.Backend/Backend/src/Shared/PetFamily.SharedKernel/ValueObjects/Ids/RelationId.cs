@@ -14,7 +14,7 @@ public class RelationId : ValueObject, IComparable<RelationId>
 
     public static RelationId Create(Guid id) => new(id);
 
-    public static implicit operator RelationId(Guid relationId) => new (relationId);
+    public static implicit operator RelationId(Guid relationId) => new(relationId);
 
     public static implicit operator Guid(RelationId relationId) => relationId.Value;
 

@@ -11,6 +11,7 @@ public record Photo
     public static readonly string[] AllowedTypes = [DomainConstants.PNG, DomainConstants.JPG, DomainConstants.WEBP];
 
     public FileId Id { get; }
+
     public bool Main { get; }
 
     private Photo(FileId id) => Id = id;
@@ -50,7 +51,7 @@ public record Photo
 
     public int CompareTo(object? o)
     {
-        if(o is Photo photo) return Id.CompareTo(photo.Id);
+        if (o is Photo photo) return Id.CompareTo(photo.Id);
         throw new ArgumentException("Incorrect value of compared item");
     }
 }

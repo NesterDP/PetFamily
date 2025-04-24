@@ -14,7 +14,7 @@ public class SpeciesId : ValueObject, IComparable<SpeciesId>
 
     public static SpeciesId Create(Guid id) => new(id);
 
-    public static implicit operator SpeciesId(Guid speciesId) => new (speciesId);
+    public static implicit operator SpeciesId(Guid speciesId) => new(speciesId);
 
     public static implicit operator Guid(SpeciesId speciesId) => speciesId.Value;
 

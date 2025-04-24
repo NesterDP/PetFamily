@@ -14,7 +14,7 @@ public class DiscussionId : ValueObject, IComparable<DiscussionId>
 
     public static DiscussionId Create(Guid id) => new(id);
 
-    public static implicit operator DiscussionId(Guid discussionId) => new (discussionId);
+    public static implicit operator DiscussionId(Guid discussionId) => new(discussionId);
 
     public static implicit operator Guid(DiscussionId discussionId) => discussionId.Value;
 
