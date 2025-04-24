@@ -40,9 +40,9 @@ public class CloseDiscussionHandler : ICommandHandler<Guid, CloseDiscussionComma
             return validationResult.ToErrorList();
 
         var relationId = RelationId.Create(command.RelationId);
-        
+
         var userId = UserId.Create(command.UserId);
-       
+
         var discussion = await _discussionsRepository
             .GetByRelationIdAsync(relationId, cancellationToken);
 
@@ -52,9 +52,9 @@ public class CloseDiscussionHandler : ICommandHandler<Guid, CloseDiscussionComma
         var result = discussion.Value.Close(userId);
         if (result.IsFailure)
             return Errors.General.Conflict("only members of discussion can close it").ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         _logger.LogInformation("Discussion with Id = {ID} has been closed", discussion.Value.Id.Value);
 
         return discussion.Value.Id.Value;

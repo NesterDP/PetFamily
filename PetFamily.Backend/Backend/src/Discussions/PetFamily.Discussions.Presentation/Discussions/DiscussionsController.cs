@@ -13,11 +13,12 @@ namespace PetFamily.Discussions.Presentation.Discussions;
 public class DiscussionsController : ApplicationController
 {
     private readonly UserScopedData _userData;
+
     public DiscussionsController(UserScopedData userData)
     {
         _userData = userData;
     }
-    
+
     [Permission("discussions.GetDiscussion")]
     [HttpGet("{relationId:guid}")]
     public async Task<ActionResult<Guid>> GetDiscussion(
@@ -29,8 +30,8 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(query, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Permission( "discussions.AddMessage")]
+
+    [Permission("discussions.AddMessage")]
     [HttpPost("{relationId:guid}/message")]
     public async Task<ActionResult<Guid>> AddMessage(
         [FromRoute] Guid relationId,
@@ -42,7 +43,7 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
+
     [Permission("discussions.CloseDiscussion")]
     [HttpPut("{relationId:guid}")]
     public async Task<ActionResult<Guid>> CloseDiscussion(
@@ -54,8 +55,8 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Permission( "discussions.EditMessage")]
+
+    [Permission("discussions.EditMessage")]
     [HttpPut("{relationId:guid}/message/{messageId:guid}")]
     public async Task<ActionResult<Guid>> EditMessage(
         [FromRoute] Guid relationId,
@@ -68,8 +69,8 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
-    [Permission( "discussions.RemoveMessage")]
+
+    [Permission("discussions.RemoveMessage")]
     [HttpDelete("{relationId:guid}/message/{messageId:guid}")]
     public async Task<ActionResult<Guid>> RemoveMessage(
         [FromRoute] Guid relationId,
@@ -81,5 +82,4 @@ public class DiscussionsController : ApplicationController
         var result = await handler.HandleAsync(command, cancellationToken);
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
-    
 }

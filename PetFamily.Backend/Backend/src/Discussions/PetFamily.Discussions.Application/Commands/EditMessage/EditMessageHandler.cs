@@ -11,6 +11,7 @@ using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Discussions.Application.Commands.EditMessage;
+
 public class EditMessageHandler : ICommandHandler<Guid, EditMessageCommand>
 {
     private readonly IDiscussionsRepository _discussionsRepository;
@@ -40,22 +41,22 @@ public class EditMessageHandler : ICommandHandler<Guid, EditMessageCommand>
             return validationResult.ToErrorList();
 
         var relationId = RelationId.Create(command.RelationId);
-        
+
         var messageId = MessageId.Create(command.MessageId);
 
         var userId = UserId.Create(command.UserId);
 
         var newMessageText = MessageText.Create(command.NewMessageText).Value;
-        
+
         var discussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (discussion.IsFailure)
             return Errors.General.ValueNotFound(relationId).ToErrorList();
-        
+
         var result = discussion.Value.EditMessage(userId, messageId, newMessageText);
-        
+
         if (result.IsFailure)
             return result.Error.ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(

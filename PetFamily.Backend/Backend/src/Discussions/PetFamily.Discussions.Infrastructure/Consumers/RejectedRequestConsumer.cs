@@ -24,7 +24,7 @@ public class RejectedRequestConsumer : IConsumer<VolunteerRequestWasRejectedEven
         var request = new CloseDiscussionRequest(context.Message.RequestId, context.Message.UserId);
 
         var result = await _discussionContract.CloseDiscussion(request, CancellationToken.None);
-        
+
         if (result.IsSuccess)
             _logger.LogInformation("Successfully closed discussion with ID = {ID}", result.Value);
         else

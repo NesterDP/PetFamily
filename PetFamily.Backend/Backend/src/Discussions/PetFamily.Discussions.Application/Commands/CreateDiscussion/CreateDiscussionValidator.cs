@@ -10,7 +10,7 @@ public class CreateDiscussionCommandValidator : AbstractValidator<CreateDiscussi
     {
         RuleFor(c => c.RelationId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RelationId"));
-        
+
         RuleForEach(c => c.UserIds)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("UserId"));
     }

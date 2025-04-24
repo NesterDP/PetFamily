@@ -25,7 +25,7 @@ public class OnReviewRequestConsumer : IConsumer<VolunteerRequestWasTakenOnRevie
         var request = new CreateDiscussionRequest(context.Message.RequestId, userIds);
 
         var result = await _discussionContract.CreateDiscussion(request, CancellationToken.None);
-        
+
         if (result.IsSuccess)
             _logger.LogInformation("Successfully created discussion with ID = {ID}", result.Value);
         else

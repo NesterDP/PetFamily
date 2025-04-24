@@ -12,6 +12,7 @@ using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Discussions.Application.Commands.AddMessage;
+
 public class AddMessageHandler : ICommandHandler<Guid, AddMessageCommand>
 {
     private readonly IDiscussionsRepository _discussionsRepository;
@@ -45,18 +46,18 @@ public class AddMessageHandler : ICommandHandler<Guid, AddMessageCommand>
         var userId = UserId.Create(command.UserId);
 
         var messageText = MessageText.Create(command.MessageText).Value;
-        
+
         var message = new Message(messageText, userId);
 
         var discussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (discussion.IsFailure)
             return Errors.General.ValueNotFound(relationId).ToErrorList();
-        
+
         var result = discussion.Value.AddMessage(message);
-        
+
         if (result.IsFailure)
             return result.Error.ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(

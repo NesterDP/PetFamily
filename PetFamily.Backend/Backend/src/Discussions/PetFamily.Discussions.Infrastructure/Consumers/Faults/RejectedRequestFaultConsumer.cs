@@ -7,8 +7,7 @@ public class RejectedRequestFaultConsumer : IConsumer<Fault<VolunteerRequestWasR
 {
     public Task Consume(ConsumeContext<Fault<VolunteerRequestWasRejectedEvent>> context)
     {
-        var userId = context.Message.Message.UserId;
-        
+        // var userId = context.Message.Message.UserId;
         return Task.CompletedTask;
     }
 }

@@ -17,7 +17,7 @@ public record MessageText
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length > DomainConstants.MAX_MEDIUM_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("MessageText");
-        
+
         return new MessageText(value);
     }
 }

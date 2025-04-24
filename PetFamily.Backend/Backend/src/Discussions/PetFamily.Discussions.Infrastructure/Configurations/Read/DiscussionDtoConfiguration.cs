@@ -28,7 +28,7 @@ public class DiscussionDtoConfiguration : IEntityTypeConfiguration<DiscussionDto
             .IsRequired()
             .HasColumnName("user_ids")
             .HasColumnType("jsonb");
-        
+
         builder.HasMany(d => d.Messages)
             .WithOne()
             .HasForeignKey("discussion_id")
@@ -36,7 +36,7 @@ public class DiscussionDtoConfiguration : IEntityTypeConfiguration<DiscussionDto
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Navigation(d => d.Messages).AutoInclude();
-        
+
         builder.Property(d => d.Status)
             .IsRequired()
             .HasConversion<string>()

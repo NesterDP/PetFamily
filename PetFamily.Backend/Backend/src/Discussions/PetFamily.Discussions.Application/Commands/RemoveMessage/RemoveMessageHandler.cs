@@ -40,20 +40,20 @@ public class RemoveMessageHandler : ICommandHandler<Guid, RemoveMessageCommand>
             return validationResult.ToErrorList();
 
         var relationId = RelationId.Create(command.RelationId);
-        
+
         var messageId = MessageId.Create(command.MessageId);
 
         var userId = UserId.Create(command.UserId);
-        
+
         var discussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (discussion.IsFailure)
             return Errors.General.ValueNotFound(relationId).ToErrorList();
-        
+
         var result = discussion.Value.RemoveMessage(userId, messageId);
-        
+
         if (result.IsFailure)
             return result.Error.ToErrorList();
-        
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(

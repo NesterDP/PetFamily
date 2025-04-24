@@ -1,9 +1,7 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Core.Extensions.EfCoreFluentApiExtensions;
 using PetFamily.Discussions.Domain.Entities;
-using PetFamily.Discussions.Domain.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 
 namespace PetFamily.Discussions.Infrastructure.Configurations.Write;
@@ -30,13 +28,15 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
             .IsRequired()
             .HasColumnName("relation_id");
 
-        builder.ComplexProperty(d => d.Status, sb =>
-        {
-            sb.Property(s => s.Value)
-                .IsRequired()
-                .HasConversion<string>()
-                .HasColumnName("status");
-        });
+        builder.ComplexProperty(
+            d => d.Status,
+            sb =>
+            {
+                sb.Property(s => s.Value)
+                    .IsRequired()
+                    .HasConversion<string>()
+                    .HasColumnName("status");
+            });
 
         builder.HasMany(d => d.Messages)
             .WithOne()

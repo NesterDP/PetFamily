@@ -49,17 +49,16 @@ public class CreateDiscussionHandler : ICommandHandler<Guid, CreateDiscussionCom
         var existedDiscussion = await _discussionsRepository.GetByRelationIdAsync(relationId, cancellationToken);
         if (existedDiscussion.IsSuccess)
             return Errors.General.AlreadyExist("Discussion with such relationId already exists").ToErrorList();
-        
+
         var discussion = Discussion.Create(relationId, userIds);
-        
+
         if (discussion.IsFailure)
             return discussion.Error.ToErrorList();
-        
+
         await _discussionsRepository.AddAsync(discussion.Value, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Created discussion with Id = {id}", discussion.Value.Id.Value);
+        _logger.LogInformation("Created discussion with Id = {id}", discussion.Value.Id.Value);
 
         return discussion.Value.Id.Value;
     }

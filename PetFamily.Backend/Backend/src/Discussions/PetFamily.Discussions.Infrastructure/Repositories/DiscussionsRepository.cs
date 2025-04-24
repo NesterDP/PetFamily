@@ -28,14 +28,15 @@ public class DiscussionsRepository : IDiscussionsRepository
         _context.Discussions.Attach(discussion);
         return discussion.Id.Value;
     }
-    
+
     public Guid Delete(Discussion discussion, CancellationToken cancellationToken = default)
     {
         _context.Discussions.Remove(discussion);
         return discussion.Id.Value;
     }
 
-    public async Task<Result<Discussion, Error>> GetByIdAsync(DiscussionId id,
+    public async Task<Result<Discussion, Error>> GetByIdAsync(
+        DiscussionId id,
         CancellationToken cancellationToken = default)
     {
         var discussion = await _context.Discussions
@@ -47,7 +48,7 @@ public class DiscussionsRepository : IDiscussionsRepository
 
         return discussion;
     }
-    
+
     public async Task<Result<Discussion, Error>> GetByRelationIdAsync(
         RelationId relationId,
         CancellationToken cancellationToken = default)
@@ -55,7 +56,7 @@ public class DiscussionsRepository : IDiscussionsRepository
         var discussion = await _context.Discussions
             .Include(d => d.Messages)
             .FirstOrDefaultAsync(v => v.RelationId == relationId, cancellationToken);
-        
+
         if (discussion == null)
             return Errors.General.ValueNotFound();
 

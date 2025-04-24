@@ -11,7 +11,7 @@ public class AddMessageCommandValidator : AbstractValidator<AddMessageCommand>
     {
         RuleFor(c => c.RelationId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("RelationId"));
-        
+
         RuleFor(c => c.UserId)
             .NotEmpty().WithError(Errors.General.ValueIsRequired("UserId"));
 

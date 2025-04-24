@@ -26,17 +26,18 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>(_ =>
-            new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<WriteDbContext>(
+            _ =>
+                new WriteDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
 
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
+        services.AddScoped<IReadDbContext, ReadDbContext>(
+            _ =>
+                new ReadDbContext(configuration.GetConnectionString(InfrastructureConstants.DATABASE)!));
 
         return services;
     }
 
-    private static IServiceCollection AddTransactionManagement(
-        this IServiceCollection services)
+    private static IServiceCollection AddTransactionManagement(this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(UnitOfWorkSelector.Discussions);
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
@@ -45,8 +46,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddRepositories(
-        this IServiceCollection services)
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IDiscussionsRepository, DiscussionsRepository>();
         return services;
