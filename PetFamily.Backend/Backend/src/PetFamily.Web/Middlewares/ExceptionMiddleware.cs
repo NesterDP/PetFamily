@@ -23,9 +23,9 @@ public class ExceptionMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            
+
             var envelope = Envelope.Error(Error.Conflict("server.internal", ex.Message).ToErrorList());
-            
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(envelope);

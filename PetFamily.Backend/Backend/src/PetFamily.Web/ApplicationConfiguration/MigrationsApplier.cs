@@ -24,13 +24,13 @@ public static class MigrationsApplier
     public static void ApplyMigrations(this IApplicationBuilder builder)
     {
         var serviceProvider = builder.ApplicationServices;
-        
-        ApplyMigration<PetFamily.Volunteers.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
-        
-        ApplyMigration<PetFamily.Species.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
-        
+
+        ApplyMigration<Volunteers.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
+
+        ApplyMigration<Species.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
+
         ApplyMigration<AccountsDbContext>(serviceProvider);
-        
-        ApplyMigration<PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
+
+        ApplyMigration<VolunteerRequests.Infrastructure.DbContexts.WriteDbContext>(serviceProvider);
     }
 }

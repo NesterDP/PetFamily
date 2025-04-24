@@ -13,34 +13,38 @@ public static class MessageBusConfigurator
 {
     public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMassTransit(configure =>
-        {
-            configure.SetKebabCaseEndpointNameFormatter();
-
-            configure.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
-            configure.AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
-            configure.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
-            configure.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
-            configure.AddConsumer<BreedToPetExistenceEventConsumer>();
-            configure.AddConsumer<SpeciesToPetExistenceEventConsumer>();
-            configure.AddConsumer<BreedToSpeciesExistenceEventConsumer>();
-
-            configure.AddConsumer<RejectedRequestFaultConsumer>();
-
-            configure.UsingRabbitMq((context, cfg) =>
+        services.AddMassTransit(
+            configure =>
             {
-                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
-                {
-                    h.Username(configuration["RabbitMQ:UserName"]!);
-                    h.Password(configuration["RabbitMQ:Password"]!);
-                });
+                configure.SetKebabCaseEndpointNameFormatter();
 
-                cfg.Durable = true;
+                configure.AddConsumer<RejectedRequestConsumer, RejectedRequestConsumerDefinition>();
+                configure
+                    .AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
+                configure.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
+                configure.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
+                configure.AddConsumer<BreedToPetExistenceEventConsumer>();
+                configure.AddConsumer<SpeciesToPetExistenceEventConsumer>();
+                configure.AddConsumer<BreedToSpeciesExistenceEventConsumer>();
 
-                cfg.ConfigureEndpoints(context);
+                configure.AddConsumer<RejectedRequestFaultConsumer>();
+
+                configure.UsingRabbitMq(
+                    (context, cfg) =>
+                    {
+                        cfg.Host(
+                            new Uri(configuration["RabbitMQ:Host"]!), h =>
+                            {
+                                h.Username(configuration["RabbitMQ:UserName"]!);
+                                h.Password(configuration["RabbitMQ:Password"]!);
+                            });
+
+                        cfg.Durable = true;
+
+                        cfg.ConfigureEndpoints(context);
+                    });
             });
-        });
-        
+
         return services;
     }
 }

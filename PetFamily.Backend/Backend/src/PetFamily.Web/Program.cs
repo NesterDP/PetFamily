@@ -1,6 +1,8 @@
+// main application
+
 using FileService.Communication;
-using PetFamily.Web.Middlewares;
 using PetFamily.Web.ApplicationConfiguration;
+using PetFamily.Web.Middlewares;
 using Serilog;
 
 DotNetEnv.Env.Load("etc/.env");
@@ -46,7 +48,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -58,5 +59,6 @@ app.Run();
 
 namespace PetFamily.Web
 {
+    // ReSharper disable once PartialTypeWithSinglePart
     public partial class Program; // для доступа к этому классу в другом проекте (интеграционные тесты)
 }

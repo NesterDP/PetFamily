@@ -24,10 +24,10 @@ public static class ModulesAdder
             .AddAccountsInfrastructure(configuration)
             .AddAccountsApplication()
             .AddAccountsContracts();
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddVolunteersModule(this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -37,17 +37,17 @@ public static class ModulesAdder
 
         return services;
     }
-    
+
     public static IServiceCollection AddSpeciesModule(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddSpeciesInfrastructure(configuration)
             .AddSpeciesApplication()
             .AddSpeciesContracts();
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddVolunteerRequestsModule(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -56,10 +56,10 @@ public static class ModulesAdder
             .AddVolunteerRequestsInfrastructure(configuration)
             .AddVolunteerRequestsApplication()
             .AddVolunteerRequestsContracts();
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddDiscussionsModule(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -68,7 +68,7 @@ public static class ModulesAdder
             .AddDiscussionsInfrastructure(configuration)
             .AddDiscussionsApplication()
             .AddDiscussionsContracts();
-        
+
         return services;
     }
 

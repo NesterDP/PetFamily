@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using PetFamily.Accounts.Infrastructure;
 using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Web.ApplicationConfiguration;
