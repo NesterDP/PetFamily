@@ -5,6 +5,7 @@ using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
+// ReSharper disable CollectionNeverUpdated.Local
 namespace PetFamily.UnitTests;
 
 public class PetTests
@@ -36,7 +37,7 @@ public class PetTests
         var volunteer = CreateVolunteerWithPets(petsCount);
         var positionOfLastAdded = Position.Create(petsCount + 1).Value;
         var pet = CreatePet();
-        
+
         // Act
         var result = volunteer.AddPet(pet);
 
@@ -55,15 +56,14 @@ public class PetTests
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var secondPosition = Position.Create(2).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(secondPet, secondPosition);
@@ -76,24 +76,21 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(4);
         fifthPet.Position.Value.Should().Be(5);
     }
-    
-    
-    
+
     [Fact]
     public void Move_Pet_Should_Move_Other_Pets_Forward_When_New_Position_Is_Lower()
     {
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var secondPosition = Position.Create(2).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(fourthPet, secondPosition);
@@ -106,22 +103,21 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(2);
         fifthPet.Position.Value.Should().Be(5);
     }
-    
+
     [Fact]
     public void Move_Pet_Should_Move_Other_Pets_Backward_When_New_Position_Is_Higher()
     {
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var fourthPosition = Position.Create(4).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(secondPet, fourthPosition);
@@ -134,22 +130,21 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(3);
         fifthPet.Position.Value.Should().Be(5);
     }
-    
+
     [Fact]
     public void Move_Pet_Should_Move_Other_Pets_Forward_When_New_Position_Is_First()
     {
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var firstPosition = Position.Create(1).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(fifthPet, firstPosition);
@@ -162,22 +157,21 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(5);
         fifthPet.Position.Value.Should().Be(1);
     }
-    
+
     [Fact]
     public void Move_Pet_Should_Move_Other_Pets_Backward_When_New_Position_Is_Last()
     {
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var fifthPosition = Position.Create(5).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(firstPet, fifthPosition);
@@ -190,22 +184,21 @@ public class PetTests
         fourthPet.Position.Value.Should().Be(3);
         fifthPet.Position.Value.Should().Be(4);
     }
-    
+
     [Fact]
     public void Move_Pet_Should_Move_Other_Pets_Backward_When_New_Position_Is_Beyond_Higher_Bound()
     {
         // Arrange
         const int petsCount = 5;
         var volunteer = CreateVolunteerWithPets(petsCount);
-        
+
         var positionTooHigh = Position.Create(100).Value;
-        
+
         var firstPet = volunteer.AllOwnedPets[0];
         var secondPet = volunteer.AllOwnedPets[1];
         var thirdPet = volunteer.AllOwnedPets[2];
         var fourthPet = volunteer.AllOwnedPets[3];
         var fifthPet = volunteer.AllOwnedPets[4];
-        
 
         // Act
         var result = volunteer.MovePet(firstPet, positionTooHigh);
@@ -242,7 +235,6 @@ public class PetTests
 
     private static Pet CreatePet()
     {
-        
         var petId = PetId.NewPetId();
         var name = Name.Create("testName").Value;
         var description = Description.Create("testDescription").Value;
@@ -282,12 +274,6 @@ public class PetTests
         return pet;
     }
 
-    private static List<Pet> CreatePetList(int count)
-    {
-        var pets = Enumerable.Range(1, count).Select(_ => CreatePet());
-        return pets.ToList();
-    }
-    
     private static Volunteer CreateVolunteerWithPets(int count)
     {
         var volunteer = CreateVolunteer();
