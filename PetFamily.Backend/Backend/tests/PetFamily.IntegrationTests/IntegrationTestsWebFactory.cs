@@ -129,7 +129,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         string workingDirectory = Environment.CurrentDirectory;
         string projectRootDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
-        string configPath = Path.Combine(projectRootDirectory, @"etc\testsettings.json");
+        string configPath = Path.Combine(projectRootDirectory, @"etc/testsettings.json");
 
         // DotNetEnv.Env.Load(configPath);
         builder.ConfigureAppConfiguration((_, config) => { config.AddJsonFile(configPath); });
