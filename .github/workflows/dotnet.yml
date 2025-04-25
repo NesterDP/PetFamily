@@ -27,15 +27,15 @@ jobs:
         
     - name: Restore dependencies
       run: |
-        dotnet restore ./Backend/backend.sln
-        dotent restore ./FileService/FileService.sln
-        dotnet restore ./NotificationService/NotificationService.sln
+        dotnet restore ./PetFamily.Backend/Backend/backend.sln
+        dotent restore ./PetFamily.Backend/FileService/FileService.sln
+        dotnet restore ./PetFamily.Backend/NotificationService/NotificationService.sln
       
     - name: Build
       run: |
-        dotnet build ./Backend/backend.sln --configuration Release --no-restore
-        dotent build ./FileService/FileService.sln --configuration Release --no-restore
-        dotnet build ./NotificationService/NotificationService.sln --configuration Release --no-restore
+        dotnet build ./PetFamily.Backend/Backend/backend.sln --configuration Release --no-restore
+        dotent build ./PetFamily.Backend/FileService/FileService.sln --configuration Release --no-restore
+        dotnet build ./PetFamily.Backend/NotificationService/NotificationService.sln --configuration Release --no-restore
         
     - name: Tests
-      run:  dotnet test ./Backend/backend.sln --configuration Release --no-restore
+      run:  dotnet test ./PetFamily.Backend/Backend/backend.sln --configuration Release --no-restore
