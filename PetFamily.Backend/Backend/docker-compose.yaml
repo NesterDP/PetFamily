@@ -13,7 +13,6 @@
       - ASPNETCORE_ENVIRONMENT=Docker
     depends_on:
       - "postgres"
-      - "seq"
       - "minio"
       - "rabbitmq"
     ports:
@@ -35,22 +34,66 @@
       - postgres-data:/var/lib/postgresql/data
     networks:
       - shared_network
-
-  seq:
-    container_name: seq
-    image: datalust/seq:latest
-    restart: always
-    environment:
-      - ACCEPT_EULA=Y
+  
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.1
     ports:
-      - "5341:5341"
-      - "8081:80"
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    restart: always
     networks:
       - shared_network
-
+  
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.16.1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL="http://localhost:9200" # localhost - в сети докера, а не обычный (локальный)
+    restart: always
+    networks:
+      - shared_network
+        
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: always
+    networks:
+      - shared_network
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - grafana-simple-json-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: always
+    networks:
+      - shared_network
+  
   minio:
-    container_name : minio
-    image : minio/minio
+    container_name: minio
+    image: minio/minio
     restart: always
     ports:
       - "9000:9000"
@@ -62,7 +105,7 @@
       - shared_network
   
   nginx:
-    container_name : nginx
+    container_name: nginx
     image: nginx:latest
     restart: always
     ports:
@@ -87,7 +130,7 @@
       - mongo_data:/data/db
     networks:
       - shared_network
-    
+  
   rabbitmq:
     image: rabbitmq:management-alpine
     container_name: rabbitmq
@@ -99,14 +142,17 @@
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - shared_network
-      
+
 networks:
   shared_network:
-    name: shared_network  
-    driver: bridge 
+    name: shared_network
+    driver: bridge
 
 volumes:
   postgres-data:
   minio_data:
   mongo_data:
   rabbitmq_data:
+  elasticsearch-data:
+  prometheus_data:
+  grafana_data:

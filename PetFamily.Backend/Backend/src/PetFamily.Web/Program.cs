@@ -31,6 +31,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddFileHttpCommunication(builder.Configuration);
 
+builder.Services.AddAppMetric();
+
 var app = builder.Build();
 
 app.ApplyMigrations();
@@ -46,6 +48,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseOpenTelemetryPrometheusScrapingEndpoint();
 }
 
 app.UseHttpsRedirection();
