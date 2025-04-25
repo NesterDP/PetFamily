@@ -26,17 +26,16 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run:
+      run: |
         dotnet restore ./Backend/backend.sln
         dotent restore ./FileService/FileService.sln
         dotnet restore ./NotificationService/NotificationService.sln
       
     - name: Build
-      run:
+      run: |
         dotnet build ./Backend/backend.sln --configuration Release --no-restore
         dotent build ./FileService/FileService.sln --configuration Release --no-restore
         dotnet build ./NotificationService/NotificationService.sln --configuration Release --no-restore
         
     - name: Tests
-      run:  
-        dotnet test ./Backend/backend.sln --configuration Release --no-restore
+      run:  dotnet test ./Backend/backend.sln --configuration Release --no-restore
