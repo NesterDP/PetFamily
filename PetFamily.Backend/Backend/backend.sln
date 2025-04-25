@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yaml = docker-compose.yaml
 		Directory.Build.props = Directory.Build.props
 		dbscript.cmd = dbscript.cmd
+		prometheus.yml = prometheus.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{67BA360C-BB34-4403-A14E-8281D2D65481}"
