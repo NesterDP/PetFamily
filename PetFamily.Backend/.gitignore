@@ -484,4 +484,3 @@ $RECYCLE.BIN/
 *.swp
 
 # config for custom nuget package
-nuget.config

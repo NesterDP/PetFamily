@@ -4,6 +4,8 @@ using FileService.Middlewares;
 using Hangfire;
 using Serilog;
 
+DotNetEnv.Env.Load("etc/.env");
+
 var builder = WebApplication.CreateBuilder(args);
 
 CultureConfigurator.Configure();
