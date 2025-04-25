@@ -14,10 +14,11 @@ using PetFamily.Volunteers.Domain.Entities;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
+using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 using SpeciesWriteDbContext = PetFamily.Species.Infrastructure.DbContexts.WriteDbContext;
 using VolunteerRequestsWriteDbContext = PetFamily.VolunteerRequests.Infrastructure.DbContexts.WriteDbContext;
-using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 
+// ReSharper disable CollectionNeverUpdated.Local
 namespace PetFamily.IntegrationTests.General;
 
 public static class DataGenerator
@@ -90,7 +91,7 @@ public static class DataGenerator
         var user = User.CreateParticipant(
             username,
             email,
-            FullName.Create("DefaultFirstName", "DefaultSecondName", null).Value,
+            FullName.Create("DefaultFirstName", "DefaultSecondName").Value,
             role);
 
         return user.Value;
@@ -113,7 +114,7 @@ public static class DataGenerator
 
         var messageText = MessageText.Create(text).Value;
         var message = new Message(messageText, userId);
-        
+
         return message;
     }
 
@@ -123,7 +124,7 @@ public static class DataGenerator
         string password,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IAccountManager accountManager = null)
+        IAccountManager? accountManager = null)
     {
         var role = await roleManager.FindByNameAsync(DomainConstants.PARTICIPANT);
         var user = CreateUser(username, email, role!);
@@ -215,8 +216,7 @@ public static class DataGenerator
         return volunteers;
     }
 
-    public static async Task<Species.Domain.Entities.Species> SeedSpecies(
-        SpeciesWriteDbContext dbContext)
+    public static async Task<Species.Domain.Entities.Species> SeedSpecies(SpeciesWriteDbContext dbContext)
     {
         var species = CreateSpecies();
         dbContext.Species.Add(species);
@@ -269,12 +269,12 @@ public static class DataGenerator
     public static async Task<VolunteerRequest> SeedVolunteerRequest(
         VolunteerRequestsWriteDbContext dbContext, Guid? optionalId = null)
     {
-        string? DEFAULT_TEXT = "default text";
+        const string DEFAULT_TEXT = "default text";
         var userId = UserId.NewUserId();
-        
+
         if (optionalId.HasValue)
             userId = optionalId.Value;
-        
+
         var volunteerInfo = VolunteerInfo.Create(DEFAULT_TEXT).Value;
         var request = new VolunteerRequest(VolunteerRequestId.NewVolunteerRequestId(), userId, volunteerInfo);
 

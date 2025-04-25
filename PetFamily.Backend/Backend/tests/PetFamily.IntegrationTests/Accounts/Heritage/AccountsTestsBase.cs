@@ -3,16 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
-using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.DbContexts;
-using PetFamily.Accounts.Infrastructure.EntityManagers;
-using PetFamily.IntegrationTests.Volunteers.Heritage;
-using PetFamily.Volunteers.Application;
-using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.IntegrationTests.Accounts.Heritage;
 
-//public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
+// public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
 public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncLifetime
 {
     protected readonly AccountsDbContext AccountsDbContext;

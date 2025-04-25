@@ -2,7 +2,6 @@ using AutoFixture;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Application.Commands.AddPet;
-using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
 using PetFamily.Volunteers.Application.Commands.StartUploadPhotosToPet;
 
 namespace PetFamily.IntegrationTests.General;
@@ -30,6 +29,7 @@ public static class FixtureExtensions
             .With(c => c.HelpStatus, "InSearchOfHome")
             .Create();
     }
+
     public static StartUploadPhotosToPetCommand UploadPhotosToPetCommand(
         this Fixture fixture,
         Guid volunteerId,

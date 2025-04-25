@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.VolunteerRequests.Application.Abstractions;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
-using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 using AccountsDbContext = PetFamily.Accounts.Infrastructure.DbContexts.AccountsDbContext;
+using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
 
 namespace PetFamily.IntegrationTests.VolunteerRequests.Heritage;
 
@@ -31,10 +31,10 @@ public class VolunteerRequestsTestsBase : IClassFixture<VolunteerRequestsWebFact
         UserManager = Scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         AccountsDbContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
-        
+
         Fixture = new Fixture();
     }
-    
+
     public Task InitializeAsync() => Task.CompletedTask;
 
     public async Task DisposeAsync()

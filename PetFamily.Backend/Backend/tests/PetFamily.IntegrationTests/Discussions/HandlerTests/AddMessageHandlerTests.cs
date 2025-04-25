@@ -12,7 +12,8 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
 {
     private readonly ICommandHandler<Guid, AddMessageCommand> _sut;
 
-    public AddMessageHandlerTests(DiscussionsWebFactory factory) : base(factory)
+    public AddMessageHandlerTests(DiscussionsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, AddMessageCommand>>();
     }
@@ -21,8 +22,8 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_success_should_add_message_to_discussion_without_messages()
     {
         // arrange
-        int USER_COUNT = 2;
-        string? MESSAGE_TEXT = "Test text";
+        const int USER_COUNT = 2;
+        const string MESSAGE_TEXT = "Test text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
 
         var command = new AddMessageCommand(discussion.RelationId, discussion.UserIds[0], MESSAGE_TEXT);
@@ -34,7 +35,7 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
         result.IsSuccess.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Messages.Count().Should().Be(1);
+        discussionResult!.Messages.Count().Should().Be(1);
         discussionResult.Messages.First().Text.Value.Should().Be(MESSAGE_TEXT);
     }
 
@@ -42,9 +43,9 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_success_should_add_message_to_discussion_that_already_have_messages()
     {
         // arrange
-        int USER_COUNT = 2;
-        string? MESSAGE_TEXT1 = "Test text2";
-        string? MESSAGE_TEXT2 = "Test text2";
+        const int USER_COUNT = 2;
+        const string MESSAGE_TEXT1 = "Test text2";
+        const string MESSAGE_TEXT2 = "Test text2";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message1 = DataGenerator.CreateMessage(discussion.UserIds[0], MESSAGE_TEXT1);
         discussion.Messages.Add(message1);
@@ -59,7 +60,7 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
         result.IsSuccess.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Messages.Count().Should().Be(2);
+        discussionResult!.Messages.Count().Should().Be(2);
         discussionResult.Messages.Should().Contain(m => m.Text.Value == MESSAGE_TEXT1);
         discussionResult.Messages.Should().Contain(m => m.Text.Value == MESSAGE_TEXT2);
     }
@@ -68,8 +69,8 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
     public async Task AddMessage_failure_should_not_add_message_because_sender_is_not_a_member_of_discssuion()
     {
         // arrange
-        int USER_COUNT = 2;
-        string? MESSAGE_TEXT = "Test text";
+        const int USER_COUNT = 2;
+        const string MESSAGE_TEXT = "Test text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
 
         var command = new AddMessageCommand(discussion.RelationId, Guid.NewGuid(), MESSAGE_TEXT);
@@ -81,6 +82,6 @@ public class AddMessageHandlerTests : DiscussionsTestsBase
         result.IsFailure.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Messages.Count().Should().Be(0);
+        discussionResult!.Messages.Count().Should().Be(0);
     }
 }

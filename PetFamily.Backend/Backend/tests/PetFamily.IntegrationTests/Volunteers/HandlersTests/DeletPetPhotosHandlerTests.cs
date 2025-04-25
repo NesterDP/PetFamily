@@ -1,10 +1,9 @@
-using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Core.Abstractions;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.Volunteers.Heritage;
-using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
@@ -15,7 +14,8 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
 {
     private readonly ICommandHandler<Guid, DeletePetPhotosCommand> _sut;
 
-    public DeletePetPhotosHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public DeletePetPhotosHandlerTests(VolunteerTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeletePetPhotosCommand>>();
     }
@@ -27,7 +27,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
         List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
 
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var volunteer =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PET_COUNT);
         var pet = volunteer.AllOwnedPets[0];
@@ -38,7 +38,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         // expected results
         var expectedResultList = petPhotosIds.Except(photosForDeletion).ToList();
         var command = new DeletePetPhotosCommand(volunteer.Id, pet.Id, photosForDeletion);
-        
+
         Factory.SetupSuccessDeleteFilesByIdsMock(photosForDeletion);
 
         // act
@@ -52,20 +52,20 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
 
         // size equality
-        pet.PhotosList.Count.Should().Be(expectedResultList.Count);
+        pet!.PhotosList.Count.Should().Be(expectedResultList.Count);
 
         // position independent content equality
         expectedResultList.All(photoId => pet.PhotosList.Any(photo => photo.Id == photoId)).Should().BeTrue();
 
         // main photo shouldn't be affected
-        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main == true).Should().BeTrue();
+        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main).Should().BeTrue();
     }
 
     [Fact]
     public async Task DeletePhotos_failure_should_not_remove_selected_photos_from_database_and_return_error()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         List<Guid> petPhotosIds = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
         List<Guid> photosForDeletion = [petPhotosIds[0], petPhotosIds[2]];
 
@@ -79,7 +79,7 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         // expected ResultListresult
         var expectedResultList = petPhotosIds.Except(photosForDeletion).ToList();
         var command = new DeletePetPhotosCommand(volunteer.Id, pet.Id, photosForDeletion);
-        
+
         Factory.SetUpFailureDeleteFilesByIdsMock();
 
         // act
@@ -92,12 +92,12 @@ public class DeletePetPhotosHandlerTests : VolunteerTestsBase
         pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == pet.Id);
 
         // size equality
-        pet.PhotosList.Count.Should().Be(expectedResultList.Count);
+        pet!.PhotosList.Count.Should().Be(expectedResultList.Count);
 
         // position independent equality
         expectedResultList.All(photoId => pet.PhotosList.Any(photo => photo.Id == photoId)).Should().BeTrue();
 
         // main photo shouldn't be affected
-        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main == true).Should().BeTrue();
+        pet.PhotosList.Any(photo => photo.Id == petPhotosIds[1] && photo.Main).Should().BeTrue();
     }
 }

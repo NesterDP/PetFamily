@@ -14,25 +14,26 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
 {
     private readonly IQueryHandler<PagedList<VolunteerRequestDto>, GetRequestsByUserIdQuery> _sut;
 
-    public GetRequestsByUserIdTests(VolunteerRequestsWebFactory factory) : base(factory)
+    public GetRequestsByUserIdTests(VolunteerRequestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider
             .GetRequiredService<IQueryHandler<PagedList<VolunteerRequestDto>, GetRequestsByUserIdQuery>>();
     }
-    
+
     [Fact]
     public async Task GetRequestsByUserId_should_return_3_requests()
     {
         // arrange
-        int PAGE = 1;
-        int PAGE_SIZE = 3;
-        
+        const int PAGE = 1;
+        const int PAGE_SIZE = 3;
+
         var adminId = Guid.NewGuid();
         var seededRequest1 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         var seededRequest2 = await DataGenerator.SeedVolunteerRequest(WriteDbContext, seededRequest1.UserId);
         var seededRequest3 = await DataGenerator.SeedVolunteerRequest(WriteDbContext, seededRequest1.UserId);
-        var seededRequest4 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
-        
+        await DataGenerator.SeedVolunteerRequest(WriteDbContext);
+
         seededRequest1.SetOnReview(adminId);
 
         seededRequest2.SetOnReview(adminId);
@@ -41,12 +42,12 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
         seededRequest3.SetOnReview(adminId);
         seededRequest3.SetRejected(adminId);
         await WriteDbContext.SaveChangesAsync();
-        
+
         var query = new GetRequestsByUserIdQuery(seededRequest1.UserId, PAGE, PAGE_SIZE);
-        
+
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
-        
+
         // assert
         result.TotalCount.Should().Be(3);
         result.Items.Count().Should().Be(3);
@@ -54,20 +55,20 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
         result.Items.Should().Contain(v => v.Id == seededRequest2.Id);
         result.Items.Should().Contain(v => v.Id == seededRequest3.Id);
     }
-    
+
     [Fact]
     public async Task GetRequestsByUserId_should_return_2_requests_because_of_filtration()
     {
         // arrange
-        int PAGE = 1;
-        int PAGE_SIZE = 3;
-        
+        const int PAGE = 1;
+        const int PAGE_SIZE = 3;
+
         var adminId = Guid.NewGuid();
         var seededRequest1 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
         var seededRequest2 = await DataGenerator.SeedVolunteerRequest(WriteDbContext, seededRequest1.UserId);
         var seededRequest3 = await DataGenerator.SeedVolunteerRequest(WriteDbContext, seededRequest1.UserId);
-        var seededRequest4 = await DataGenerator.SeedVolunteerRequest(WriteDbContext);
-        
+        await DataGenerator.SeedVolunteerRequest(WriteDbContext);
+
         seededRequest1.SetOnReview(adminId);
 
         seededRequest2.SetOnReview(adminId);
@@ -75,18 +76,18 @@ public class GetRequestsByUserIdTests : VolunteerRequestsTestsBase
 
         seededRequest3.SetOnReview(adminId);
         seededRequest3.SetRejected(adminId);
-        
+
         await WriteDbContext.SaveChangesAsync();
-        
+
         var query = new GetRequestsByUserIdQuery(
             seededRequest1.UserId,
             PAGE,
             PAGE_SIZE,
             VolunteerRequestStatusEnum.Rejected.ToString());
-        
+
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);
-        
+
         // assert
         result.TotalCount.Should().Be(2);
         result.Items.Count().Should().Be(2);

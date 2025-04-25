@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Abstractions;
@@ -17,7 +16,8 @@ public class GetUserInfoByIdTests : AccountsTestsBase
 {
     private readonly IQueryHandler<Result<UserInfoDto, ErrorList>, GetUserInfoByIdQuery> _sut;
 
-    public GetUserInfoByIdTests(AccountsTestsWebFactory factory) : base(factory)
+    public GetUserInfoByIdTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider
             .GetRequiredService<IQueryHandler<Result<UserInfoDto, ErrorList>, GetUserInfoByIdQuery>>();
@@ -27,11 +27,11 @@ public class GetUserInfoByIdTests : AccountsTestsBase
     public async Task GetUserInfoById_success_should_return_user_info_with_correct_fields()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
         var avatarId = Guid.NewGuid();
-        
+
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
             EMAIL,
@@ -39,12 +39,12 @@ public class GetUserInfoByIdTests : AccountsTestsBase
             UserManager,
             RoleManager,
             AccountManager);
-        
+
         user.Avatar = Avatar.Create(avatarId, DomainConstants.PNG).Value;
         await AccountsDbContext.SaveChangesAsync();
 
         var query = new GetUserInfoByIdQuery(user.Id);
-        
+
         Factory.SetupSuccessGetFilesPresignedUrlsMock([avatarId]);
 
         // act
@@ -65,11 +65,11 @@ public class GetUserInfoByIdTests : AccountsTestsBase
     public async Task GetUserInfoById_failure_should_should_return_error_because_of_no_user_with_such_id()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
-        
-        var user = await DataGenerator.SeedUserAsync(
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
+
+        await DataGenerator.SeedUserAsync(
             USERNAME,
             EMAIL,
             PASSWORD,
@@ -85,16 +85,16 @@ public class GetUserInfoByIdTests : AccountsTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
     }
-    
+
     [Fact]
     public async Task GetUserInfoById_success_admin_should_have_only_admin_account()
     {
         // arrange
-        string? EMAIL = "admin@admin.com";
-        
+        const string EMAIL = "admin@admin.com";
+
         var user = await UserManager.FindByEmailAsync(EMAIL);
 
-        var query = new GetUserInfoByIdQuery(user.Id);
+        var query = new GetUserInfoByIdQuery(user!.Id);
 
         // act
         var result = await _sut.HandleAsync(query, CancellationToken.None);

@@ -5,7 +5,7 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 
 namespace PetFamily.IntegrationTests.Volunteers.Heritage;
 
-//public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
+// public class VolunteerTestsBase : сVolunteerTestsWebFactory>, IAsyncLifetime
 public class VolunteerTestsBase : IClassFixture<VolunteerTestsWebFactory>, IAsyncLifetime
 {
     protected readonly WriteDbContext VolunteersWriteDbContext;
@@ -20,10 +20,6 @@ public class VolunteerTestsBase : IClassFixture<VolunteerTestsWebFactory>, IAsyn
     {
         Factory = factory;
         Scope = factory.Services.CreateScope();
-        /*VolunteersWriteDbContext = Scope.ServiceProvider.GetRequiredKeyedService<WriteDbContext>("Volunteers");
-        VolunteersReadDbContext = Scope.ServiceProvider.GetRequiredKeyedService<IReadDbContext>("Volunteers");
-        SpeciesWriteDbContext = Scope.ServiceProvider.GetRequiredKeyedService<Species.Infrastructure.DbContexts.WriteDbContext>("Species");
-        SpeciesReadDbContext = Scope.ServiceProvider.GetRequiredKeyedService<Species.Application.IReadDbContext>("Species");*/
 
         VolunteersWriteDbContext = Scope.ServiceProvider.GetRequiredService<WriteDbContext>();
         VolunteersReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();

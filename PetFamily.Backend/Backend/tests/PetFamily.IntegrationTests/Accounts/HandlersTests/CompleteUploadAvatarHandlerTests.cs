@@ -16,7 +16,8 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
 {
     private readonly ICommandHandler<CompleteMultipartUploadResponse, CompleteUploadAvatarCommand> _sut;
 
-    public CompleteUploadAvatarHandlerTests(AccountsTestsWebFactory factory) : base(factory)
+    public CompleteUploadAvatarHandlerTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider
             .GetRequiredService<ICommandHandler<CompleteMultipartUploadResponse, CompleteUploadAvatarCommand>>();
@@ -26,11 +27,11 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
     public async Task CompleteUploadAvatar_success_should_add_avatar_to_user_without_avatar()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
         var newAvatarId = Guid.NewGuid();
-        
+
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
             EMAIL,
@@ -40,7 +41,7 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
             AccountManager);
 
         var command = new CompleteUploadAvatarCommand(user.Id, Fixture.Create<CompleteUploadFileDto>());
-        
+
         Factory.SetupSuccessCompleteMultipartMock([newAvatarId]);
 
         // act
@@ -49,23 +50,23 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
         // assert
         result.IsSuccess.Should().BeTrue();
         result.Value.MultipartCompleteInfos.Count.Should().Be(1);
-        
+
         // user avatar is saved in database of main application
         var userResult = await UserManager.FindByEmailAsync(EMAIL);
         userResult.Should().NotBeNull();
-        userResult.Avatar.Id.Should().Be(newAvatarId);
+        userResult!.Avatar.Id.Should().Be(newAvatarId);
     }
 
     [Fact]
     public async Task CompleteUploadAvatar_success_should_replace_avatar_of_user_database()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
         var newAvatarId = Guid.NewGuid();
         var oldAvatarId = Guid.NewGuid();
-        
+
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
             EMAIL,
@@ -73,12 +74,12 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
             UserManager,
             RoleManager,
             AccountManager);
-        
+
         user.Avatar = Avatar.Create(oldAvatarId, DomainConstants.PNG).Value;
         await AccountsDbContext.SaveChangesAsync();
-        
+
         var command = new CompleteUploadAvatarCommand(user.Id, Fixture.Create<CompleteUploadFileDto>());
-        
+
         Factory.SetupSuccessCompleteMultipartMock([newAvatarId]);
         Factory.SetupSuccessDeleteFilesByIdsMock([oldAvatarId]);
 
@@ -88,22 +89,22 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
         // assert
         result.IsSuccess.Should().BeTrue();
         result.Value.MultipartCompleteInfos.Count.Should().Be(1);
-        
+
         // user avatar is saved in database of main application
         var userResult = await UserManager.FindByEmailAsync(EMAIL);
         userResult.Should().NotBeNull();
-        userResult.Avatar.Id.Should().Be(newAvatarId);
+        userResult!.Avatar.Id.Should().Be(newAvatarId);
     }
 
     [Fact]
     public async Task CompleteUploadAvatar_failure_should_return_error_while_not_affecting_database()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
         var oldAvatarId = Guid.NewGuid();
-        
+
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
             EMAIL,
@@ -111,12 +112,12 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
             UserManager,
             RoleManager,
             AccountManager);
-        
+
         user.Avatar = Avatar.Create(oldAvatarId, DomainConstants.JPG).Value;
         await AccountsDbContext.SaveChangesAsync();
-        
+
         var command = new CompleteUploadAvatarCommand(user.Id, Fixture.Create<CompleteUploadFileDto>());
-        
+
         Factory.SetupFailureCompleteMultipartMock();
         Factory.SetupFailureCompleteMultipartMock();
 
@@ -125,10 +126,10 @@ public class CompleteUploadAvatarHandlerTests : AccountsTestsBase
 
         // assert
         result.IsFailure.Should().BeTrue();
-        
+
         // user avatar is not affected
         var userResult = await UserManager.FindByEmailAsync(EMAIL);
         userResult.Should().NotBeNull();
-        userResult.Avatar.Id.Should().Be(oldAvatarId);
+        userResult!.Avatar.Id.Should().Be(oldAvatarId);
     }
 }

@@ -11,7 +11,8 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
 {
     private readonly ICommandHandler<string, ConfirmEmailCommand> _sut;
 
-    public ConfirmEmailHandlerTests(AccountsTestsWebFactory factory) : base(factory)
+    public ConfirmEmailHandlerTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<string, ConfirmEmailCommand>>();
     }
@@ -20,16 +21,16 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
     public async Task ConfirmEmail_success_should_return_token()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
 
-        string? token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        
+        string token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+
         var command = new ConfirmEmailCommand(user.Id, token);
-        
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
@@ -37,42 +38,42 @@ public class ConfirmEmailHandlerTests : AccountsTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
     }
-    
+
     [Fact]
     public async Task ConfirmEmail_failure_should_return_failure_because_token_is_invalid()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
-        
+
         const string token = "token";
-        
+
         var command = new ConfirmEmailCommand(user.Id, token);
-        
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
         // assert
         result.IsFailure.Should().BeTrue();
     }
-    
+
     [Fact]
     public async Task ConfirmEmail_failure_should_return_failure_because_of_no_user_with_such_id_exist()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
-        
-        string? token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        
+
+        string token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+
         var command = new ConfirmEmailCommand(Guid.NewGuid(), token);
-        
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 

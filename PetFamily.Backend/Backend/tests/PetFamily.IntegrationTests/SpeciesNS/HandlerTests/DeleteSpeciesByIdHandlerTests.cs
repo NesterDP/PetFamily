@@ -1,9 +1,9 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Core.Abstractions;
 using PetFamily.IntegrationTests.General;
 using PetFamily.IntegrationTests.SpeciesNS.Heritage;
-using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.Species.Application.Commands.DeleteSpeciesById;
 using PetFamily.Species.Domain.Entities;
@@ -14,7 +14,8 @@ public class DeleteSpeciesByIdHandlerTests : SpeciesTestsBase
 {
     private readonly ICommandHandler<Guid, DeleteSpeciesByIdCommand> _sut;
 
-    public DeleteSpeciesByIdHandlerTests(SpeciesTestsWebFactory factory) : base(factory)
+    public DeleteSpeciesByIdHandlerTests(SpeciesTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteSpeciesByIdCommand>>();
     }
@@ -52,17 +53,17 @@ public class DeleteSpeciesByIdHandlerTests : SpeciesTestsBase
     public async Task DeleteSpeciesById_failure_should_not_delete_species_and_any_of_its_breeds_from_database()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         species.AddBreed(new Breed(Guid.NewGuid(), Name.Create("test breed 1").Value));
         species.AddBreed(new Breed(Guid.NewGuid(), Name.Create("test breed 2").Value));
         await SpeciesWriteDbContext.SaveChangesAsync();
-        
-        var volunteer1 = await DataGenerator
+
+        await DataGenerator
             .SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, species.Breeds[0].Id);
-        var volunteer2 = await DataGenerator
+        await DataGenerator
             .SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, species.Breeds[1].Id);
-        
+
         var command = new DeleteSpeciesByIdCommand(species.Id);
 
         // act

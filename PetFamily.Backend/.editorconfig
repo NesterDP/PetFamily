@@ -321,3 +321,9 @@ dotnet_naming_rule.private_constants_rule.severity = suggestion
 # отключаем предупреждение SA1516 в файлах Program.cs
 [Program.cs]
 dotnet_diagnostic.SA1516.severity = none
+
+[*TestsBase.cs]
+dotnet_diagnostic.SA1401.severity = none
+
+[IntegrationTestsWebFactory.cs]
+dotnet_diagnostic.SA1401.severity = none

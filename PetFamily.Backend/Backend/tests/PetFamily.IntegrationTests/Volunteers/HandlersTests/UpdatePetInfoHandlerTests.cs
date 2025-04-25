@@ -1,11 +1,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.IntegrationTests.General;
-using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Pet;
 using PetFamily.Core.Dto.Shared;
+using PetFamily.IntegrationTests.General;
+using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
@@ -14,20 +14,21 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
 {
     private readonly ICommandHandler<Guid, UpdatePetInfoCommand> _sut;
 
-    public UpdatePetInfoHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public UpdatePetInfoHandlerTests(VolunteerTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdatePetInfoCommand>>();
     }
-
 
     [Fact]
     public async Task UpdatePetInfo_success_should_update_all_matching_fields_from_updatePetInfo()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(
+            VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         const string name = "Test Pet";
@@ -36,8 +37,8 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
         const string color = "red";
         const string healthInfo = "Test Health Info";
         var addressDto = new AddressDto("Moscow", "Lenina 12", "123");
-        const float weight = (float)5.12;
-        const float height = (float)23.43;
+        const float weight = 5.12F;
+        const float height = 23.43F;
         const string ownerPhoneNumber = "1-2-333-44-55-66";
         const bool isCastrated = false;
         var dateOfBirth = DateTime.UtcNow.AddYears(-5);
@@ -72,10 +73,10 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
         result.Value.Should().NotBeEmpty();
 
         var updatedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == volunteer.Id);
-        var updatedPet = updatedVolunteer.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
+        var updatedPet = updatedVolunteer!.AllOwnedPets.FirstOrDefault(p => p.Id == result.Value);
 
         // all data is updated correctly
-        updatedPet.Name.Value.Should().Be(name);
+        updatedPet!.Name.Value.Should().Be(name);
         updatedPet.Description.Value.Should().Be(description);
         updatedPet.PetClassification.SpeciesId.Should().Be(species.Id);
         updatedPet.PetClassification.BreedId.Should().Be(breed.Id);
@@ -91,25 +92,26 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
         updatedPet.DateOfBirth.Value.Should().Be(dateOfBirth);
         updatedPet.IsVaccinated.Value.Should().Be(isVaccinated);
 
-        updatedPet!.TransferDetailsList[0].Name.Should().Be(transferDetails[0].Name);
-        updatedPet!.TransferDetailsList[0].Description.Should().Be(transferDetails[0].Description);
-        updatedPet!.TransferDetailsList[1].Name.Should().Be(transferDetails[1].Name);
-        updatedPet!.TransferDetailsList[1].Description.Should().Be(transferDetails[1].Description);
+        updatedPet.TransferDetailsList[0].Name.Should().Be(transferDetails[0].Name);
+        updatedPet.TransferDetailsList[0].Description.Should().Be(transferDetails[0].Description);
+        updatedPet.TransferDetailsList[1].Name.Should().Be(transferDetails[1].Name);
+        updatedPet.TransferDetailsList[1].Description.Should().Be(transferDetails[1].Description);
     }
 
     [Fact]
     public async Task UpdatePetInfo_failure_should_return_error_because_of_breedId_validation()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(
+            VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
-
 
         var petClassificationDto = new PetClassificationDto(species.Id, Guid.NewGuid());
         var command = CreateUpdatePetCommand(volunteer.Id, pet.Id, petClassificationDto);
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
@@ -121,10 +123,11 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_speciesId_validation()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(
+            VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(Guid.NewGuid(), breed.Id);
@@ -135,19 +138,19 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
 
         // assert
         result.IsFailure.Should().BeTrue();
-        ;
     }
 
     [Fact]
     public async Task UpdatePetInfo_failure_should_return_error_because_of_unmatching_breedId_and_species_id()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(
+            VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(species.Id, breed2.Id);
@@ -164,12 +167,13 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
     public async Task UpdatePetInfo_failure_should_return_error_because_of_unmatching_breedId_and_species_id_reverse()
     {
         // arrange
-        int PET_COUNT = 5;
+        const int PET_COUNT = 5;
         var species = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
         var breed = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species.Id);
         var species2 = await DataGenerator.SeedSpecies(SpeciesWriteDbContext);
-        var breed2 = await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
-        var volunteer = await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
+        await DataGenerator.SeedBreed(SpeciesWriteDbContext, species2.Id);
+        var volunteer = await DataGenerator.SeedVolunteerWithPets(
+            VolunteersWriteDbContext, PET_COUNT, species.Id, breed.Id);
         var pet = volunteer.AllOwnedPets[0];
 
         var petClassificationDto = new PetClassificationDto(species2.Id, breed.Id);
@@ -193,16 +197,16 @@ public class UpdatePetInfoHandlerTests : VolunteerTestsBase
         const string color = "red";
         const string healthInfo = "Test Health Info";
         var addressDto = new AddressDto("Moscow", "Lenina 12", "123");
-        const float weight = (float)5.12;
-        const float height = (float)23.43;
+        const float weight = 5.12F;
+        const float height = 23.43F;
         const string ownerPhoneNumber = "1-2-333-44-55-66";
         const bool isCastrated = false;
         var dateOfBirth = DateTime.UtcNow.AddYears(-5);
         const bool isVaccinated = true;
         List<TransferDetailDto> transferDetails =
         [
-            new TransferDetailDto("mir", "for transfers within country"),
-            new TransferDetailDto("visa", "for transfers outside of country")
+            new("mir", "for transfers within country"),
+            new("visa", "for transfers outside of country")
         ];
         var command = new UpdatePetInfoCommand(
             volunteerId,

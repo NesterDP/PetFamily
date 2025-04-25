@@ -10,21 +10,6 @@ namespace PetFamily.IntegrationTests.Volunteers.Heritage;
 
 public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
 {
-    private readonly IFileService _fileServiceMock = Substitute.For<IFileService>();
-
-    protected override void ConfigureDefaultServices(IServiceCollection services)
-    {
-        base.ConfigureDefaultServices(services);
-
-        var fileServiceDescriptor = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(IFileService));
-
-        if (fileServiceDescriptor is not null)
-            services.Remove(fileServiceDescriptor);
-
-        services.AddTransient<IFileService>(_ => _fileServiceMock);
-    }
-
     public void SetupSuccessStartMultipartMock(int filesAmount = 1)
     {
         var response = new StartMultipartUploadResponse([]);
@@ -103,15 +88,14 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
             .GetFilesPresignedUrls(Arg.Any<GetFilesPresignedUrlsRequest>(), Arg.Any<CancellationToken>())
             .Returns("error");
     }
-    
+
     public void SetupSuccessDeleteFilesByIdsMock(List<Guid> fileIds)
     {
         var response = new DeleteFilesByIdsResponse([]);
 
         for (int i = 0; i < fileIds.Count; i++)
         {
-            string? key = "key" + i;
-
+            string key = "key" + i;
             response.Keys.Add(key);
         }
 
@@ -126,4 +110,20 @@ public class VolunteerTestsWebFactory : IntegrationTestsWebFactory
             .DeleteFilesByIds(Arg.Any<DeleteFilesByIdsRequest>(), Arg.Any<CancellationToken>())
             .Returns("error");
     }
+
+    protected override void ConfigureDefaultServices(IServiceCollection services)
+    {
+        base.ConfigureDefaultServices(services);
+
+        var fileServiceDescriptor = services.SingleOrDefault(
+            s =>
+                s.ServiceType == typeof(IFileService));
+
+        if (fileServiceDescriptor is not null)
+            services.Remove(fileServiceDescriptor);
+
+        services.AddTransient<IFileService>(_ => _fileServiceMock);
+    }
+
+    private readonly IFileService _fileServiceMock = Substitute.For<IFileService>();
 }

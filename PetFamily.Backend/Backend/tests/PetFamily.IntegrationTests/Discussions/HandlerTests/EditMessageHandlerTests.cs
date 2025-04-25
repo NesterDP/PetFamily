@@ -12,7 +12,8 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
 {
     private readonly ICommandHandler<Guid, EditMessageCommand> _sut;
 
-    public EditMessageHandlerTests(DiscussionsWebFactory factory) : base(factory)
+    public EditMessageHandlerTests(DiscussionsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, EditMessageCommand>>();
     }
@@ -21,9 +22,9 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
     public async Task EditMessage_success_should_edit_message()
     {
         // arrange
-        int USER_COUNT = 2;
-        string? EDITED_TEXT = "Edited text";
-        string? INITIAL_TEXT = "Initial text";
+        const int USER_COUNT = 2;
+        const string EDITED_TEXT = "Edited text";
+        const string INITIAL_TEXT = "Initial text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message = DataGenerator.CreateMessage(discussion.UserIds[0], INITIAL_TEXT);
         discussion.Messages.Add(message);
@@ -42,16 +43,17 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
         result.IsSuccess.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Messages.Count().Should().Be(1);
+        discussionResult!.Messages.Count().Should().Be(1);
         discussionResult.Messages.First().Text.Value.Should().Be(EDITED_TEXT);
     }
 
-    [Fact] public async Task EditMessage_failure_should_return_error_because_editor_is_not_creator_of_message()
+    [Fact]
+    public async Task EditMessage_failure_should_return_error_because_editor_is_not_creator_of_message()
     {
         // arrange
-        int USER_COUNT = 2;
-        string? EDITED_TEXT = "Edited text";
-        string? INITIAL_TEXT = "Initial text";
+        const int USER_COUNT = 2;
+        const string EDITED_TEXT = "Edited text";
+        const string INITIAL_TEXT = "Initial text";
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
         var message = DataGenerator.CreateMessage(discussion.UserIds[0], INITIAL_TEXT);
         discussion.Messages.Add(message);
@@ -70,7 +72,7 @@ public class EditMessageHandlerTests : DiscussionsTestsBase
         result.IsFailure.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Messages.Count().Should().Be(1);
+        discussionResult!.Messages.Count().Should().Be(1);
         discussionResult.Messages.First().Text.Value.Should().Be(INITIAL_TEXT);
     }
 }

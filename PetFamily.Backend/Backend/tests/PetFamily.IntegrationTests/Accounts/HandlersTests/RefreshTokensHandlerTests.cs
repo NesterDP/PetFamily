@@ -15,7 +15,8 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
 {
     private readonly ICommandHandler<LoginResponse, RefreshTokensCommand> _sut;
 
-    public RefreshTokensHandlerTests(AccountsTestsWebFactory factory) : base(factory)
+    public RefreshTokensHandlerTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<LoginResponse, RefreshTokensCommand>>();
     }
@@ -24,9 +25,9 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
     public async Task RefreshTokens_success_should_return_new_access_and_refresh_tokens()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
@@ -39,38 +40,37 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
 
         // assert
         result.IsSuccess.Should().BeTrue();
-        
+
         // new session replaced the old and not just added to the sessions list
         AccountsDbContext.RefreshSessions.Count().Should().Be(1);
-        
+
         // returned tokens should not be the same as they were before handler was executed
         result.Value.AccessToken.Should().NotBeEquivalentTo(accessToken.AccessToken);
         result.Value.RefreshToken.Should().NotBe(refreshToken);
-        
+
         // refresh session was filled with data returned from handler
         var userClaims = await TokenProvider.GetUserClaims(result.Value.AccessToken);
-        string? userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI).Value;
-        
+        string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI)!.Value;
+
         var record = await AccountsDbContext.RefreshSessions.FirstOrDefaultAsync(
             rs => rs.UserId == user.Id &&
                   rs.Jti.ToString() == userJtiString &&
                   rs.RefreshToken == result.Value.RefreshToken);
-        
-        record.Should().NotBeNull();
 
+        record.Should().NotBeNull();
     }
-    
+
     [Fact]
     public async Task RefreshTokens_failure_should_return_error_because_refresh_token_lifetime_is_expired()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
-        
+
         // creating session with expired lifetime
         var refreshToken = await GenerateRefreshToken(
             user,
@@ -86,14 +86,14 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
     }
-    
+
     [Fact]
     public async Task RefreshTokens_failure_should_return_error_because_jti_doesnt_match()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
@@ -107,7 +107,7 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         // assert
         result.IsFailure.Should().BeTrue();
     }
-    
+
     private async Task<Guid> GenerateRefreshToken(
         User user,
         Guid accessTokenJti,

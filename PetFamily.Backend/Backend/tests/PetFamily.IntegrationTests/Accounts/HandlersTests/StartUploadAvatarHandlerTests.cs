@@ -13,7 +13,8 @@ public class StartUploadAvatarHandlerTests : AccountsTestsBase
 {
     private readonly ICommandHandler<StartMultipartUploadResponse, StartUploadAvatarCommand> _sut;
 
-    public StartUploadAvatarHandlerTests(AccountsTestsWebFactory factory) : base(factory)
+    public StartUploadAvatarHandlerTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider
             .GetRequiredService<ICommandHandler<StartMultipartUploadResponse, StartUploadAvatarCommand>>();
@@ -23,9 +24,9 @@ public class StartUploadAvatarHandlerTests : AccountsTestsBase
     public async Task StartUploadAvatar_success_should_generate_starting_multipart_upload_data()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,
@@ -55,9 +56,9 @@ public class StartUploadAvatarHandlerTests : AccountsTestsBase
     public async Task StartUploadAvatar_failure_should_return_error()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(
             USERNAME,

@@ -13,7 +13,8 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
 {
     private readonly ICommandHandler<Guid, CloseDiscussionCommand> _sut;
 
-    public CloseDiscussionHandlerTests(DiscussionsWebFactory factory) : base(factory)
+    public CloseDiscussionHandlerTests(DiscussionsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CloseDiscussionCommand>>();
     }
@@ -22,9 +23,9 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
     public async Task CloseDiscussion_success_should_close_discussion()
     {
         // arrange
-        int USER_COUNT = 2;
+        const int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
-        
+
         var command = new CloseDiscussionCommand(discussion.RelationId, discussion.UserIds[0]);
 
         // act
@@ -34,16 +35,16 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
         result.IsSuccess.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == result.Value);
         discussionResult.Should().NotBeNull();
-        discussionResult.Status.Value.Should().Be(DiscussionStatusEnum.Closed);
+        discussionResult!.Status.Value.Should().Be(DiscussionStatusEnum.Closed);
     }
-    
+
     [Fact]
     public async Task CloseDiscussion_failure_should_return_error_because_user_is_not_a_member_of_discussion()
     {
         // arrange
-        int USER_COUNT = 2;
+        const int USER_COUNT = 2;
         var discussion = await DataGenerator.SeedDiscussion(WriteDbContext, USER_COUNT);
-        
+
         var command = new CloseDiscussionCommand(discussion.RelationId, Guid.NewGuid());
 
         // act
@@ -53,6 +54,6 @@ public class CloseDiscussionHandlerTests : DiscussionsTestsBase
         result.IsFailure.Should().BeTrue();
         var discussionResult = await WriteDbContext.Discussions.FirstOrDefaultAsync(d => d.Id == discussion.Id);
         discussionResult.Should().NotBeNull();
-        discussionResult.Status.Value.Should().Be(DiscussionStatusEnum.Opened);
+        discussionResult!.Status.Value.Should().Be(DiscussionStatusEnum.Opened);
     }
 }

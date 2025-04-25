@@ -12,7 +12,8 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
 {
     private readonly GetFilteredPetsWithPaginationHandler _sut;
 
-    public GetFilteredPetsWithPaginationHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public GetFilteredPetsWithPaginationHandlerTests(VolunteerTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<GetFilteredPetsWithPaginationHandler>();
     }
@@ -21,14 +22,13 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_all_pets()
     {
         // arrange
-        int PETS_COUNT = 16;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
-        var volunteer1 =
-            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        var volunteer2 =
-            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        
+        const int PETS_COUNT = 16;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
+
+        await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE);
 
         // act
@@ -44,13 +44,14 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_filtered_pets()
     {
         // arrange
-        int PETS_COUNT = 16;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
+        const int PETS_COUNT = 16;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
+
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
-        var volunteer2 =
-            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+        await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
+
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE, volunteer1.Id);
         var volunteer1PetsHash = volunteer1.AllOwnedPets.Select(p => p.Id.Value).ToHashSet();
 
@@ -80,9 +81,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
             Photo.Create(Guid.NewGuid(), Photo.AllowedTypes.First()).Value
         ];
 
-        int PETS_COUNT = 16;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
+        const int PETS_COUNT = 16;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT / 2);
         var volunteer2 =
@@ -91,10 +92,10 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
         volunteer2.AllOwnedPets[4].UpdatePhotos(photos2);
 
         await VolunteersWriteDbContext.SaveChangesAsync();
-        
+
         var photosIds = photos1.Select(p => p.Id.Value).Union(photos2.Select(p => p.Id.Value))
             .ToList();
-        
+
         Factory.SetupSuccessGetFilesPresignedUrlsMock(photosIds);
 
         var query = new GetFilteredPetsWithPaginationQuery(PAGE, PAGE_SIZE);
@@ -109,6 +110,7 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
 
         var resultPhotosIds = new List<Guid>();
         foreach (var pet in result.Value.Items)
+        {
             if (pet.Photos.Length != 0)
             {
                 // main photo should always be first
@@ -121,7 +123,8 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
                     resultPhotosIds.Add(photo.Id);
                 }
             }
-        
+        }
+
         // each received photo should be unique
         resultPhotosIds.ToHashSet().Should().BeEquivalentTo(photosIds.ToHashSet());
     }
@@ -130,9 +133,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_pets_sorted_by_name_ascending_order()
     {
         // arrange
-        int PETS_COUNT = 3;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
+        const int PETS_COUNT = 3;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
@@ -158,9 +161,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_pets_sorted_by_name_descending_order()
     {
         // arrange
-        int PETS_COUNT = 3;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
+        const int PETS_COUNT = 3;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].UpdateName(Name.Create("barks").Value);
@@ -186,9 +189,9 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_1_pet_the_rest_are_soft_deleted()
     {
         // arrange
-        int PETS_COUNT = 3;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
+        const int PETS_COUNT = 3;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
         volunteer1.AllOwnedPets[0].Delete();
@@ -212,23 +215,22 @@ public class GetFilteredPetsWithPaginationHandlerTests : VolunteerTestsBase
     public async Task GetFilteredPetsWithPagination_should_return_only_1_pet_that_passed_all_possible_filters()
     {
         // arrange
-        int PETS_COUNT = 16;
-        int PAGE_SIZE = 16;
-        int PAGE = 1;
-        int MAX_AGE = 5;
-        int MAX_WEIGHT = 30;
-        int MAX_HEIGHT = 30;
+        const int PETS_COUNT = 16;
+        const int PAGE_SIZE = 16;
+        const int PAGE = 1;
+        const int MAX_AGE = 5;
+        const int MAX_WEIGHT = 30;
+        const int MAX_HEIGHT = 30;
         var volunteer1 =
             await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
-        var volunteer2 =
-            await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
+
+        await DataGenerator.SeedVolunteerWithPets(VolunteersWriteDbContext, SpeciesWriteDbContext, PETS_COUNT);
 
         var pet = volunteer1.AllOwnedPets[0];
         pet.UpdateName(Name.Create("chip").Value);
         pet.UpdateDateOfBirth(DateOfBirth.Create(DateTime.UtcNow.AddYears(-MAX_AGE + 1)).Value);
         pet.UpdateColor(Color.Create("white").Value);
         await VolunteersWriteDbContext.SaveChangesAsync();
-
 
         var query = new GetFilteredPetsWithPaginationQuery(
             PAGE,

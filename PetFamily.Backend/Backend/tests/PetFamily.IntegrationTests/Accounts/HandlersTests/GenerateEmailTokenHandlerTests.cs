@@ -11,7 +11,8 @@ public class GenerateEmailTokenHandlerTests : AccountsTestsBase
 {
     private readonly ICommandHandler<string, GenerateEmailTokenCommand> _sut;
 
-    public GenerateEmailTokenHandlerTests(AccountsTestsWebFactory factory) : base(factory)
+    public GenerateEmailTokenHandlerTests(AccountsTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<string, GenerateEmailTokenCommand>>();
     }
@@ -20,14 +21,14 @@ public class GenerateEmailTokenHandlerTests : AccountsTestsBase
     public async Task GenerateEmailToken_success_should_return_token()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
-        
+
         var command = new GenerateEmailTokenCommand(user.Id);
-        
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 
@@ -35,19 +36,19 @@ public class GenerateEmailTokenHandlerTests : AccountsTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
     }
-    
+
     [Fact]
     public async Task GenerateEmailToken_failure_should_return_failure_because_of_no_user_with_such_id_exist()
     {
         // arrange
-        string? EMAIL = "test@mail.com";
-        string? USERNAME = "testUserName";
-        string? PASSWORD = "Password121314s.";
+        const string EMAIL = "test@mail.com";
+        const string USERNAME = "testUserName";
+        const string PASSWORD = "Password121314s.";
 
         await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
-        
+
         var command = new GenerateEmailTokenCommand(Guid.NewGuid());
-        
+
         // act
         var result = await _sut.HandleAsync(command, CancellationToken.None);
 

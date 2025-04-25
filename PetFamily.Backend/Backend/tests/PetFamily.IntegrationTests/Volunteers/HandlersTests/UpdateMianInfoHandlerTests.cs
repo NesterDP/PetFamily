@@ -1,13 +1,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.IntegrationTests.General;
-using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Volunteer;
-using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.IntegrationTests.General;
+using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
-using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
 
@@ -15,7 +13,8 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
 {
     private readonly ICommandHandler<Guid, UpdateMainInfoCommand> _sut;
 
-    public UpdateMainInfoHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public UpdateMainInfoHandlerTests(VolunteerTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateMainInfoCommand>>();
     }
@@ -25,8 +24,8 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
     {
         // arrange
         var volunteer = await DataGenerator.SeedVolunteer(VolunteersWriteDbContext);
-        VolunteersWriteDbContext.SaveChangesAsync();
-        
+        await VolunteersWriteDbContext.SaveChangesAsync();
+
         const string firstName = "Alexandr";
         const string lastName = "Volkov";
         const string surname = "Alexandrovich";
@@ -35,8 +34,7 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         const string description = "Test description";
         const int experience = 2;
         var fullName = new FullNameDto(firstName, lastName, surname);
-        
-        
+
         var command = new UpdateMainInfoCommand(
             volunteer.Id,
             fullName,
@@ -55,7 +53,7 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         var updatedVolunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
 
         // all data is updated correctly
-        updatedVolunteer.FullName.FirstName.Should().Be(firstName);
+        updatedVolunteer!.FullName.FirstName.Should().Be(firstName);
         updatedVolunteer.FullName.LastName.Should().Be(lastName);
         updatedVolunteer.FullName.Surname.Should().Be(surname);
         updatedVolunteer.Description.Value.Should().Be(description);

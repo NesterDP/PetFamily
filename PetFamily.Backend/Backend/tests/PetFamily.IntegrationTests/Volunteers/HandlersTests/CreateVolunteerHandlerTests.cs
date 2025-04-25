@@ -1,10 +1,9 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Dto.Volunteer;
+using PetFamily.IntegrationTests.Volunteers.Heritage;
 using PetFamily.Volunteers.Application.Commands.Create;
 
 namespace PetFamily.IntegrationTests.Volunteers.HandlersTests;
@@ -13,7 +12,8 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
 {
     private readonly ICommandHandler<Guid, CreateVolunteerCommand> _sut;
 
-    public CreateVolunteerHandlerTests(VolunteerTestsWebFactory factory) : base(factory)
+    public CreateVolunteerHandlerTests(VolunteerTestsWebFactory factory)
+        : base(factory)
     {
         _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateVolunteerCommand>>();
     }
@@ -30,14 +30,14 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
         const string description = "Test description";
         const int experience = 2;
         var fullName = new FullNameDto(firstName, lastName, surname);
-        
+
         var createVolunteerDto = new CreateVolunteerDto(
             fullName,
             email,
             phoneNumber,
             description,
             experience);
-        
+
         var command = new CreateVolunteerCommand(createVolunteerDto);
 
         // act
@@ -50,7 +50,7 @@ public class CreateVolunteerHandlerTests : VolunteerTestsBase
         var volunteer = await VolunteersWriteDbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == result.Value);
 
         // all data is bounded correctly
-        volunteer.FullName.FirstName.Should().Be(firstName);
+        volunteer!.FullName.FirstName.Should().Be(firstName);
         volunteer.FullName.LastName.Should().Be(lastName);
         volunteer.FullName.Surname.Should().Be(surname);
         volunteer.Description.Value.Should().Be(description);
