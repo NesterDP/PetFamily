@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FileService.Communication;
 using FileService.Contracts.Requests;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -9,6 +10,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.Volunteers.Domain.Events;
 
 namespace PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
 
@@ -19,6 +21,7 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
     private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
@@ -26,13 +29,15 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
         IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork,
-        ILogger<DeletePetPhotosHandler> logger)
+        ILogger<DeletePetPhotosHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _fileService = fileService;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -68,6 +73,8 @@ public class DeletePetPhotosHandler : ICommandHandler<Guid, DeletePetPhotosComma
 
         // сохранение изменений в БД модуля
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation("Successfully deleted photos for pet with ID = {ID}", pet.Value.Id.Value);
 

@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -7,6 +8,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.Volunteers.Domain.Events;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdatePetStatus;
@@ -17,18 +19,21 @@ public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpSta
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdatePetHelpStatusHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public UpdatePetHelpStatusHandler(
         IValidator<UpdatePetHelpStatusCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<UpdatePetHelpStatusHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -55,6 +60,8 @@ public class UpdatePetHelpStatusHandler : ICommandHandler<Guid, UpdatePetHelpSta
             return updateResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation(
             "Successfully updated helpStatus of pet with ID = {ID}",

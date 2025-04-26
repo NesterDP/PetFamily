@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FileService.Communication;
 using FileService.Contracts.Requests;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -9,6 +10,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.Volunteers.Domain.Events;
 
 namespace PetFamily.Volunteers.Application.Commands.DeletePet;
 
@@ -19,6 +21,7 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
     private readonly IValidator<DeletePetCommand> _validator;
     private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public HardDeletePetHandler(
         IVolunteersRepository volunteersRepository,
@@ -26,13 +29,15 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
         IValidator<DeletePetCommand> validator,
         IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _validator = validator;
         _fileService = fileService;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -63,6 +68,8 @@ public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
             return Errors.General.Failure(result.Error).ToErrorList();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation("Pet was hard deleted, his ID = {ID}", pet.Id);
 

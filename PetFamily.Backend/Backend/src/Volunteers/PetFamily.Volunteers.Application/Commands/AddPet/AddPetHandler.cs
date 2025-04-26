@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using MassTransit;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -13,6 +14,7 @@ using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Volunteers.Contracts.Messaging;
 using PetFamily.Volunteers.Domain.Entities;
+using PetFamily.Volunteers.Domain.Events;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Application.Commands.AddPet;
@@ -24,6 +26,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly ILogger<AddPetHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRequestClient<BreedToSpeciesExistenceEvent> _client;
+    private readonly IPublisher _publisher;
 
     public AddPetHandler(
         IValidator<AddPetCommand> validator,
@@ -31,13 +34,15 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         ILogger<AddPetHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork,
-        IRequestClient<BreedToSpeciesExistenceEvent> client)
+        IRequestClient<BreedToSpeciesExistenceEvent> client,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
         _client = client;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -66,6 +71,8 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
         volunteerResult.Value.AddPet(pet);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation(
             "Successfully added pet with ID = {ID} to volunteer with ID = {ID}", pet.Id.Value, volunteerId.Value);

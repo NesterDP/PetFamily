@@ -4,6 +4,7 @@ using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
 using FileService.Contracts.SubModels;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -12,6 +13,7 @@ using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.Volunteers.Domain.Events;
 
 namespace PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;
 
@@ -23,6 +25,7 @@ public class CompleteUploadPhotosToPetHandler
     private readonly ILogger<CompleteUploadPhotosToPetHandler> _logger;
     private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public CompleteUploadPhotosToPetHandler(
         IValidator<CompleteUploadPhotosToPetCommand> validator,
@@ -30,13 +33,15 @@ public class CompleteUploadPhotosToPetHandler
         ILogger<CompleteUploadPhotosToPetHandler> logger,
         IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _fileService = fileService;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<CompleteMultipartUploadResponse, ErrorList>> HandleAsync(
@@ -82,6 +87,8 @@ public class CompleteUploadPhotosToPetHandler
         volunteerResult.Value.UpdatePetPhotos(pet.Value.Id, unionOfPhotos);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation(
             "Successfully completed multipart upload and added photos to pet with ID = {ID}", petId.Value);

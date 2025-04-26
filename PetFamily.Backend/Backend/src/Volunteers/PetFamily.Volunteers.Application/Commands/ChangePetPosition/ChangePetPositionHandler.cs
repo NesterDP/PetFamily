@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -7,6 +8,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.SharedKernel.ValueObjects.Ids;
+using PetFamily.Volunteers.Domain.Events;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Application.Commands.ChangePetPosition;
@@ -17,18 +19,21 @@ public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionC
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<ChangePetPositionHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public ChangePetPositionHandler(
         IValidator<ChangePetPositionCommand> validator,
         IVolunteersRepository volunteersRepository,
         ILogger<ChangePetPositionHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -56,6 +61,8 @@ public class ChangePetPositionHandler : ICommandHandler<Guid, ChangePetPositionC
             return positionResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation(
             "volunteer with Id = {ID} moved pet with ID = {PID} to position = {P}",
