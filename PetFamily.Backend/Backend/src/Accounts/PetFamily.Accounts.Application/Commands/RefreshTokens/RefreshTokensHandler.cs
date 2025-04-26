@@ -1,13 +1,11 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Contracts.Responses;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
-using PetFamily.SharedKernel.Structs;
 
 namespace PetFamily.Accounts.Application.Commands.RefreshTokens;
 
@@ -16,19 +14,15 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
     private readonly IRefreshSessionManager _refreshSessionManager;
     private readonly ITokenProvider _tokenProvider;
     private readonly UserManager<User> _userManager;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RefreshTokensHandler(
         IRefreshSessionManager refreshSessionManager,
         ITokenProvider tokenProvider,
-        UserManager<User> userManager,
-        [FromKeyedServices(UnitOfWorkSelector.Accounts)]
-        IUnitOfWork unitOfWork)
+        UserManager<User> userManager)
     {
         _refreshSessionManager = refreshSessionManager;
         _tokenProvider = tokenProvider;
         _userManager = userManager;
-        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<LoginResponse, ErrorList>> HandleAsync(
@@ -40,9 +34,6 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
 
         if (oldRefreshSession.IsFailure)
             return oldRefreshSession.Error.ToErrorList();
-
-        if (DateTime.UtcNow > oldRefreshSession.Value.ExpiresIn)
-            return Errors.General.ExpiredToken().ToErrorList();
 
         var userClaims = await _tokenProvider.GetUserClaims(command.AccessToken);
         if (userClaims.IsFailure)
@@ -62,8 +53,7 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         if (oldRefreshSession.Value.Jti != userJtiGuid)
             return Errors.General.InvalidToken().ToErrorList();
 
-        _refreshSessionManager.Delete(oldRefreshSession.Value);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _refreshSessionManager.DeleteAsync(oldRefreshSession.Value, cancellationToken);
 
         var user = await _userManager.FindByIdAsync(userIdString);
 

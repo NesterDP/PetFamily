@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application.Abstractions;
@@ -10,8 +11,10 @@ using PetFamily.Accounts.Application.Models;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Core;
+using PetFamily.Core.Caching;
 using PetFamily.Core.Options;
 using PetFamily.Framework;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Accounts.Infrastructure.Providers;
@@ -19,16 +22,19 @@ namespace PetFamily.Accounts.Infrastructure.Providers;
 public class JwtTokenProvider : ITokenProvider
 {
     private readonly RefreshSessionOptions _refreshSessionOptions;
+    private readonly ICacheService _cacheService;
     private readonly AccountsDbContext _dbContext;
     private readonly JwtOptions _jwtOptions;
 
     public JwtTokenProvider(
         IOptions<JwtOptions> jwtOptions,
         IOptions<RefreshSessionOptions> refreshSessionOptions,
+        ICacheService cacheService,
         AccountsDbContext dbContext)
     {
         _jwtOptions = jwtOptions.Value;
         _refreshSessionOptions = refreshSessionOptions.Value;
+        _cacheService = cacheService;
         _dbContext = dbContext;
     }
 
@@ -77,8 +83,13 @@ public class JwtTokenProvider : ITokenProvider
             RefreshToken = Guid.NewGuid(),
         };
 
-        await _dbContext.AddAsync(refreshSession, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + refreshSession.RefreshToken;
+        var options = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = refreshSession.ExpiresIn // Автоматическое удаление по истечении срока
+        };
+
+        await _cacheService.SetAsync(key, refreshSession, options, cancellationToken);
 
         return refreshSession.RefreshToken;
     }

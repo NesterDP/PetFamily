@@ -1,36 +1,35 @@
 using CSharpFunctionalExtensions;
-using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
-using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Core.Caching;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
 namespace PetFamily.Accounts.Infrastructure.EntityManagers;
 
 public class RefreshSessionManager : IRefreshSessionManager
 {
-    private readonly AccountsDbContext _accountsDbContext;
+    private readonly ICacheService _cacheService;
 
-    public RefreshSessionManager(AccountsDbContext accountsDbContext)
+    public RefreshSessionManager(ICacheService cacheService)
     {
-        _accountsDbContext = accountsDbContext;
+        _cacheService = cacheService;
     }
 
     public async Task<Result<RefreshSession, Error>> GetByRefreshToken(
         Guid refreshToken,
         CancellationToken cancellationToken)
     {
-        var refreshSession = await _accountsDbContext.RefreshSessions
-            .FirstOrDefaultAsync(rs => rs.RefreshToken == refreshToken, cancellationToken);
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + refreshToken;
+        var session = await _cacheService.GetAsync<RefreshSession>(key, cancellationToken);
 
-        if (refreshSession is null)
-            return Result.Failure<RefreshSession, Error>(Errors.General.ValueNotFound(refreshToken));
-
-        return refreshSession;
+        return session ?? Result.Failure<RefreshSession, Error>(Errors.General.ValueNotFound(refreshToken));
     }
 
-    public void Delete(RefreshSession refreshSession)
+    public async Task<Guid> DeleteAsync(RefreshSession refreshSession, CancellationToken cancellationToken)
     {
-        _accountsDbContext.RefreshSessions.Remove(refreshSession);
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + refreshSession.RefreshToken;
+        await _cacheService.RemoveAsync(key, cancellationToken);
+        return refreshSession.RefreshToken;
     }
 }

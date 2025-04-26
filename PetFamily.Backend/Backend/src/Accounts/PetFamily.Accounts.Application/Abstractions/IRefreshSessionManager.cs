@@ -7,8 +7,7 @@ namespace PetFamily.Accounts.Application.Abstractions;
 public interface IRefreshSessionManager
 {
     public Task<Result<RefreshSession, Error>> GetByRefreshToken(
-        Guid refreshToken,
-        CancellationToken cancellationToken);
+        Guid refreshToken, CancellationToken cancellationToken);
 
-    void Delete(RefreshSession refreshSession);
+    public Task<Guid> DeleteAsync(RefreshSession refreshSession, CancellationToken cancellationToken);
 }

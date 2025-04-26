@@ -21,8 +21,6 @@ public class AccountsDbContext
 
     public DbSet<VolunteerAccount> VolunteerAccounts => Set<VolunteerAccount>();
 
-    public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
-
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public AccountsDbContext(string connectionString)
@@ -47,6 +45,7 @@ public class AccountsDbContext
         modelBuilder.HasDefaultSchema("accounts");
     }
 
+    // ReSharper disable once UnusedMember.Local
     private static ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => { builder.AddConsole(); });
 }
