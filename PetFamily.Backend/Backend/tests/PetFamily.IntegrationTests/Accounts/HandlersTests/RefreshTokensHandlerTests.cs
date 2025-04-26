@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Contracts.Responses;
@@ -8,6 +8,7 @@ using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.IntegrationTests.Accounts.Heritage;
 using PetFamily.IntegrationTests.General;
+using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.IntegrationTests.Accounts.HandlersTests;
 
@@ -41,9 +42,6 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         // assert
         result.IsSuccess.Should().BeTrue();
 
-        // new session replaced the old and not just added to the sessions list
-        AccountsDbContext.RefreshSessions.Count().Should().Be(1);
-
         // returned tokens should not be the same as they were before handler was executed
         result.Value.AccessToken.Should().NotBeEquivalentTo(accessToken.AccessToken);
         result.Value.RefreshToken.Should().NotBe(refreshToken);
@@ -52,12 +50,12 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         var userClaims = await TokenProvider.GetUserClaims(result.Value.AccessToken);
         string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI)!.Value;
 
-        var record = await AccountsDbContext.RefreshSessions.FirstOrDefaultAsync(
-            rs => rs.UserId == user.Id &&
-                  rs.Jti.ToString() == userJtiString &&
-                  rs.RefreshToken == result.Value.RefreshToken);
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + result.Value.RefreshToken;
+        var refreshSession = await CacheService.GetAsync<RefreshSession>(key, CancellationToken.None);
 
-        record.Should().NotBeNull();
+        refreshSession!.UserId.Should().Be(user.Id);
+        refreshSession.Jti.Should().Be(userJtiString);
+        refreshSession.RefreshToken.Should().Be(result.Value.RefreshToken);
     }
 
     [Fact]
@@ -67,6 +65,7 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         const string EMAIL = "test@mail.com";
         const string USERNAME = "testUserName";
         const string PASSWORD = "Password121314s.";
+        const int SECONDS_BEFORE_EXPIRATION = 1;
 
         var user = await DataGenerator.SeedUserAsync(USERNAME, EMAIL, PASSWORD, UserManager, RoleManager);
         var accessToken = await TokenProvider.GenerateAccessToken(user, CancellationToken.None);
@@ -75,8 +74,10 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
         var refreshToken = await GenerateRefreshToken(
             user,
             accessToken.Jti,
-            DateTime.UtcNow.AddDays(-2),
+            DateTime.UtcNow.AddSeconds(SECONDS_BEFORE_EXPIRATION),
             CancellationToken.None);
+
+        await Task.Delay(SECONDS_BEFORE_EXPIRATION);
 
         var command = new RefreshTokensCommand(accessToken.AccessToken, refreshToken);
 
@@ -123,8 +124,10 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
             RefreshToken = Guid.NewGuid()
         };
 
-        await AccountsDbContext.AddAsync(refreshSession);
-        await AccountsDbContext.SaveChangesAsync(cancellationToken);
+        DistributedCacheEntryOptions options = new() { AbsoluteExpiration = expiresIn };
+
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + refreshSession.RefreshToken;
+        await CacheService.SetAsync(key, refreshSession, options, cancellationToken);
 
         return refreshSession.RefreshToken;
     }
