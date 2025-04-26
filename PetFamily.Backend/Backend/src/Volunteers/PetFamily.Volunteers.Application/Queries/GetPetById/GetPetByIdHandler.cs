@@ -19,7 +19,7 @@ public class GetPetByIdHandler : IQueryHandler<Result<PetDto, ErrorList>, GetPet
 
     private readonly DistributedCacheEntryOptions _cacheOptions = new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DEFAULT_EXPIRATION_MINUTES)
     };
 
     public GetPetByIdHandler(

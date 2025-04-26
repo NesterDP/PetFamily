@@ -21,7 +21,7 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
 
     private readonly DistributedCacheEntryOptions _cacheOptions = new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DEFAULT_EXPIRATION_MINUTES)
     };
 
     public GetUserInfoByIdHandler(
@@ -39,14 +39,34 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
         CancellationToken cancellationToken)
     {
         string key = CacheConstants.USERS_PREFIX + query.UserId;
-        var user = await _cache.GetOrSetAsync(
+        var userInfo = await _cache.GetOrSetAsync(
             key,
             _cacheOptions,
-            async () => await _accountRepository.GetNullableUserById(query.UserId),
+            async () => await GetUserInfoDto(query),
             cancellationToken);
 
-        if (user is null)
+        if (userInfo is null)
             return Errors.General.ValueNotFound(query.UserId).ToErrorList();
+
+        if (userInfo.Avatar.Id is not null)
+        {
+            var request = new GetFilesPresignedUrlsRequest([userInfo.Avatar.Id.Value]);
+            var avatarData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
+            if (avatarData.IsFailure)
+                return Errors.General.Failure(avatarData.Error).ToErrorList();
+
+            userInfo.Avatar.Url = avatarData.Value.FilesInfos
+                .FirstOrDefault(d => d.Id == userInfo.Avatar.Id)!.Url;
+        }
+
+        return userInfo;
+    }
+
+    public async Task<UserInfoDto?> GetUserInfoDto(GetUserInfoByIdQuery query)
+    {
+        var user = await _accountRepository.GetNullableUserById(query.UserId);
+        if (user == null)
+            return null;
 
         ParticipantAccountDto? participantAccountDto = null;
         VolunteerAccountDto? volunteerAccountDto = null;
@@ -72,15 +92,7 @@ public class GetUserInfoByIdHandler : IQueryHandler<Result<UserInfoDto, ErrorLis
 
         var avatar = new AvatarDto();
         if (user.Avatar.Id is not null)
-        {
-            var request = new GetFilesPresignedUrlsRequest([user.Avatar.Id]);
-            var avatarData = await _fileService.GetFilesPresignedUrls(request, cancellationToken);
-            if (avatarData.IsFailure)
-                return Errors.General.Failure(avatarData.Error).ToErrorList();
-
             avatar.Id = user.Avatar.Id;
-            avatar.Url = avatarData.Value.FilesInfos.FirstOrDefault(d => d.Id == avatar.Id)!.Url;
-        }
 
         var userInfoDto = new UserInfoDto()
         {
