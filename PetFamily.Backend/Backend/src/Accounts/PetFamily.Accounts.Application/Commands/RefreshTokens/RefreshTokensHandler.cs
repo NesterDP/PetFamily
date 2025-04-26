@@ -1,7 +1,9 @@
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Contracts.Responses;
+using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.CustomErrors;
@@ -13,16 +15,19 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
 {
     private readonly IRefreshSessionManager _refreshSessionManager;
     private readonly ITokenProvider _tokenProvider;
+    private readonly UserManager<User> _userManager;
     private readonly IUnitOfWork _unitOfWork;
 
     public RefreshTokensHandler(
         IRefreshSessionManager refreshSessionManager,
         ITokenProvider tokenProvider,
+        UserManager<User> userManager,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)]
         IUnitOfWork unitOfWork)
     {
         _refreshSessionManager = refreshSessionManager;
         _tokenProvider = tokenProvider;
+        _userManager = userManager;
         _unitOfWork = unitOfWork;
     }
 
@@ -60,11 +65,13 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         _refreshSessionManager.Delete(oldRefreshSession.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        var user = await _userManager.FindByIdAsync(userIdString);
+
         var newAccessToken = await _tokenProvider
-            .GenerateAccessToken(oldRefreshSession.Value.User, cancellationToken);
+            .GenerateAccessToken(user!, cancellationToken);
 
         var newRefreshToken = await _tokenProvider
-            .GenerateRefreshToken(oldRefreshSession.Value.User, newAccessToken.Jti, cancellationToken);
+            .GenerateRefreshToken(user!, newAccessToken.Jti, cancellationToken);
 
         return new LoginResponse(newAccessToken.AccessToken, newRefreshToken);
     }

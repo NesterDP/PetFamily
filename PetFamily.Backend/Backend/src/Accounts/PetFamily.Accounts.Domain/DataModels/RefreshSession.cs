@@ -4,9 +4,7 @@ public class RefreshSession
 {
     public Guid Id { get; init; }
 
-    public Guid UserId { get; init; } // navigation
-
-    public User User { get; init; } = null!; // navigation
+    public Guid UserId { get; init; }
 
     public Guid RefreshToken { get; init; }
 

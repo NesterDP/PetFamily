@@ -116,7 +116,7 @@ public class RefreshTokensHandlerTests : AccountsTestsBase
     {
         var refreshSession = new RefreshSession
         {
-            User = user,
+            UserId = user.Id,
             CreatedAt = DateTime.UtcNow,
             ExpiresIn = expiresIn,
             Jti = accessTokenJti,
