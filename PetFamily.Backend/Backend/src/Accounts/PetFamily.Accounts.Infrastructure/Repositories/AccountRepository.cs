@@ -30,4 +30,16 @@ public class AccountRepository : IAccountRepository
 
         return user;
     }
+
+    public async Task<User?> GetNullableUserById(Guid id)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.Roles)
+            .Include(u => u.ParticipantAccount)
+            .Include(u => u.VolunteerAccount)
+            .Include(u => u.AdminAccount)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        return user;
+    }
 }

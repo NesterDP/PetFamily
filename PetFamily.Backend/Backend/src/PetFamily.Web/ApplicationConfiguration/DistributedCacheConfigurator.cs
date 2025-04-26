@@ -1,4 +1,6 @@
-﻿namespace PetFamily.Web.ApplicationConfiguration;
+﻿using PetFamily.Core.Caching;
+
+namespace PetFamily.Web.ApplicationConfiguration;
 
 public static class DistributedCacheConfigurator
 {
@@ -12,6 +14,8 @@ public static class DistributedCacheConfigurator
 
                 options.Configuration = connection;
             });
+
+        services.AddSingleton<ICacheService, CacheService>();
 
         return services;
     }
