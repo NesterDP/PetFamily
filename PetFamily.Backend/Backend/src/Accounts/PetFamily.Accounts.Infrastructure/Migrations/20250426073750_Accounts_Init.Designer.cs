@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.DbContexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20250421030054_Accounts_Init")]
+    [Migration("20250426073750_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />
@@ -255,9 +255,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_refresh_sessions");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_refresh_sessions_user_id");
 
                     b.ToTable("refresh_sessions", "accounts");
                 });
@@ -572,18 +569,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .WithOne("ParticipantAccount")
                         .HasForeignKey("PetFamily.Accounts.Domain.DataModels.ParticipantAccount", "UserId")
                         .HasConstraintName("fk_participant_accounts_users_user_id");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.RefreshSession", b =>
-                {
-                    b.HasOne("PetFamily.Accounts.Domain.DataModels.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_refresh_sessions_users_user_id");
 
                     b.Navigation("User");
                 });

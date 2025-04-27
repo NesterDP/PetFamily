@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Core.Caching;
 
 namespace PetFamily.IntegrationTests.Accounts.Heritage;
 
@@ -18,6 +19,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
     protected readonly IAccountManager AccountManager;
     protected readonly AccountsTestsWebFactory Factory;
     protected readonly ITokenProvider TokenProvider;
+    protected readonly ICacheService CacheService;
 
     public AccountsTestsBase(AccountsTestsWebFactory factory)
     {
@@ -28,6 +30,7 @@ public class AccountsTestsBase : IClassFixture<AccountsTestsWebFactory>, IAsyncL
         AccountsDbContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         TokenProvider = Scope.ServiceProvider.GetRequiredService<ITokenProvider>();
         AccountManager = Scope.ServiceProvider.GetRequiredService<IAccountManager>();
+        CacheService = Scope.ServiceProvider.GetRequiredService<ICacheService>();
         Fixture = new Fixture();
     }
 

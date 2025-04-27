@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
@@ -10,6 +11,7 @@ using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.SharedKernel.ValueObjects.Ids;
 using PetFamily.Species.Contracts;
 using PetFamily.Species.Contracts.Requests;
+using PetFamily.Volunteers.Domain.Events;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Application.Commands.UpdatePetInfo;
@@ -21,6 +23,7 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
     private readonly ILogger<UpdatePetInfoHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBreedToSpeciesExistenceContract _contract;
+    private readonly IPublisher _publisher;
 
     public UpdatePetInfoHandler(
         IValidator<UpdatePetInfoCommand> validator,
@@ -28,13 +31,15 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
         ILogger<UpdatePetInfoHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Volunteers)]
         IUnitOfWork unitOfWork,
-        IBreedToSpeciesExistenceContract contract)
+        IBreedToSpeciesExistenceContract contract,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
         _contract = contract;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -110,6 +115,8 @@ public class UpdatePetInfoHandler : ICommandHandler<Guid, UpdatePetInfoCommand>
             return updateResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation("Successfully updated info of pet with ID = {ID}", command.PetId);
 

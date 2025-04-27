@@ -1,9 +1,11 @@
 using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Domain.Events;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
@@ -21,6 +23,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
     private readonly IOutboxRepository _outboxRepository;
     private readonly ILogger<RegisterUserHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public RegisterUserHandler(
         UserManager<User> userManager,
@@ -29,7 +32,8 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         IOutboxRepository outboxRepository,
         ILogger<RegisterUserHandler> logger,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -37,6 +41,7 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
         _outboxRepository = outboxRepository;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<string, ErrorList>> HandleAsync(
@@ -71,6 +76,8 @@ public class RegisterUserHandler : ICommandHandler<string, RegisterUserCommand>
                 await transaction.CommitAsync(cancellationToken);
 
                 _logger.LogInformation("Successfully created participant with UserName = {UserName}", command.UserName);
+
+                await _publisher.Publish(new UserWasRegisteredEvent(participant.Value.Id), cancellationToken);
 
                 return SUCCESS_MESSAGE;
             }

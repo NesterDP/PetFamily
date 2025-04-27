@@ -4,9 +4,11 @@ using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
 using FileService.Contracts.SubModels;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Abstractions;
+using PetFamily.Accounts.Domain.Events;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.CustomErrors;
@@ -23,6 +25,7 @@ public class CompleteUploadAvatarHandler
     private readonly ILogger<CompleteUploadAvatarHandler> _logger;
     private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPublisher _publisher;
 
     public CompleteUploadAvatarHandler(
         IValidator<CompleteUploadAvatarCommand> validator,
@@ -30,13 +33,15 @@ public class CompleteUploadAvatarHandler
         ILogger<CompleteUploadAvatarHandler> logger,
         IFileService fileService,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)]
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IPublisher publisher)
     {
         _validator = validator;
         _accountRepository = accountRepository;
         _logger = logger;
         _fileService = fileService;
         _unitOfWork = unitOfWork;
+        _publisher = publisher;
     }
 
     public async Task<Result<CompleteMultipartUploadResponse, ErrorList>> HandleAsync(
@@ -83,6 +88,8 @@ public class CompleteUploadAvatarHandler
         userResult.Value.Avatar = newAvatar.Value;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(new UserWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation("Successfully changed photo of user with ID = {ID}", userResult.Value.Id);
 

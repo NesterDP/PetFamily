@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Abstractions;
+using PetFamily.Accounts.Application.EventHandlers.UserWasChangedEventHandlers;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.EntityManagers;
@@ -31,6 +32,7 @@ public static class DependencyInjection
             .AddSeeding()
             .AddTransactionManagement()
             .AddRepositories()
+            .AddMediatrService()
             .AddOutbox();
 
         return services;
@@ -94,6 +96,17 @@ public static class DependencyInjection
     private static IServiceCollection AddProviders(this IServiceCollection services)
     {
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
+        return services;
+    }
+
+    private static IServiceCollection AddMediatrService(this IServiceCollection services)
+    {
+        services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CacheInvalidation).Assembly);
+            });
+
         return services;
     }
 

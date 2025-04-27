@@ -101,6 +101,7 @@ public class AccountsController : ApplicationController
 
         // HttpContext.Response.Cookies.Append("accessToken", result.Value.AccessToken);
         // return result.ToResponse();
+
         // return Ok();
         return Ok(result.Value.AccessToken);
     }

@@ -2,21 +2,21 @@ namespace PetFamily.Accounts.Contracts.Dto;
 
 public class UserInfoDto
 {
-    public FullNameDto FullName { get; init; } = null!;
+    public FullNameDto FullName { get; set; } = null!;
 
-    public AvatarDto Avatar { get; init; } = null!;
+    public AvatarDto Avatar { get; set; } = null!;
 
-    public string Email { get; init; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 
-    public string PhoneNumber { get; init; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
 
-    public List<RoleDto> Roles { get; init; } = [];
+    public List<RoleDto> Roles { get; set; } = [];
 
-    public List<SocialNetworkDto> SocialNetworks { get; init; } = [];
+    public List<SocialNetworkDto> SocialNetworks { get; set; } = [];
 
-    public ParticipantAccountDto? ParticipantAccount { get; init; }
+    public ParticipantAccountDto? ParticipantAccount { get; set; }
 
-    public VolunteerAccountDto? VolunteerAccount { get; init; }
+    public VolunteerAccountDto? VolunteerAccount { get; set; }
 
-    public AdminAccountDto? AdminAccount { get; init; }
+    public AdminAccountDto? AdminAccount { get; set; }
 }

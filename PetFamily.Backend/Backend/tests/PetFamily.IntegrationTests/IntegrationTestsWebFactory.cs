@@ -4,16 +4,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using PetFamily.Accounts.Infrastructure.Consumers;
 using PetFamily.Accounts.Infrastructure.Consumers.Definitions;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Core.Caching;
 using PetFamily.Core.Options;
 using PetFamily.Discussions.Infrastructure.Consumers;
 using PetFamily.Discussions.Infrastructure.Consumers.Definitions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.Consumers;
@@ -21,6 +25,7 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 using PetFamily.Web;
 using Respawn;
 using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 using DiscussionsIReadDbContext = PetFamily.Discussions.Application.Abstractions.IReadDbContext;
 using DiscussionsReadDbContext = PetFamily.Discussions.Infrastructure.DbContexts.ReadDbContext;
 using DiscussionsWriteDbContext = PetFamily.Discussions.Infrastructure.DbContexts.WriteDbContext;
@@ -42,12 +47,17 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         .WithPassword("postgres")
         .Build();
 
+    public readonly RedisContainer _redisContainer = new RedisBuilder()
+        .WithImage("redis:latest")
+        .Build();
+
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
 
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+        await _redisContainer.StartAsync();
 
         using var scope = Services.CreateScope();
 
@@ -87,6 +97,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
+        await _redisContainer.DisposeAsync();
     }
 
     public async Task ResetDatabaseAsync()
@@ -96,6 +107,9 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         using var scope = Services.CreateScope();
         var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
         await accountSeeder.SeedAsync();
+
+        var cache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+        await cache.RemoveAsync(CacheConstants.REFRESH_SESSIONS_PREFIX + "*");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -106,8 +120,11 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
+        // Redis
+        ReconfigureRedis(services);
+
         // mass transit
-        ConfigureMassTransitServices(services);
+        ReconfigureMassTransitServices(services);
 
         // Volunteers
         ReconfigureVolunteersServices(services);
@@ -155,7 +172,21 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
             });
     }
 
-    private void ConfigureMassTransitServices(IServiceCollection services)
+    private void ReconfigureRedis(IServiceCollection services)
+    {
+        services.RemoveAll<ICacheService>();
+        services.RemoveAll<IDistributedCache>();
+
+        services.AddStackExchangeRedisCache(
+            options =>
+            {
+                options.Configuration = _redisContainer.GetConnectionString();
+            });
+
+        services.AddSingleton<ICacheService, CacheService>();
+    }
+
+    private void ReconfigureMassTransitServices(IServiceCollection services)
     {
         services.RemoveMassTransitHostedService();
 

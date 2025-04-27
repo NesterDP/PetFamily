@@ -1,12 +1,13 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Contracts.Responses;
+using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Core;
 using PetFamily.Core.Abstractions;
 using PetFamily.IntegrationTests.Accounts.Heritage;
 using PetFamily.IntegrationTests.General;
+using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.IntegrationTests.Accounts.HandlersTests;
 
@@ -45,12 +46,12 @@ public class LoginUserHandlerTests : AccountsTestsBase
         string userJtiString = userClaims.Value.FirstOrDefault(c => c.Type == CustomClaims.JTI)!.Value;
 
         // refresh session was created and filled with correct data
-        var record = await AccountsDbContext.RefreshSessions.FirstOrDefaultAsync(
-            rs => rs.UserId == user.Id &&
-                  rs.Jti.ToString() == userJtiString &&
-                  rs.RefreshToken == result.Value.RefreshToken);
+        string key = CacheConstants.REFRESH_SESSIONS_PREFIX + result.Value.RefreshToken;
+        var refreshSession = await CacheService.GetAsync<RefreshSession>(key, CancellationToken.None);
 
-        record.Should().NotBeNull();
+        refreshSession!.UserId.Should().Be(user.Id);
+        refreshSession.Jti.Should().Be(userJtiString);
+        refreshSession.RefreshToken.Should().Be(result.Value.RefreshToken);
     }
 
     [Fact]

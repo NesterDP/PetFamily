@@ -6,6 +6,7 @@ using PetFamily.Core.Options;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Structs;
 using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Application.EventHandlers.PetWasChangedEventHandlers;
 using PetFamily.Volunteers.Infrastructure.BackgroundServices;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 using PetFamily.Volunteers.Infrastructure.MessageQueues;
@@ -26,6 +27,7 @@ public static class DependencyInjection
             .AddTransactionManagement()
             .AddHostedServices()
             .AddMessageQueues()
+            .AddMediatrService()
             .AddServices(configuration);
         return services;
     }
@@ -77,5 +79,16 @@ public static class DependencyInjection
 
         services.Configure<ExpiredEntitiesDeletionOptions>(
             configuration.GetSection(ExpiredEntitiesDeletionOptions.EXPIRED_ENTITIES_DELETION));
+    }
+
+    private static IServiceCollection AddMediatrService(this IServiceCollection services)
+    {
+        services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CacheInvalidation).Assembly);
+            });
+
+        return services;
     }
 }
