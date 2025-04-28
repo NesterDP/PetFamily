@@ -4,14 +4,17 @@
     #image: fileservice
     build:
       context: .
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
       dockerfile: src/FileService/Dockerfile
-    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
     ports:
       - "8090:8080"
     networks:
       - shared_network
+    restart: always
 
 networks:
   shared_network:

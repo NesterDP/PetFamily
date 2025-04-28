@@ -4,14 +4,23 @@
     #image: notificationservice
     build:
       context: .
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
       dockerfile: src/NotificationService/Dockerfile
-    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - SMTPOPTIONS__HOST=${SMTPOPTIONS__HOST}
+      - SMTPOPTIONS__PORT=${SMTPOPTIONS__PORT}
+      - SMTPOPTIONS__USESSL=${SMTPOPTIONS__USESSL}
+      - SMTPOPTIONS__FROMEMAIL=${SMTPOPTIONS__FROMEMAIL}
+      - SMTPOPTIONS__USERNAME=${SMTPOPTIONS__USERNAME}
+      - SMTPOPTIONS__PASSWORD=${SMTPOPTIONS__PASSWORD}
     ports:
       - "8091:8080"
     networks:
       - shared_network
+    restart: always
 
 networks:
   shared_network:

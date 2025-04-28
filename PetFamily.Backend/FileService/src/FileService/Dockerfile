@@ -5,6 +5,17 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
+
+ARG NUGET_USERNAME
+ARG NUGET_PASSWORD
+ARG NUGET_SOURCE="https://nuget.pkg.github.com/NesterDP/index.json"
+
+RUN dotnet nuget add source $NUGET_SOURCE \
+    --name "GitHub" \
+    --username $NUGET_USERNAME \
+    --password $NUGET_PASSWORD \
+    --store-password-in-clear-text
+
 WORKDIR /src
 COPY ["src/FileService/FileService.csproj", "src/FileService/"]
 COPY ["src/FileService.Contracts/FileService.Contracts.csproj", "src/FileService.Contracts/"]

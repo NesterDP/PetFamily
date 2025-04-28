@@ -1,5 +1,3 @@
-docker-compose up -d
-
 dotnet-ef database drop -f -c WriteDbContext -p .\src\Volunteers\PetFamily.Volunteers.Infrastructure\ -s .\src\PetFamily.Web\
 dotnet-ef database drop -f -c WriteDbContext -p .\src\Species\PetFamily.Species.Infrastructure\ -s .\src\PetFamily.Web\
 dotnet-ef database drop -f -c AccountsDbContext -p .\src\Accounts\PetFamily.Accounts.Infrastructure\ -s .\src\PetFamily.Web\
@@ -25,5 +23,3 @@ dotnet-ef database update -c WriteDbContext -p .\src\Species\PetFamily.Species.I
 dotnet-ef database update -c AccountsDbContext -p .\src\Accounts\PetFamily.Accounts.Infrastructure\ -s .\src\PetFamily.Web\
 dotnet-ef database update -c WriteDbContext -p .\src\VolunteerRequests\PetFamily.VolunteerRequests.Infrastructure\ -s .\src\PetFamily.Web\
 dotnet-ef database update -c WriteDbContext -p .\src\Discussions\PetFamily.Discussions.Infrastructure\ -s .\src\PetFamily.Web\
-
-pause
