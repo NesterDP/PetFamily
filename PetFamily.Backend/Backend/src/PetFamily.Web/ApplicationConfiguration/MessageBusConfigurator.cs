@@ -6,6 +6,7 @@ using PetFamily.Discussions.Infrastructure.Consumers.Definitions;
 using PetFamily.Discussions.Infrastructure.Consumers.Faults;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Infrastructure.Consumers;
+using PetFamily.Volunteers.Infrastructure.Consumers.Definitions;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -23,6 +24,7 @@ public static class MessageBusConfigurator
                     .AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
                 configure.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
                 configure.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
+                configure.AddConsumer<ApprovedRequestVolunteersConsumer, ApprovedRequestVolunteersConsumerDefinition>();
                 configure.AddConsumer<BreedToPetExistenceEventConsumer>();
                 configure.AddConsumer<SpeciesToPetExistenceEventConsumer>();
                 configure.AddConsumer<BreedToSpeciesExistenceEventConsumer>();

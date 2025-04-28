@@ -223,39 +223,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.ToTable("permissions", "accounts");
                 });
 
-            modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.RefreshSession", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime>("ExpiresIn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expires_in");
-
-                    b.Property<Guid>("Jti")
-                        .HasColumnType("uuid")
-                        .HasColumnName("jti");
-
-                    b.Property<Guid>("RefreshToken")
-                        .HasColumnType("uuid")
-                        .HasColumnName("refresh_token");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_refresh_sessions");
-
-                    b.ToTable("refresh_sessions", "accounts");
-                });
-
             modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.Role", b =>
                 {
                     b.Property<Guid>("Id")

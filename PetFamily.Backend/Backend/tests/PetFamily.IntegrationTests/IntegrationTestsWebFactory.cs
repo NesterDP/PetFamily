@@ -21,6 +21,7 @@ using PetFamily.SharedKernel.Constants;
 using PetFamily.Species.Infrastructure.Consumers;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure.Consumers;
+using PetFamily.Volunteers.Infrastructure.Consumers.Definitions;
 using PetFamily.Volunteers.Infrastructure.DbContexts;
 using PetFamily.Web;
 using Respawn;
@@ -197,6 +198,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
                 cfg.AddConsumer<ApprovedRequestDiscussionsConsumer, ApprovedRequestDiscussionsConsumerDefinition>();
                 cfg.AddConsumer<ApprovedRequestAccountsConsumer, ApprovedRequestAccountsConsumerDefinition>();
                 cfg.AddConsumer<OnReviewRequestConsumer, OnReviewRequestConsumerDefinition>();
+                cfg.AddConsumer<ApprovedRequestVolunteersConsumer, ApprovedRequestVolunteersConsumerDefinition>();
                 cfg.AddConsumer<BreedToPetExistenceEventConsumer>();
                 cfg.AddConsumer<SpeciesToPetExistenceEventConsumer>();
                 cfg.AddConsumer<BreedToSpeciesExistenceEventConsumer>();

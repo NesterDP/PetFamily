@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IGetUserPermissionCodesContract, GetUserPermissionCodesContract>();
         services.AddScoped<ICreateVolunteerAccountContract, CreateVolunteerAccountContract>();
+        services.AddScoped<IGetUserInfoByUserIdContract, GetUserInfoByUserIdContract>();
         return services;
     }
 }

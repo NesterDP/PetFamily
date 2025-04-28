@@ -41,7 +41,7 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
 
-        var volunteerId = VolunteerId.NewVolunteerId();
+        var volunteerId = VolunteerId.Create(command.CreateVolunteerDto.UserId);
 
         var fullNameCreateResult = FullName.Create(
             command.CreateVolunteerDto.FullName.FirstName,
@@ -49,8 +49,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
             command.CreateVolunteerDto.FullName.Surname);
 
         var emailCreateResult = Email.Create(command.CreateVolunteerDto.Email);
-
-        var descriptionCreateResult = Description.Create(command.CreateVolunteerDto.Description);
 
         var experienceCreateResult = Experience.Create(command.CreateVolunteerDto.Experience);
 
@@ -60,7 +58,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
             volunteerId,
             fullNameCreateResult.Value,
             emailCreateResult.Value,
-            descriptionCreateResult.Value,
             experienceCreateResult.Value,
             phoneNumberCreateResult.Value);
 

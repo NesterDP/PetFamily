@@ -16,8 +16,6 @@ public class VolunteerDto
 
     public string Email { get; init; } = string.Empty;
 
-    public string Description { get; init; } = string.Empty;
-
     public int Experience { get; init; }
 
     [JsonIgnore]

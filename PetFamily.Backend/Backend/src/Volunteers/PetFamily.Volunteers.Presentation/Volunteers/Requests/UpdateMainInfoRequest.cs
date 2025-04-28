@@ -6,7 +6,6 @@ namespace PetFamily.Volunteers.Presentation.Volunteers.Requests;
 public record UpdateMainInfoRequest(
     FullNameDto FullNameDto,
     string Email,
-    string Description,
     int Experience,
     string PhoneNumber)
 {
@@ -14,7 +13,6 @@ public record UpdateMainInfoRequest(
         id,
         FullNameDto,
         Email,
-        Description,
         Experience,
         PhoneNumber);
 }

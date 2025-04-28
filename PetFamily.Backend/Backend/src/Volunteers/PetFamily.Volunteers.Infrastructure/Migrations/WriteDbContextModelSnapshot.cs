@@ -238,17 +238,6 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Volunteers.Domain.Entities.Volunteer.Description#Description", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(2000)
-                                .HasColumnType("character varying(2000)")
-                                .HasColumnName("description");
-                        });
-
                     b.ComplexProperty<Dictionary<string, object>>("Email", "PetFamily.Volunteers.Domain.Entities.Volunteer.Email#Email", b1 =>
                         {
                             b1.IsRequired();

@@ -46,23 +46,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "refresh_sessions",
-                schema: "accounts",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    refresh_token = table.Column<Guid>(type: "uuid", nullable: false),
-                    jti = table.Column<Guid>(type: "uuid", nullable: false),
-                    expires_in = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_refresh_sessions", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "roles",
                 schema: "accounts",
                 columns: table => new
@@ -413,10 +396,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "participant_accounts",
-                schema: "accounts");
-
-            migrationBuilder.DropTable(
-                name: "refresh_sessions",
                 schema: "accounts");
 
             migrationBuilder.DropTable(

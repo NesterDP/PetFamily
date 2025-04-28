@@ -31,7 +31,6 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         const string surname = "Alexandrovich";
         const string email = "test@mail.com";
         const string phoneNumber = "1-2-333-44-55-66";
-        const string description = "Test description";
         const int experience = 2;
         var fullName = new FullNameDto(firstName, lastName, surname);
 
@@ -39,7 +38,6 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
             volunteer.Id,
             fullName,
             email,
-            description,
             experience,
             phoneNumber);
 
@@ -56,7 +54,6 @@ public class UpdateMainInfoHandlerTests : VolunteerTestsBase
         updatedVolunteer!.FullName.FirstName.Should().Be(firstName);
         updatedVolunteer.FullName.LastName.Should().Be(lastName);
         updatedVolunteer.FullName.Surname.Should().Be(surname);
-        updatedVolunteer.Description.Value.Should().Be(description);
         updatedVolunteer.Experience.Value.Should().Be(experience);
         updatedVolunteer.Email.Value.Should().Be(email);
     }
