@@ -29,7 +29,6 @@ public static class DataGenerator
         var email = Email.Create($"test{suffix}@test.com").Value;
         var fullName = FullName
             .Create($"testFirstName{suffix}", $"testLastName{suffix}", $"testSurname{suffix}").Value;
-        var description = Description.Create($"testDescription{suffix}").Value;
         var experience = Experience.Create(exp).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
 
@@ -37,7 +36,6 @@ public static class DataGenerator
             volunteerId,
             fullName,
             email,
-            description,
             experience,
             phoneNumber);
 

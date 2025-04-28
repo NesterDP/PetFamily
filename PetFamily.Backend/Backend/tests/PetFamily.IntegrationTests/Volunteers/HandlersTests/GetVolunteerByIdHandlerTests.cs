@@ -38,7 +38,6 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestsBase
         result.Surname.Should().Be(volunteer.FullName.Surname);
         result.PhoneNumber.Should().Be(volunteer.PhoneNumber.Value);
         result.Email.Should().Be(volunteer.Email.Value);
-        result.Description.Should().Be(volunteer.Description.Value);
         result.Experience.Should().Be(volunteer.Experience.Value);
         result.IsDeleted.Should().Be(volunteer.IsDeleted);
     }

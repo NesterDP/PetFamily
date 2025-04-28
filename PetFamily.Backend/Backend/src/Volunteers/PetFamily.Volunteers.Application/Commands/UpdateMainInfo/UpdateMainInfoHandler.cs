@@ -51,10 +51,9 @@ public class UpdateMainInfoHandler : ICommandHandler<Guid, UpdateMainInfoCommand
             command.FullNameDto.LastName,
             command.FullNameDto.Surname).Value;
         var email = Email.Create(command.Email).Value;
-        var description = Description.Create(command.Description).Value;
         var experience = Experience.Create(command.Experience).Value;
         var phone = Phone.Create(command.PhoneNumber).Value;
-        volunteerResult.Value.UpdateMainInfo(fullName, email, description, experience, phone);
+        volunteerResult.Value.UpdateMainInfo(fullName, email, experience, phone);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

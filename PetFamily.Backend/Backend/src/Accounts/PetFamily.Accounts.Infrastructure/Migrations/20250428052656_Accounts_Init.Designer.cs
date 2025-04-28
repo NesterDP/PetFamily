@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.DbContexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20250426073750_Accounts_Init")]
+    [Migration("20250428052656_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />
@@ -224,39 +224,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasDatabaseName("ix_permissions_code");
 
                     b.ToTable("permissions", "accounts");
-                });
-
-            modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.RefreshSession", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime>("ExpiresIn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expires_in");
-
-                    b.Property<Guid>("Jti")
-                        .HasColumnType("uuid")
-                        .HasColumnName("jti");
-
-                    b.Property<Guid>("RefreshToken")
-                        .HasColumnType("uuid")
-                        .HasColumnName("refresh_token");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_refresh_sessions");
-
-                    b.ToTable("refresh_sessions", "accounts");
                 });
 
             modelBuilder.Entity("PetFamily.Accounts.Domain.DataModels.Role", b =>

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Contracts;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Domain.DataModels;
+using PetFamily.Accounts.Domain.Events;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
@@ -19,6 +21,7 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
     private readonly UserManager<User> _userManager;
     private readonly IAccountManager _accountManager;
     private readonly RoleManager<Role> _roleManager;
+    private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateVolunteerAccountContract> _logger;
 
@@ -26,6 +29,7 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         UserManager<User> userManager,
         IAccountManager accountManager,
         RoleManager<Role> roleManager,
+        IPublisher publisher,
         [FromKeyedServices(UnitOfWorkSelector.Accounts)]
         IUnitOfWork unitOfWork,
         ILogger<CreateVolunteerAccountContract> logger)
@@ -33,6 +37,7 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
         _userManager = userManager;
         _accountManager = accountManager;
         _roleManager = roleManager;
+        _publisher = publisher;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -63,6 +68,8 @@ public class CreateVolunteerAccountContract : ICreateVolunteerAccountContract
             _logger.LogInformation("Created volunteer account for user with id = {ID}", request.UserId);
 
             await transaction.CommitAsync(cancellationToken);
+
+            await _publisher.Publish(new UserWasChangedEvent(), cancellationToken);
 
             return volunteerAccount.Id;
         }

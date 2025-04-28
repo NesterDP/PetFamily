@@ -218,7 +218,6 @@ public class PetTests
         var email = Email.Create("test@test.com").Value;
         var fullName = FullName
             .Create("testFirstName", "testLastName", "testSurname").Value;
-        var description = Description.Create("testDescription").Value;
         var experience = Experience.Create(1).Value;
         var phoneNumber = Phone.Create("1-2-333-44-55-66").Value;
 
@@ -226,7 +225,6 @@ public class PetTests
             volunteerId,
             fullName,
             email,
-            description,
             experience,
             phoneNumber);
 

@@ -14,8 +14,6 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
 
     public Email Email { get; private set; } = null!;
 
-    public Description Description { get; private set; } = null!;
-
     public Experience Experience { get; private set; } = null!;
 
     public Phone PhoneNumber { get; private set; } = null!;
@@ -37,14 +35,12 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         VolunteerId id,
         FullName fullName,
         Email email,
-        Description description,
         Experience experience,
         Phone phoneNumber)
         : base(id)
     {
         FullName = fullName;
         Email = email;
-        Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
     }
@@ -60,7 +56,6 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         VolunteerId id,
         FullName fullName,
         Email email,
-        Description description,
         Experience experience,
         Phone phoneNumber)
     {
@@ -68,7 +63,6 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
             id,
             fullName,
             email,
-            description,
             experience,
             phoneNumber);
     }
@@ -76,13 +70,11 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
     public void UpdateMainInfo(
         FullName fullName,
         Email email,
-        Description description,
         Experience experience,
         Phone phoneNumber)
     {
         FullName = fullName;
         Email = email;
-        Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
     }

@@ -13,7 +13,7 @@ using PetFamily.Volunteers.Infrastructure.DbContexts;
 namespace PetFamily.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250426073734_Volunteers_Init")]
+    [Migration("20250428052644_Volunteers_Init")]
     partial class Volunteers_Init
     {
         /// <inheritdoc />
@@ -240,17 +240,6 @@ namespace PetFamily.Volunteers.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Volunteers.Domain.Entities.Volunteer.Description#Description", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(2000)
-                                .HasColumnType("character varying(2000)")
-                                .HasColumnName("description");
-                        });
 
                     b.ComplexProperty<Dictionary<string, object>>("Email", "PetFamily.Volunteers.Domain.Entities.Volunteer.Email#Email", b1 =>
                         {

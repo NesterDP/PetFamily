@@ -49,16 +49,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             });
 
         builder.ComplexProperty(
-            v => v.Description,
-            db =>
-            {
-                db.Property(d => d.Value)
-                    .IsRequired()
-                    .HasMaxLength(DomainConstants.MAX_HIGH_TEXT_LENGTH)
-                    .HasColumnName("description");
-            });
-
-        builder.ComplexProperty(
             v => v.Experience,
             eb =>
             {
