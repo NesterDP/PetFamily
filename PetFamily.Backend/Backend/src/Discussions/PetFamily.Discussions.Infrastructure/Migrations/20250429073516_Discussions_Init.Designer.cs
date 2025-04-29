@@ -13,7 +13,7 @@ using PetFamily.Discussions.Infrastructure.DbContexts;
 namespace PetFamily.Discussions.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250428191728_Discussions_Init")]
+    [Migration("20250429073516_Discussions_Init")]
     partial class Discussions_Init
     {
         /// <inheritdoc />

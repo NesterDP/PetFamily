@@ -1,6 +1,6 @@
 ﻿services:
-  web:
-    container_name: web
+  mainservice:
+    container_name: mainservice
     #image: nesterdp/pet-family-backend:1.0
     build:
       context: .
@@ -137,6 +137,7 @@
     image: rabbitmq:management-alpine
     container_name: rabbitmq
     hostname: rabbitmq
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"

@@ -2,7 +2,7 @@
 
 docker-compose up -d --build
 
-docker stop web fileservice notificationservice
+docker stop mainservice fileservice notificationservice
 
 cd /d "%~dp0Backend"
 call dbscript.cmd
@@ -10,7 +10,7 @@ call dbscript.cmd
 cd /d "%~dp0FileService"
 call dbscript.cmd
 
-docker start web fileservice notificationservice
+docker start mainservice fileservice notificationservice
 
 echo Готово!
 pause
