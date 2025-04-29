@@ -13,7 +13,7 @@ using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Core;
 using PetFamily.Core.Caching;
 using PetFamily.Core.Options;
-using PetFamily.Framework;
+using PetFamily.Framework.Security.Authentication;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 
@@ -24,15 +24,15 @@ public class JwtTokenProvider : ITokenProvider
     private readonly RefreshSessionOptions _refreshSessionOptions;
     private readonly ICacheService _cacheService;
     private readonly AccountsDbContext _dbContext;
-    private readonly JwtOptions _jwtOptions;
+    private readonly AuthOptions _authOptions;
 
     public JwtTokenProvider(
-        IOptions<JwtOptions> jwtOptions,
+        IOptions<AuthOptions> jwtOptions,
         IOptions<RefreshSessionOptions> refreshSessionOptions,
         ICacheService cacheService,
         AccountsDbContext dbContext)
     {
-        _jwtOptions = jwtOptions.Value;
+        _authOptions = jwtOptions.Value;
         _refreshSessionOptions = refreshSessionOptions.Value;
         _cacheService = cacheService;
         _dbContext = dbContext;
@@ -40,7 +40,7 @@ public class JwtTokenProvider : ITokenProvider
 
     public async Task<JwtTokenResult> GenerateAccessToken(User user, CancellationToken cancellationToken)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authOptions.PrivateKey));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var roleClaims = await _dbContext.Users
@@ -61,9 +61,7 @@ public class JwtTokenProvider : ITokenProvider
         claims = claims.Concat(roleClaims).ToArray();
 
         var jwtToken = new JwtSecurityToken(
-            issuer: _jwtOptions.Issuer,
-            audience: _jwtOptions.Audience,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_jwtOptions.ExpiredMinutesTime)),
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(_authOptions.ExpiredMinutesTime)),
             signingCredentials: signingCredentials,
             claims: claims);
 
@@ -98,7 +96,7 @@ public class JwtTokenProvider : ITokenProvider
     {
         var jwtHandler = new JwtSecurityTokenHandler();
 
-        var validationParameters = TokenValidationParametersFactory.CreateWithoutLifeTime(_jwtOptions);
+        var validationParameters = TokenValidationParametersFactory.CreateWithoutLifeTime(_authOptions);
 
         var validationResult = await jwtHandler.ValidateTokenAsync(jwtToken, validationParameters);
 

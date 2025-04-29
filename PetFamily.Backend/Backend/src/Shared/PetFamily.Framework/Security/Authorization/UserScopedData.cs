@@ -3,7 +3,7 @@ using CSharpFunctionalExtensions;
 using PetFamily.Core;
 using PetFamily.SharedKernel.CustomErrors;
 
-namespace PetFamily.Framework;
+namespace PetFamily.Framework.Security.Authorization;
 
 public class UserScopedData
 {

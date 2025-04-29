@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.ChangePetPosition;
 using PetFamily.Volunteers.Application.Commands.CompleteUploadPhotosToPet;

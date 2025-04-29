@@ -1,4 +1,4 @@
-using PetFamily.Framework;
+using PetFamily.Framework.Security.Authorization;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 

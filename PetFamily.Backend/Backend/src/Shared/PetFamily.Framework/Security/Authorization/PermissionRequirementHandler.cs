@@ -4,7 +4,7 @@ using PetFamily.Accounts.Contracts;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Core;
 
-namespace PetFamily.Framework.Authorization;
+namespace PetFamily.Framework.Security.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {

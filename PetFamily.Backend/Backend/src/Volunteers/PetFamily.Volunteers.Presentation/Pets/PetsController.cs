@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPaginationDapper;
 using PetFamily.Volunteers.Application.Queries.GetPetById;

@@ -6,7 +6,7 @@ using PetFamily.Discussions.Application.Commands.RemoveMessage;
 using PetFamily.Discussions.Application.Queries.GetDiscussion;
 using PetFamily.Discussions.Presentation.Discussions.Requests;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 
 namespace PetFamily.Discussions.Presentation.Discussions;
 

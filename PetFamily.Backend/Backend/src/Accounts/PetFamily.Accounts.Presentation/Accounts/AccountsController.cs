@@ -10,7 +10,7 @@ using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Presentation.Accounts.Requests;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 
 namespace PetFamily.Accounts.Presentation.Accounts;
 

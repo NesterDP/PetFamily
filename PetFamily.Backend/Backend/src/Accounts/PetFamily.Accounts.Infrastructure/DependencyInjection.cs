@@ -86,7 +86,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        services.Configure<AuthOptions>(configuration.GetSection(AuthOptions.AUTH));
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
         services.Configure<RefreshSessionOptions>(configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
 

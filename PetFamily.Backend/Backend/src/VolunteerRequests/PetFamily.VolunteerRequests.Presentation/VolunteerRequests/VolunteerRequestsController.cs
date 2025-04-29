@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.VolunteerRequests.Application.Commands.AmendRequest;
 using PetFamily.VolunteerRequests.Application.Commands.ApproveRequest;

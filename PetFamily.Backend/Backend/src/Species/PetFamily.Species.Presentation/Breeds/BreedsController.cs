@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
+using PetFamily.Framework.Security.Authorization;
 using PetFamily.Species.Application.Queries.GetBreedsBySpeciesId;
 
 namespace PetFamily.Species.Presentation.Breeds;
