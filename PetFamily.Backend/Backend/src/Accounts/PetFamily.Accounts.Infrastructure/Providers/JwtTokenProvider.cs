@@ -10,6 +10,7 @@ using PetFamily.Accounts.Application.Abstractions;
 using PetFamily.Accounts.Application.Models;
 using PetFamily.Accounts.Domain.DataModels;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.EntityManagers;
 using PetFamily.Core;
 using PetFamily.Core.Caching;
 using PetFamily.Core.Options;
@@ -25,18 +26,21 @@ public class JwtTokenProvider : ITokenProvider
     private readonly RefreshSessionOptions _refreshSessionOptions;
     private readonly ICacheService _cacheService;
     private readonly AccountsDbContext _dbContext;
+    private readonly PermissionManager _permissionManager;
     private readonly AuthOptions _authOptions;
 
     public JwtTokenProvider(
         IOptions<AuthOptions> jwtOptions,
         IOptions<RefreshSessionOptions> refreshSessionOptions,
         ICacheService cacheService,
-        AccountsDbContext dbContext)
+        AccountsDbContext dbContext,
+        PermissionManager permissionManager)
     {
         _authOptions = jwtOptions.Value;
         _refreshSessionOptions = refreshSessionOptions.Value;
         _cacheService = cacheService;
         _dbContext = dbContext;
+        _permissionManager = permissionManager;
     }
 
     public async Task<JwtTokenResult> GenerateAccessToken(User user, CancellationToken cancellationToken)
@@ -45,11 +49,14 @@ public class JwtTokenProvider : ITokenProvider
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var roleClaims = await _dbContext.Users
-            .Include(u => u.Roles) // surpass lazy loading
+            .Include(u => u.Roles)
             .Where(u => u.Id == user.Id)
             .SelectMany(u => u.Roles)
             .Select(r => new Claim(CustomClaims.ROLE, r.Name!))
             .ToListAsync(cancellationToken);
+
+        var permissions = await _permissionManager.GetUserPermissionCodes(user.Id, cancellationToken);
+        var permissionClaims = permissions.Select(p => new Claim(CustomClaims.PERMISSION, p)).ToList();
 
         var jti = Guid.NewGuid();
 
@@ -59,7 +66,7 @@ public class JwtTokenProvider : ITokenProvider
             new Claim(CustomClaims.EMAIL, user.Email ?? string.Empty),
         };
 
-        claims = claims.Concat(roleClaims).ToArray();
+        claims = claims.Concat(roleClaims).Concat(permissionClaims).ToArray();
 
         var jwtToken = new JwtSecurityToken(
             expires: DateTime.UtcNow.AddMinutes(int.Parse(_authOptions.ExpiredMinutesTime)),

@@ -6,4 +6,5 @@ public static class CustomClaims
     public const string ID = nameof(ID);
     public const string EMAIL = nameof(EMAIL);
     public const string JTI = nameof(JTI);
+    public const string PERMISSION = nameof(PERMISSION);
 }

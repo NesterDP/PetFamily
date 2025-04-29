@@ -1,24 +1,21 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Accounts.Contracts;
-using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Core;
 
 namespace PetFamily.Framework.Security.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    // ReSharper disable once EmptyConstructor
+    public PermissionRequirementHandler() { }
 
-    public PermissionRequirementHandler(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
-
-    protected override async Task HandleRequirementAsync(
+    protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
+        /*
+        Если есть необходимость получать разрешения по ID с БД - раскомментировать
+        Иначе берем их прямо из клеймов
+
         using var scope = _scopeFactory.CreateScope();
         var contract = scope.ServiceProvider.GetRequiredService<IGetUserPermissionCodesContract>();
 
@@ -32,12 +29,19 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
 
         var request = new GetUserPermissionCodesRequest(userId);
         var permissionCodes = await contract.GetUserPermissionCodes(request);
+        */
+
+        var permissionCodes = context.User.Claims
+            .Where(c => c.Type == CustomClaims.PERMISSION)
+            .Select(c => c.Value)
+            .ToList();
 
         if (!permissionCodes.Contains(permission.Code))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         context.Succeed(permission);
+        return Task.CompletedTask;
     }
 }
