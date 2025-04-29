@@ -20,6 +20,8 @@ builder.Services.AddSerilog();
 builder.Services.AddModules(builder.Configuration);
 
 builder.Services.AddConfiguredControllers();
+builder.Services.ConfigureHttpClients();
+builder.Services.AddFileHttpCommunication(builder.Configuration);
 
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.ConfigureAuthorization();
@@ -28,8 +30,6 @@ builder.Services.ConfigureUserData();
 builder.Services.AddMessageBus(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddFileHttpCommunication(builder.Configuration);
 
 builder.Services.AddDistributedCache(builder.Configuration);
 
