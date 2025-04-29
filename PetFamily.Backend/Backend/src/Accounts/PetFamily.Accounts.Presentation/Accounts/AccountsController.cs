@@ -23,7 +23,7 @@ public class AccountsController : ApplicationController
         _userData = userData;
     }
 
-    // [Permission("accounts.GetUserInfoById")]
+    [Permission("accounts.GetUserInfoById")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserInfoById(
         [FromRoute] Guid id,
@@ -130,6 +130,7 @@ public class AccountsController : ApplicationController
         return result.IsFailure ? result.Error.ToResponse() : result.ToResponse();
     }
 
+    [Permission("accounts.EmailTokenGeneration")]
     [HttpPost("email-token-generation")]
     public async Task<IActionResult> EmailTokenGeneration(
         [FromBody] GenerateEmailTokenRequest request,

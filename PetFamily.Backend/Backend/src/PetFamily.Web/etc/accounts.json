@@ -3,7 +3,8 @@
     "Accounts" : [
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
-      "accounts.CompleteUploadAvatar"
+      "accounts.CompleteUploadAvatar",
+      "accounts.EmailTokenGeneration"
     ],
     "Discussions": [
       "discussions.CloseDiscussion",
@@ -50,6 +51,18 @@
       "species.DeleteSpeciesById",
       "species.GetBreedsBySpeciesId",
       "species.GetSpeciesWithPagination"
+    ],
+    "FileService": [
+      "fileservice.CompleteMultipartUpload",
+      "fileservice.DeleteFilesByIds",
+      "fileservice.GetFilesPresignedUrls",
+      "fileservice.StartMultipartUpload",
+      "fileservice.UploadPresignedUrl",
+      "fileservice.UploadPresignedUrlPart"
+    ],
+    "NotificationService": [
+      "notificationservice.UpdateNotificationSettings",
+      "notificationservice.Test"
     ]
 
   },
@@ -71,7 +84,9 @@
       "discussions.EditMessage",
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
-      "accounts.CompleteUploadAvatar"
+      "accounts.CompleteUploadAvatar",
+      "fileservice.UploadPresignedUrlPart",
+      "notificationservice.UpdateNotificationSettings"
     ],
     "Volunteer": [
       "volunteers.AddPet",
@@ -102,7 +117,9 @@
       "discussions.EditMessage",
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
-      "accounts.CompleteUploadAvatar"
+      "accounts.CompleteUploadAvatar",
+      "fileservice.UploadPresignedUrlPart",
+      "notificationservice.UpdateNotificationSettings"
     ],
     "Admin" : [
       "volunteers.AddPet",
@@ -142,7 +159,10 @@
       "discussions.EditMessage",
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
-      "accounts.CompleteUploadAvatar"
+      "accounts.CompleteUploadAvatar",
+      "fileservice.UploadPresignedUrlPart",
+      "notificationservice.UpdateNotificationSettings",
+      "notificationservice.Test"
     ]
   }
 }
