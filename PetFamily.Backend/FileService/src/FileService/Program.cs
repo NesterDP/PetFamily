@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 CultureConfigurator.Configure();
 LoggerConfigurator.Configure(builder.Configuration);
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwagger();
 builder.Services.AddSerilog();
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -20,6 +20,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
 
 builder.Services.ConfigureHangfire(builder.Configuration);
+
+builder.Services.ConfigureHttpClients();
+builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureAuthorization();
+builder.Services.ConfigureUserData();
 
 var app = builder.Build();
 

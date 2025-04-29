@@ -2,6 +2,7 @@ using FileService.API.Endpoints;
 using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
 using FileService.Infrastructure.Providers;
+using FileService.Security.Authorization;
 
 namespace FileService.Features;
 
@@ -11,7 +12,8 @@ public static class UploadPresignedUrlPart
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned-part", Handler);
+            app.MapPost("files/presigned-part", Handler)
+                .RequirePermission("fileservice.UploadPresignedUrlPart");
         }
     }
 

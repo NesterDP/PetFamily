@@ -3,6 +3,7 @@ using FileService.API.Endpoints;
 using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
 using FileService.Infrastructure.Providers;
+using FileService.Security.Authorization;
 
 namespace FileService.Features;
 
@@ -12,7 +13,8 @@ public static class StartMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/start-multipart", Handler);
+            app.MapPost("files/start-multipart", Handler)
+                .RequirePermission("fileservice.StartMultipartUpload");
         }
     }
 

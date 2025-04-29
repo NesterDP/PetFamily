@@ -5,6 +5,7 @@ using FileService.Core.Models;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
+using FileService.Security.Authorization;
 using Hangfire;
 
 namespace FileService.Features;
@@ -15,7 +16,8 @@ public static class UploadPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned", Handler);
+            app.MapPost("files/presigned", Handler)
+                .RequirePermission("fileservice.UploadPresignedUrl");
         }
     }
 

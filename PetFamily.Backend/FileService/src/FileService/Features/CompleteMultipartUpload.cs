@@ -4,6 +4,7 @@ using FileService.Core.Models;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
+using FileService.Security.Authorization;
 using Hangfire;
 using CompleteMultipartUploadRequest = FileService.Contracts.Requests.CompleteMultipartUploadRequest;
 using CompleteMultipartUploadResponse = FileService.Contracts.Responses.CompleteMultipartUploadResponse;
@@ -16,7 +17,8 @@ public class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/complete-multipart", Handler);
+            app.MapPost("files/complete-multipart", Handler)
+                .RequirePermission("fileservice.CompleteMultipartUpload");
         }
     }
 

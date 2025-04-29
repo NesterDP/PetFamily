@@ -1,6 +1,7 @@
 using FileService.API;
 using FileService.API.Endpoints;
 using FileService.Jobs;
+using FileService.Security.Authorization;
 using Hangfire;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 

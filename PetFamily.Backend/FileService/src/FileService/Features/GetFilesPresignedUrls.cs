@@ -5,6 +5,7 @@ using FileService.Contracts.Responses;
 using FileService.Contracts.SubModels;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
+using FileService.Security.Authorization;
 
 namespace FileService.Features;
 
@@ -14,7 +15,8 @@ public static class GetFilesPresignedUrls
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned-urls", Handler);
+            app.MapPost("files/presigned-urls", Handler)
+                .RequirePermission("fileservice.GetFilesPresignedUrls");
         }
     }
 

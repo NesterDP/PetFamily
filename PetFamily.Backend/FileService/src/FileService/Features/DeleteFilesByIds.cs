@@ -4,6 +4,7 @@ using FileService.Contracts.Requests;
 using FileService.Contracts.Responses;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
+using FileService.Security.Authorization;
 
 namespace FileService.Features;
 
@@ -13,7 +14,8 @@ public static class DeleteFilesByIds
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/deletion", Handler);
+            app.MapPost("files/deletion", Handler)
+                .RequirePermission("fileservice.DeleteFilesByIds");
         }
     }
 
