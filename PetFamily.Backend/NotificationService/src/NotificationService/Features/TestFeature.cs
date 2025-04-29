@@ -1,4 +1,5 @@
 using NotificationService.API.Endpoints;
+using NotificationService.Security.Authorization;
 using NotificationService.Services;
 using PetFamily.Accounts.Contracts.Dto;
 
@@ -10,7 +11,8 @@ public static class TestFeature
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("send-email", Handler);
+            app.MapPut("send-email", Handler)
+                .RequirePermission("notificationservice.Test");
         }
     }
 

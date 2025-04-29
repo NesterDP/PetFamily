@@ -6,6 +6,7 @@ using NotificationService.DataModels;
 using NotificationService.DataModels.ValueObjects;
 using NotificationService.Infrastructure.Repositories;
 using NotificationService.Infrastructure.TransactionServices;
+using NotificationService.Security.Authorization;
 
 namespace NotificationService.Features;
 
@@ -15,7 +16,8 @@ public static class UpdateNotificationSettings
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPut("notification-settings", Handler);
+            app.MapPut("notification-settings", Handler)
+                .RequirePermission("notificationservice.UpdateNotificationSettings");
         }
     }
 
