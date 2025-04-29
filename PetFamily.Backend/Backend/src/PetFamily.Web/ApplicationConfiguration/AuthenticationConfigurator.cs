@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using PetFamily.Core.Options;
+using PetFamily.Framework.Security;
 using PetFamily.Framework.Security.Authentication;
+using PetFamily.Framework.Security.Authorization;
+using PetFamily.Framework.Security.Options;
 
 namespace PetFamily.Web.ApplicationConfiguration;
 
@@ -9,8 +12,10 @@ public static class AuthenticationConfigurator
     public static IServiceCollection ConfigureAuthentication(
         this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtOptions = configuration.GetSection(AuthOptions.AUTH).Get<AuthOptions>()
-                         ?? throw new ApplicationException("Missing JWT configuration");
+        services.Configure<AuthOptions>(configuration.GetSection(AuthOptions.AUTH));
+
+        var authOptions = configuration.GetSection(AuthOptions.AUTH).Get<AuthOptions>()
+                          ?? throw new ApplicationException("Missing AUTH configuration");
 
         services
             .AddAuthentication(
@@ -26,8 +31,18 @@ public static class AuthenticationConfigurator
             .AddJwtBearer(
                 options =>
                 {
-                    options.TokenValidationParameters = TokenValidationParametersFactory.CreateWithLifeTime(jwtOptions);
-                });
+                    options.TokenValidationParameters =
+                        TokenValidationParametersFactory.CreateWithLifeTime(authOptions);
+                })
+            .AddInterserviceKey(authOptions.ServicesKey);
+
         return services;
+    }
+
+    private static void AddInterserviceKey(this AuthenticationBuilder builder, string key)
+    {
+        builder.AddScheme<InterserviceAuthenticationOptions, InterserviceAuthenticationHandler>(
+            InterserviceKeyDefaults.AuthenticationScheme,
+            options => options.ExpectedKey = key);
     }
 }

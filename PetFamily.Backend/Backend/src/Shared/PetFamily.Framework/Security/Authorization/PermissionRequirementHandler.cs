@@ -27,7 +27,6 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
 
         if (!Guid.TryParse(userIdString, out var userId))
         {
-            context.Fail();
             return;
         }
 
@@ -36,7 +35,6 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
 
         if (!permissionCodes.Contains(permission.Code))
         {
-            context.Fail();
             return;
         }
 

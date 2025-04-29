@@ -14,6 +14,7 @@ using PetFamily.Core;
 using PetFamily.Core.Caching;
 using PetFamily.Core.Options;
 using PetFamily.Framework.Security.Authentication;
+using PetFamily.Framework.Security.Options;
 using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.CustomErrors;
 

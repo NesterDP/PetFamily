@@ -1,4 +1,4 @@
-namespace PetFamily.Core.Options;
+namespace PetFamily.Framework.Security.Options;
 
 public class AuthOptions
 {

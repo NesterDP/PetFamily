@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace PetFamily.Framework.Security.Authorization;
@@ -9,7 +10,9 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
         if (string.IsNullOrEmpty(policyName))
             return Task.FromResult<AuthorizationPolicy?>(null);
 
-        var policy = new AuthorizationPolicyBuilder()
+        var policy = new AuthorizationPolicyBuilder(
+                JwtBearerDefaults.AuthenticationScheme,
+                InterserviceKeyDefaults.AuthenticationScheme)
             .RequireAuthenticatedUser()
             .AddRequirements(new PermissionAttribute(policyName))
             .Build();
@@ -20,7 +23,9 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
     {
         return Task.FromResult(
-            new AuthorizationPolicyBuilder()
+            new AuthorizationPolicyBuilder(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    InterserviceKeyDefaults.AuthenticationScheme)
                 .RequireAuthenticatedUser()
                 .Build());
     }

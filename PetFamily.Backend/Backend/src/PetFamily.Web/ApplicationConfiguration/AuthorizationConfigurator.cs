@@ -9,6 +9,7 @@ public static class AuthorizationConfigurator
     {
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+        services.AddSingleton<IAuthorizationHandler, InterserviceRequirementHandler>();
 
         services.AddAuthorization();
 
