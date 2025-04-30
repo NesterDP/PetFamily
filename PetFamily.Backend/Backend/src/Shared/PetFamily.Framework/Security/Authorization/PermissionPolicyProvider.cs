@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using PetFamily.Framework.Security.Authentication;
 
 namespace PetFamily.Framework.Security.Authorization;
 

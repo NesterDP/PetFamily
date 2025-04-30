@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
-using FileService.Security.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
-namespace FileService.Security.Authorization;
+namespace NotificationService.Security.Authentication;
 
 public class InterserviceAuthenticationHandler : AuthenticationHandler<InterserviceAuthenticationOptions>
 {

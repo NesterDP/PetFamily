@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Framework.Security;
+﻿namespace PetFamily.Framework.Security.Authentication;
 
 public class InterserviceKeyDefaults
 {

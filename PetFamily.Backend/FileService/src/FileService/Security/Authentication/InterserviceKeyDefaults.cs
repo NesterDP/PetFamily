@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Security;
+﻿namespace FileService.Security.Authentication;
 
 public class InterserviceKeyDefaults
 {

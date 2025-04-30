@@ -327,3 +327,6 @@ dotnet_diagnostic.SA1401.severity = none
 
 [IntegrationTestsWebFactory.cs]
 dotnet_diagnostic.SA1401.severity = none
+
+[FilesProvider.cs]
+dotnet_diagnostic.CS0618.severity = none

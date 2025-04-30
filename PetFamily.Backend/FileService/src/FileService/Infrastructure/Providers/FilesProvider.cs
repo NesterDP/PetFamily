@@ -31,6 +31,8 @@ public class FilesProvider : IFilesProvider
 
     public async Task<MinimalFileInfo> GenerateUploadUrl(UploadPresignedUrlRequest request)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         string key = $"{request.ContentType}/{Guid.NewGuid()}";
 
         var presignedRequest = new GetPreSignedUrlRequest
@@ -52,6 +54,8 @@ public class FilesProvider : IFilesProvider
         UploadPresignedUrlPartRequest request,
         string key)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         var presignedRequest = new GetPreSignedUrlRequest
         {
             BucketName = BUCKET_NAME,
@@ -72,6 +76,8 @@ public class FilesProvider : IFilesProvider
         List<string> keys,
         CancellationToken cancellationToken)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         var request = new DeleteObjectsRequest { BucketName = BUCKET_NAME };
 
         foreach (string key in keys)
@@ -88,6 +94,8 @@ public class FilesProvider : IFilesProvider
         List<string> keys,
         CancellationToken cancellationToken)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
 
         var tasks = keys.Select(
@@ -108,6 +116,8 @@ public class FilesProvider : IFilesProvider
         List<MultipartStartClientInfo> clientInfos,
         CancellationToken cancellationToken)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
 
         var tasks = clientInfos.Select(
@@ -128,6 +138,8 @@ public class FilesProvider : IFilesProvider
         List<MultipartCompleteClientInfo> clientInfos,
         CancellationToken cancellationToken)
     {
+        await EnsureBucketExistsAsync(BUCKET_NAME);
+
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
 
         var tasks = clientInfos.Select(
@@ -251,6 +263,19 @@ public class FilesProvider : IFilesProvider
         finally
         {
             semaphoreSlim.Release();
+        }
+    }
+
+    private async Task EnsureBucketExistsAsync(string bucketName)
+    {
+        bool bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
+        if (!bucketExists)
+        {
+            var putBucketRequest = new PutBucketRequest { BucketName = bucketName };
+
+            await _s3Client.PutBucketAsync(putBucketRequest);
+
+            _logger.LogInformation("Bucket {BucketName} was created successfully", bucketName);
         }
     }
 }

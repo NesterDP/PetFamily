@@ -85,8 +85,14 @@
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
       "accounts.CompleteUploadAvatar",
+      "fileservice.CompleteMultipartUpload",
+      "fileservice.DeleteFilesByIds",
+      "fileservice.GetFilesPresignedUrls",
+      "fileservice.StartMultipartUpload",
+      "fileservice.UploadPresignedUrl",
       "fileservice.UploadPresignedUrlPart",
       "notificationservice.UpdateNotificationSettings"
+      
     ],
     "Volunteer": [
       "volunteers.AddPet",
@@ -118,6 +124,11 @@
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
       "accounts.CompleteUploadAvatar",
+      "fileservice.CompleteMultipartUpload",
+      "fileservice.DeleteFilesByIds",
+      "fileservice.GetFilesPresignedUrls",
+      "fileservice.StartMultipartUpload",
+      "fileservice.UploadPresignedUrl",
       "fileservice.UploadPresignedUrlPart",
       "notificationservice.UpdateNotificationSettings"
     ],
@@ -160,6 +171,11 @@
       "accounts.GetUserInfoById",
       "accounts.StartUploadAvatar",
       "accounts.CompleteUploadAvatar",
+      "fileservice.CompleteMultipartUpload",
+      "fileservice.DeleteFilesByIds",
+      "fileservice.GetFilesPresignedUrls",
+      "fileservice.StartMultipartUpload",
+      "fileservice.UploadPresignedUrl",
       "fileservice.UploadPresignedUrlPart",
       "notificationservice.UpdateNotificationSettings",
       "notificationservice.Test"

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
-namespace NotificationService.Security.Options;
+namespace NotificationService.Security.Authentication;
 
 public class InterserviceAuthenticationOptions : AuthenticationSchemeOptions
 {

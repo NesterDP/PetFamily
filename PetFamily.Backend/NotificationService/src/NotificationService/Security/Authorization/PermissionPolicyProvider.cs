@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using NotificationService.Security.Authentication;
 
 namespace NotificationService.Security.Authorization;
 
