@@ -4,7 +4,7 @@ using FileService.Security.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
-namespace FileService.Security.Authorization;
+namespace FileService.Security.Authentication;
 
 public class InterserviceAuthenticationHandler : AuthenticationHandler<InterserviceAuthenticationOptions>
 {

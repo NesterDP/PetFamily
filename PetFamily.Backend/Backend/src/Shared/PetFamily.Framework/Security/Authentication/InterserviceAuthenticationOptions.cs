@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
-namespace FileService.Security.Options;
+namespace PetFamily.Framework.Security.Authentication;
 
 public class InterserviceAuthenticationOptions : AuthenticationSchemeOptions
 {
